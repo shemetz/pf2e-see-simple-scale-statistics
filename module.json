@@ -1,0 +1,49 @@
+{
+  "name": "pf2e-see-simple-scale-statistics",
+  "title": "pF2e See Simple Scale Statistics",
+  "description": "Allows the GM to see where creatures' stats lie on the Terrible-Low-Moderate-High-Extreme scale.",
+  "version": "0.1.0",
+  "minimumCoreVersion": "9",
+  "compatibleCoreVersion": "9",
+  "esmodules": [
+    "scripts/pf2e-see-simple-scale-statistics.js"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "url": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics",
+  "manifest": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/raw/master/module.json",
+  "download": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/archive/master.zip",
+  "readme": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/blob/master/Readme.md",
+  "changelog": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/blob/master/Changelog.md",
+  "license": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/blob/master/License.txt",
+  "bugs": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/issues",
+  "system": [
+    "pf2e"
+  ],
+  "authors": [
+    {
+      "name": "shem",
+      "email": "itamarcu+foundry@gmail.com",
+      "discord": "shem#0226",
+      "reddit": "u/Shemetz"
+    }
+  ],
+  "manifestPlusVersion": "1.2.0",
+  "media": [
+    {
+      "type": "icon",
+      "url": "https://raw.githubusercontent.com/itamarcu/pf2e-see-simple-scale-statistics/master/metadata/icon.png",
+      "caption": "pF2e See Simple Scale Statistics"
+    },
+    {
+      "type": "cover",
+      "url": "https://raw.githubusercontent.com/itamarcu/pf2e-see-simple-scale-statistics/master/metadata/cover.png",
+      "caption": "pF2e See Simple Scale Statistics"
+    }
+  ]
+}
