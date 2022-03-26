@@ -2,7 +2,7 @@
   "name": "pf2e-see-simple-scale-statistics",
   "title": "pF2e See Simple Scale Statistics",
   "description": "Allows the GM to see where creatures' stats lie on the Terrible-Low-Moderate-High-Extreme scale.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "minimumCoreVersion": "9",
   "compatibleCoreVersion": "9",
   "esmodules": [
