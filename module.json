@@ -40,12 +40,12 @@
   "media": [
     {
       "type": "icon",
-      "url": "https://raw.githubusercontent.com/itamarcu/pf2e-see-simple-scale-statistics/master/metadata/icon.png",
+      "url": "https://raw.githubusercontent.com/itamarcu/pf2e-see-simple-scale-statistics/master/metadata/cover_1.png",
       "caption": "pF2e See Simple Scale Statistics"
     },
     {
       "type": "cover",
-      "url": "https://raw.githubusercontent.com/itamarcu/pf2e-see-simple-scale-statistics/master/metadata/cover.png",
+      "url": "https://raw.githubusercontent.com/itamarcu/pf2e-see-simple-scale-statistics/master/metadata/cover_2.png",
       "caption": "pF2e See Simple Scale Statistics"
     }
   ]
