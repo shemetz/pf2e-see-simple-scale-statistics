@@ -15,7 +15,7 @@ or [directly copy the manifest link for the latest release](https://github.com/i
 
 ## Features
 
-Click the new button on the top right of each character sheet to toggle the mod's functionality (setting is client-side and global for all sheets).
+Click the new button on the top right of each NPC character sheet to toggle the mod's functionality (setting is client-side and global for all sheets).
 
 Each important statistic of the creature will be recolored to indicate where it lies on a simple scale!
 
