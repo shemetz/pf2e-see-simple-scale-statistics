@@ -1,17 +1,5 @@
 {
   "pf2e-see-simple-scale-statistics": {
-    "Settings": {
-      "show-for-players-too": {
-        "name": "Show for players too",
-        "hint": "If true, players who own NPC sheets will see the simple scale stats on those sheets."
-      }
-    },
-    "Scale": {
-      "Terrible": "Terrible",
-      "Low": "Low",
-      "Moderate": "Moderate",
-      "High": "High",
-      "Extreme": "Extreme"
-    }
+    "ToggleButton": "Color stats"
   }
 }

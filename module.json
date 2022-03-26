@@ -8,6 +8,9 @@
   "esmodules": [
     "scripts/pf2e-see-simple-scale-statistics.js"
   ],
+  "styles": [
+    "styles/pf2e-see-simple-scale-statistics.css"
+  ],
   "languages": [
     {
       "lang": "en",

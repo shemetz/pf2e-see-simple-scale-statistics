@@ -1,0 +1,13 @@
+.pf2e-see-simple-scale-statistics-change-mode {
+    background: #646363;
+    border: 2px solid #d8c384;
+    color: #f5efe0;
+    flex: auto 0 0;
+    font-size: .9em;
+    font-weight: 500;
+    padding: 4px;
+}
+
+.pf2e-see-simple-scale-statistics-change-mode.active {
+    background-color: #8e00a4;
+}
