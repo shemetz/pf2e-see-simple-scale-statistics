@@ -184,6 +184,8 @@ const calcAvgDamage = (damageText) => {
     /(\d+)d(\d+)/,
     (all, dCount, dNum) => `${dCount}/2*(${dNum}+1)`
   )
+  const isMathExpression = /^[\s\d-+*/.()_]*$/.test(damageWithMultiplication)
+  if (!isMathExpression) return -99999
   return math.evaluate(damageWithMultiplication)
 }
 
@@ -218,6 +220,10 @@ const markStatisticsInNpcSheet = (sheet, html) => {
     }, attackBonus)
     const damageRolls = npc.data.data.actions[actionIndex].item.data.data.damageRolls
     const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData.damage), 0)
+    if (avgTotalDamage < 0) {
+      // failed parsing math expression
+      continue
+    }
     calculateAndMarkStatisticInNpcSheet(html, npc, {
       name: 'Strike Damage',
       type: 'strike_damage',
