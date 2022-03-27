@@ -13,11 +13,12 @@ or [directly copy the manifest link for the latest release](https://github.com/i
 
 ![](metadata/demo_2.gif)
 
-## Features
 
+## Features
 Click the new button on the top right of each NPC character sheet to toggle the mod's functionality (setting is client-side and global for all sheets).
 
 Each important statistic of the creature will be recolored to indicate where it lies on a simple scale!
+
 
 ## Use cases (for the GM)
 - When a player uses Recall Knowledge and you want to tell them about well-known stats, or about whether a particular stat is high or low.
@@ -37,11 +38,14 @@ Also, special features like Regeneration or Sneak Attack aren't taken into accou
 - Strikes (for each attack): Attack bonus and average damage (**note**: this does not take any traits or other features into account)
 - Spellcasting (for each spellcasting ability): Attack bonus and DC
 
+
 ## Colors
+![](metadata/color_scale.png)
+
 Colors are cyan (Extreme), green (High), yellowish-gray (Moderate), orange (Low), and red (Terrible).
 
-## Where is the scale taken from?
 
+## Where is the scale taken from?
 [Building Creatures](https://2e.aonprd.com/Rules.aspx?ID=995), from the official Pathfinder 2e rules.
 
 Note that I added my own definition of "Terrible" for some scales that were missing explicit values, defining it as the Low value reduced by its difference to the Moderate value and further decreased by 1.
