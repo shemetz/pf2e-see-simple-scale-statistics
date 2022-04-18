@@ -5,7 +5,10 @@
     flex: auto 0 0;
     font-size: .9em;
     font-weight: 500;
-    padding: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 1px;
+    padding-right: 1px;
 }
 
 .pf2e-see-simple-scale-statistics-change-mode.active {
