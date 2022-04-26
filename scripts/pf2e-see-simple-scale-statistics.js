@@ -186,7 +186,8 @@ const calcAvgDamage = (damageText) => {
   )
   const isMathExpression = /^[\s\d-+*/.()_]*$/.test(damageWithMultiplication)
   if (!isMathExpression) return -99999
-  return math.evaluate(damageWithMultiplication)
+  // eval is evil, but we did make sure it's a math expression
+  return eval(damageWithMultiplication)
 }
 
 const markStatisticsInNpcSheet = (sheet, html) => {
