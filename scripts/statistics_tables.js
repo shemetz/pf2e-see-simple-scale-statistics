@@ -252,9 +252,10 @@ export const initializeTables = () => {
     // noinspection JSUnusedLocalSymbols
     const [level, high_upper, high_lower, moderate_upper, moderate_lower, low_upper, low_lower] = line.split('\t')
       .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
+    const myDefinitionOfExtreme = high_upper + (high_upper - moderate_upper) + 1
     const myDefinitionOfTerrible = low_lower - (moderate_lower - low_lower) - 1
     TABLES.HP[level] = {
-      Extreme: null,
+      Extreme: myDefinitionOfExtreme,
       High: high_lower,
       Moderate: (moderate_upper + moderate_lower) / 2,
       Low: low_upper,
