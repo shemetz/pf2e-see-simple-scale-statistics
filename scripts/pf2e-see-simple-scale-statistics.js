@@ -41,7 +41,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'AC',
       type: 'ac',
-      property: 'data.data.attributes.ac.base',
+      property: 'system.attributes.ac.base',
       selector: 'DIV.side-bar-label.armor-label   H4',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -49,7 +49,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'HP',
       type: 'hp',
-      property: 'data.data.attributes.hp.base',
+      property: 'system.attributes.hp.base',
       selector: 'DIV.health-section.side-bar-section   H4',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -57,7 +57,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'Perception',
       type: 'perception',
-      property: 'data.data.attributes.perception.base',
+      property: 'system.attributes.perception.base',
       selector: 'DIV.perception.labelled-field   A',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -65,7 +65,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'Fortitude',
       type: 'save',
-      property: 'data.data.saves.fortitude.base',
+      property: 'system.saves.fortitude.base',
       selector: 'DIV[data-save="fortitude"]   LABEL',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -73,7 +73,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'Reflex',
       type: 'save',
-      property: 'data.data.saves.reflex.base',
+      property: 'system.saves.reflex.base',
       selector: 'DIV[data-save="reflex"]   LABEL',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -81,7 +81,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'Will',
       type: 'save',
-      property: 'data.data.saves.will.base',
+      property: 'system.saves.will.base',
       selector: 'DIV[data-save="will"]   LABEL',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -89,7 +89,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'Strength',
       type: 'ability',
-      property: 'data.data.abilities.str.mod',
+      property: 'system.abilities.str.mod',
       selector: 'DIV[data-attribute="str"]   LABEL',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -97,7 +97,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'Dexterity',
       type: 'ability',
-      property: 'data.data.abilities.dex.mod',
+      property: 'system.abilities.dex.mod',
       selector: 'DIV[data-attribute="dex"]   LABEL',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -105,7 +105,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'Constitution',
       type: 'ability',
-      property: 'data.data.abilities.con.mod',
+      property: 'system.abilities.con.mod',
       selector: 'DIV[data-attribute="con"]   LABEL',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -113,7 +113,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'Intelligence',
       type: 'ability',
-      property: 'data.data.abilities.int.mod',
+      property: 'system.abilities.int.mod',
       selector: 'DIV[data-attribute="int"]   LABEL',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -121,7 +121,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'Wisdom',
       type: 'ability',
-      property: 'data.data.abilities.wis.mod',
+      property: 'system.abilities.wis.mod',
       selector: 'DIV[data-attribute="wis"]   LABEL',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -129,7 +129,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'Charisma',
       type: 'ability',
-      property: 'data.data.abilities.cha.mod',
+      property: 'system.abilities.cha.mod',
       selector: 'DIV[data-attribute="cha"]   LABEL',
       styleToChange: 'color',
       hasDarkBackground: false,
@@ -205,12 +205,12 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       hasDarkBackground: false,
     }
     // `base` will not be undefined for anything that is visibly there
-    const skillValue = getProperty(npc, `data.data.skills.${slug}.base`)
+    const skillValue = getProperty(npc, `system.skills.${slug}.base`)
     calculateAndMarkStatisticInNpcSheet(html, npc, statistic, skillValue)
   }
   for (const attackElem of html.find('OL.attacks-list   LI.attack')) {
     const actionIndex = parseInt(attackElem.dataset.actionIndex)
-    const attackBonus = npc.data.data.actions[actionIndex].item.data.data.bonus.value
+    const attackBonus = npc.system.actions[actionIndex].item.system.bonus.value
     calculateAndMarkStatisticInNpcSheet(html, npc, {
       name: 'Strike Attack Bonus',
       type: 'strike_attack',
@@ -219,7 +219,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       styleToChange: 'color',
       hasDarkBackground: true,
     }, attackBonus)
-    const damageRolls = npc.data.data.actions[actionIndex].item.data.data.damageRolls
+    const damageRolls = npc.system.actions[actionIndex].item.system.damageRolls
     const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData.damage), 0)
     if (avgTotalDamage < 0) {
       // failed parsing math expression
@@ -237,8 +237,8 @@ const markStatisticsInNpcSheet = (sheet, html) => {
   for (const spellcastingElem of html.find('DIV.tab.spells   LI.spellcasting-entry')) {
     const spellcastingItemId = spellcastingElem.dataset.itemId
     const spellcasting = npc.spellcasting.get(spellcastingItemId)
-    const spellAttack = spellcasting.data.data.spelldc.value
-    const spellDc = spellcasting.data.data.spelldc.dc
+    const spellAttack = spellcasting.system.spelldc.value
+    const spellDc = spellcasting.system.spelldc.dc
     calculateAndMarkStatisticInNpcSheet(html, npc, {
       name: 'Spell Attack Bonus',
       type: 'spell_attack',
@@ -288,7 +288,7 @@ Hooks.once('init', () => {
   initializeTables()
   registerSettings()
   Hooks.on('renderActorSheetPF2e', (sheet, html, _) => {
-    if (sheet.object.data.type !== 'npc') return
+    if (sheet.object.type !== 'npc') return
     addButtonToNpcSheet(sheet, html)
     markStatisticsInNpcSheet(sheet, html)
   })
