@@ -14,3 +14,17 @@
 .pf2e-see-simple-scale-statistics-change-mode.active {
     background-color: #8e00a4;
 }
+
+.pf2e-see-simple-scale-statistics-colors-legend {
+    display: flex;
+    height: 5px;
+}
+
+.pf2e-see-simple-scale-statistics-colors-legend:not(.active) {
+    -webkit-filter: grayscale(1);
+}
+
+.pf2e-see-simple-scale-statistics-color-in-legend {
+    flex: 1;
+    /* background-color: defined in the code*/
+}

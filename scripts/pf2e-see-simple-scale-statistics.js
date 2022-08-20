@@ -256,16 +256,37 @@ const markStatisticsInNpcSheet = (sheet, html) => {
   }
 }
 
+const colorLegend = (maybeActive) => {
+  return `
+    <div class="pf2e-see-simple-scale-statistics-colors-legend ${maybeActive}">
+      <div class="pf2e-see-simple-scale-statistics-color-in-legend" style="background-color: ${SCALE.Terrible.brightColor};"></div>
+      <div class="pf2e-see-simple-scale-statistics-color-in-legend" style="background-color: ${SCALE.Low.brightColor};"></div>
+      <div class="pf2e-see-simple-scale-statistics-color-in-legend" style="background-color: ${SCALE.Moderate.brightColor};"></div>
+      <div class="pf2e-see-simple-scale-statistics-color-in-legend" style="background-color: ${SCALE.High.brightColor};"></div>
+      <div class="pf2e-see-simple-scale-statistics-color-in-legend" style="background-color: ${SCALE.Extreme.brightColor};"></div>
+    </div>
+  `
+}
+
 const addButtonToNpcSheet = (sheet, html) => {
   let currentModeNum = game.settings.get(MODULE_ID, 'current-mode-num')
-  const maybeActive = MODE_OPTIONS[currentModeNum] !== 'Disabled' ? 'active' : ''
+  const isEnabled = MODE_OPTIONS[currentModeNum] !== 'Disabled'
+  const maybeActive = isEnabled ? 'active' : ''
   const text = game.i18n.localize(`${MODULE_ID}.ToggleButton`)
-  const newNode = `<div class="pf2e-see-simple-scale-statistics-change-mode ${maybeActive}"><a>${text}</a></div>`
+  const newNode = `
+<div class="pf2e-see-simple-scale-statistics-change-mode ${maybeActive}">
+  <div>
+    <a>${text}</a>
+  </div>
+  ${colorLegend(maybeActive)}
+</div>
+`
   html.find('DIV.adjustment.elite').before(newNode)
-  html.find('DIV.pf2e-see-simple-scale-statistics-change-mode > a').click(() => {
+  html.find('DIV.pf2e-see-simple-scale-statistics-change-mode > div > a').click(() => {
     currentModeNum = (currentModeNum + 1) % MODE_OPTIONS.length
     game.settings.set(MODULE_ID, 'current-mode-num', currentModeNum)
     html.find('DIV.pf2e-see-simple-scale-statistics-change-mode').toggleClass('active')
+    html.find('DIV.pf2e-see-simple-scale-statistics-colors-legend').toggleClass('active')
     markStatisticsInNpcSheet(sheet, html)
   })
 }
