@@ -298,7 +298,17 @@ const addButtonToNpcSheet = (sheet, html) => {
   ${colorLegend(maybeActive)}
 </div>
 `
-  html.find('DIV.adjustment.elite').before(newNode)
+  const $eliteElement = html.find('DIV.adjustment.elite')
+  if ($eliteElement.length > 0) {
+    html.find('DIV.adjustment.elite').before(newNode)
+  } else {
+    // e.g. for NPC sheets opened through compendium
+    html.find('HEADER.npc-sheet-header > div:nth-child(2)').append(`
+<div class="adjustment-select flexrow" style="flex: auto; justify-content: flex-end;">
+${newNode}
+</div>
+`)
+  }
   html.find('DIV.pf2e-see-simple-scale-statistics-change-mode > div > a').click(() => {
     currentModeNum = (currentModeNum + 1) % MODE_OPTIONS.length
     game.settings.set(MODULE_ID, 'current-mode-num', currentModeNum)
