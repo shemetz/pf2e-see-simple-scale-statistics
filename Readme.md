@@ -11,7 +11,7 @@ To install, browse for it in the module browser,
 or [directly copy the manifest link for the latest release](https://github.com/itamarcu/pf2e-see-simple-scale-statistics/releases/latest/download/module.json)
 .
 
-![](metadata/demo_2.gif)
+![](metadata/demo_2_v2.gif)
 
 
 ## Features
