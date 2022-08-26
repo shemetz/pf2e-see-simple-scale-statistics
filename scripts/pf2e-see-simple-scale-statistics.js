@@ -15,18 +15,18 @@ const SCALE = {
   },
   Moderate: {
     name: 'Moderate',
-    darkColor: '#6e6e2e',
-    brightColor: '#f8f8c0',
+    darkColor: '#ffff54',
+    brightColor: '#ffff54',
   },
   High: {
     name: 'High',
-    darkColor: '#29a400',
+    darkColor: '#3cff00',
     brightColor: '#3cff00',
   },
   Extreme: {
     name: 'Extreme',
-    darkColor: '#00bbff',
-    brightColor: '#00bbff',
+    darkColor: '#6cd8ff',
+    brightColor: '#6cd8ff',
   },
 }
 
@@ -43,7 +43,8 @@ const getMainNpcStatistics = () => {
       type: 'ac',
       property: 'system.attributes.ac.base',
       selector: 'DIV.side-bar-label.armor-label   H4',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -51,7 +52,8 @@ const getMainNpcStatistics = () => {
       type: 'hp',
       property: 'system.attributes.hp.base',
       selector: 'DIV.health-section.side-bar-section   H4',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -59,7 +61,8 @@ const getMainNpcStatistics = () => {
       type: 'perception',
       property: 'system.attributes.perception.base',
       selector: 'DIV.perception.labelled-field   A',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -67,7 +70,8 @@ const getMainNpcStatistics = () => {
       type: 'save',
       property: 'system.saves.fortitude.base',
       selector: 'DIV[data-save="fortitude"]   LABEL',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -75,7 +79,8 @@ const getMainNpcStatistics = () => {
       type: 'save',
       property: 'system.saves.reflex.base',
       selector: 'DIV[data-save="reflex"]   LABEL',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -83,7 +88,8 @@ const getMainNpcStatistics = () => {
       type: 'save',
       property: 'system.saves.will.base',
       selector: 'DIV[data-save="will"]   LABEL',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -91,7 +97,8 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: 'system.abilities.str.mod',
       selector: 'DIV[data-attribute="str"]   LABEL',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -99,7 +106,8 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: 'system.abilities.dex.mod',
       selector: 'DIV[data-attribute="dex"]   LABEL',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -107,7 +115,8 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: 'system.abilities.con.mod',
       selector: 'DIV[data-attribute="con"]   LABEL',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -115,7 +124,8 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: 'system.abilities.int.mod',
       selector: 'DIV[data-attribute="int"]   LABEL',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -123,7 +133,8 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: 'system.abilities.wis.mod',
       selector: 'DIV[data-attribute="wis"]   LABEL',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
     {
@@ -131,7 +142,8 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: 'system.abilities.cha.mod',
       selector: 'DIV[data-attribute="cha"]   LABEL',
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     },
   ]
@@ -174,7 +186,7 @@ const calculateAndMarkStatisticInNpcSheet = (html, npc, statistic, statisticValu
   if (currentMode === 'Disabled') {
     html.find(statistic.selector)[0].style.removeProperty(statistic.styleToChange)
   } else {
-    html.find(statistic.selector)[0].style.setProperty(statistic.styleToChange, newColor)
+    html.find(statistic.selector)[0].style.setProperty(statistic.styleToChange, statistic.valueTemplate.replace('$c', newColor))
   }
 }
 
@@ -201,7 +213,8 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       name: 'Skill',
       type: 'skill',
       selector: `DIV.skills.section-container   DIV.list   DIV[data-skill="${slug}"]   a`,
-      styleToChange: 'color',
+      styleToChange: 'text-shadow',
+      valueTemplate: '0 0 10px $c',
       hasDarkBackground: false,
     }
     // `base` will not be undefined for anything that is visibly there
@@ -217,6 +230,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       // selector for the first strike button (without the MAP strike buttons)
       selector: `OL.attacks-list   LI.attack[data-action-index="${actionIndex}"]   BUTTON[data-action="strike-attack"][data-variant-index="0"]`,
       styleToChange: 'color',
+      valueTemplate: '$c',
       hasDarkBackground: true,
     }, attackBonus)
     const damageRolls = npc.system.actions[actionIndex].item.system.damageRolls
@@ -231,6 +245,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       // selector for the first strike button (without the MAP strike buttons)
       selector: `OL.attacks-list   LI.attack[data-action-index="${actionIndex}"]   BUTTON[data-action="strike-damage"]`,
       styleToChange: 'color',
+      valueTemplate: '$c',
       hasDarkBackground: true,
     }, avgTotalDamage)
   }
@@ -244,6 +259,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       type: 'spell_attack',
       selector: `DIV.tab.spells   LI.spellcasting-entry[data-item-id="${spellcastingItemId}"]   DIV.spellAttack   label`,
       styleToChange: 'color',
+      valueTemplate: '$c',
       hasDarkBackground: true,
     }, spellAttack)
     calculateAndMarkStatisticInNpcSheet(html, npc, {
@@ -251,6 +267,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       type: 'spell_dc',
       selector: `DIV.tab.spells   LI.spellcasting-entry[data-item-id="${spellcastingItemId}"]   DIV.spellDC   label`,
       styleToChange: 'color',
+      valueTemplate: '$c',
       hasDarkBackground: true,
     }, spellDc)
   }

@@ -28,3 +28,7 @@
     flex: 1;
     /* background-color: defined in the code*/
 }
+
+a:hover {
+    text-shadow: 0 0 8px var(--color-shadow-primary) !important ;
+}
