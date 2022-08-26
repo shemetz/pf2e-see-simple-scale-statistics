@@ -154,6 +154,8 @@ const getSimpleScale = (baseValue, level, statisticType) => {
   const scaleNumbers = {
     ac: TABLES.AC,
     hp: TABLES.HP,
+    weaknesses: TABLES.WEAKNESSES,
+    resistances: TABLES.RESISTANCES,
     perception: TABLES.PERCEPTION,
     save: TABLES.SAVES,
     ability: TABLES.ABILITY_MODIFIER,
@@ -179,6 +181,10 @@ const getSimpleScale = (baseValue, level, statisticType) => {
 }
 
 const calculateAndMarkStatisticInNpcSheet = (html, npc, statistic, statisticValue) => {
+  if (typeof statisticValue !== 'number') {
+    console.warn(`got non-number as statistic value: ${statistic.name} = ${statisticValue}`)
+    return
+  }
   const currentModeNum = game.settings.get(MODULE_ID, 'current-mode-num')
   const currentMode = MODE_OPTIONS[currentModeNum]
   const simpleScale = getSimpleScale(statisticValue, npc.level, statistic.type)
@@ -221,6 +227,33 @@ const markStatisticsInNpcSheet = (sheet, html) => {
     const skillValue = getProperty(npc, `system.skills.${slug}.base`)
     calculateAndMarkStatisticInNpcSheet(html, npc, statistic, skillValue)
   }
+  html.find('DIV.weaknesses   DIV.side-bar-section-content    DIV.weakness').each((index) => {
+    const nth = index + 1
+    const statistic = {
+        name: 'Weaknesses',
+        type: 'weaknesses',
+        selector: `DIV.weaknesses   DIV.side-bar-section-content    DIV.weakness:nth-child(${nth})`,
+        styleToChange: 'text-shadow',
+        valueTemplate: '0 0 10px $c',
+        hasDarkBackground: false,
+      }
+    const value = getProperty(npc, `system.traits.dv`)[index].value
+    calculateAndMarkStatisticInNpcSheet(html, npc, statistic, value)
+  })
+  html.find('DIV.resistances   DIV.side-bar-section-content    DIV.resistance').each((index) => {
+    // const slug = skillElem.dataset.weakness  // TODO - probably PF2e system bug  https://github.com/foundryvtt/pf2e/issues/3657
+    const nth = index + 1
+    const statistic = {
+        name: 'Resistances',
+        type: 'resistances',
+        selector: `DIV.resistances   DIV.side-bar-section-content    DIV.resistance:nth-child(${nth})`,
+        styleToChange: 'text-shadow',
+        valueTemplate: '0 0 10px $c',
+        hasDarkBackground: false,
+      }
+    const value = getProperty(npc, `system.traits.dr`)[index].value
+    calculateAndMarkStatisticInNpcSheet(html, npc, statistic, value)
+  })
   for (const attackElem of html.find('OL.attacks-list   LI.attack')) {
     const actionIndex = parseInt(attackElem.dataset.actionIndex)
     const attackBonus = npc.system.actions[actionIndex].item.system.bonus.value

@@ -5,6 +5,8 @@ export const TABLES = {
   AC: {},
   SAVES: {},
   HP: {},
+  WEAKNESSES: {},
+  RESISTANCES: {},
   STRIKE_ATTACK: {},
   STRIKE_DAMAGE: {},
   SPELL_DC: {},
@@ -260,6 +262,65 @@ export const initializeTables = () => {
       Moderate: (moderate_upper + moderate_lower) / 2,
       Low: low_upper,
       Terrible: myDefinitionOfTerrible,
+    }
+  }
+
+// Table 2–8: Resistances and Weaknesses
+// Level	Maximum  Minimum
+  const TABLE_RESISTANCES_AND_WEAKNESSES_RAW = `
+–1\t1\t1
+0\t3\t1
+1\t3\t2
+2\t5\t2
+3\t6\t3
+4\t7\t4
+5\t8\t4
+6\t9\t5
+7\t10\t5
+8\t11\t6
+9\t12\t6
+10\t13\t7
+11\t14\t7
+12\t15\t8
+13\t16\t8
+14\t17\t9
+15\t18\t9
+16\t19\t9
+17\t19\t10
+18\t20\t10
+19\t21\t11
+20\t22\t11
+21\t23\t12
+22\t24\t12
+23\t25\t13
+24\t26\t13`
+
+  for (let line of TABLE_RESISTANCES_AND_WEAKNESSES_RAW.split('\n')) {
+    if (!line) continue
+    line = line.replace('–', '-')
+    line = line.replace('–', '\t')
+    // noinspection JSUnusedLocalSymbols
+    const [level, maximum, minimum] = line.split('\t')
+      .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
+    const myDefinitionOfExtreme = maximum + 1
+    const myDefinitionOfHigh = maximum
+    const myDefinitionOfModerate = (maximum + minimum) / 2 // note:  may be the same as high/low
+    const myDefinitionOfLow = minimum
+    const myDefinitionOfTerrible = minimum - 1
+    TABLES.RESISTANCES[level] = {
+      Extreme: myDefinitionOfExtreme,
+      High: myDefinitionOfHigh,
+      Moderate: myDefinitionOfModerate,
+      Low: myDefinitionOfLow,
+      Terrible: myDefinitionOfTerrible,
+    }
+    // weaknesses are flipped - so that a high weakness is colored as "low" (because it's a negative)
+    TABLES.WEAKNESSES[level] = {
+      Extreme: myDefinitionOfTerrible,
+      High: myDefinitionOfLow,
+      Moderate: myDefinitionOfModerate,
+      Low: myDefinitionOfHigh,
+      Terrible: myDefinitionOfExtreme,
     }
   }
 
