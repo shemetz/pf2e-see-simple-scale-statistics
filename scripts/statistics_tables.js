@@ -53,7 +53,8 @@ export const initializeTables = () => {
 
   for (let line of TABLE_ABILITY_MODIFIER_RAW.split('\n')) {
     if (!line) continue
-    line = line.replace('–', '-')
+    line = line.replaceAll('–', '-')
+    line = line.replaceAll('\t—\t', '\t+4\t') // workaround for levels -1 and 0
     const [level, Extreme, High, Moderate, Low] = line.split('\t')
       .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
     const myDefinitionOfTerrible = Low - (Moderate - Low) - 1
@@ -92,7 +93,7 @@ export const initializeTables = () => {
 
   for (let line of TABLE_PERCEPTION_RAW.split('\n')) {
     if (!line) continue
-    line = line.replace('–', '-')
+    line = line.replaceAll('–', '-')
     const [level, Extreme, High, Moderate, Low, Terrible] = line.split('\t')
       .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
     TABLES.PERCEPTION[level] = { Extreme, High, Moderate, Low, Terrible }
@@ -130,8 +131,8 @@ export const initializeTables = () => {
 
   for (let line of TABLE_SKILLS_RAW.split('\n')) {
     if (!line) continue
-    line = line.replace('–', '-')
-    line = line.replace(' to ', '\t')
+    line = line.replaceAll('–', '-')
+    line = line.replaceAll(' to ', '\t')
     const [level, Extreme, High, Moderate, low_upper_end, low_lower_end] = line.split('\t')
       .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
     const myDefinitionOfTerrible = low_lower_end - (low_upper_end - low_lower_end) - 1
@@ -170,7 +171,7 @@ export const initializeTables = () => {
 
   for (let line of TABLE_AC_RAW.split('\n')) {
     if (!line) continue
-    line = line.replace('–', '-')
+    line = line.replaceAll('–', '-')
     const [level, Extreme, High, Moderate, Low] = line.split('\t')
       .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
     const myDefinitionOfTerrible = Low - (Moderate - Low) - 1
@@ -209,7 +210,7 @@ export const initializeTables = () => {
 
   for (let line of TABLE_SAVES_RAW.split('\n')) {
     if (!line) continue
-    line = line.replace('–', '-')
+    line = line.replaceAll('–', '-')
     const [level, Extreme, High, Moderate, Low, Terrible] = line.split('\t')
       .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
     TABLES.SAVES[level] = { Extreme, High, Moderate, Low, Terrible }
@@ -249,8 +250,9 @@ export const initializeTables = () => {
 // TODO - hp might need to take weaknesses/resistances into account
   for (let line of TABLE_HP_RAW.split('\n')) {
     if (!line) continue
-    line = line.replace('–', '-')
-    line = line.replace('–', '\t')
+    line = line.replaceAll('–', '-')
+    line = line.replaceAll('-', '\t')
+    if (line.startsWith('\t')) line = '-' + line.substring(1)  // workaround for level -1
     // noinspection JSUnusedLocalSymbols
     const [level, high_upper, high_lower, moderate_upper, moderate_lower, low_upper, low_lower] = line.split('\t')
       .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
@@ -297,8 +299,7 @@ export const initializeTables = () => {
 
   for (let line of TABLE_RESISTANCES_AND_WEAKNESSES_RAW.split('\n')) {
     if (!line) continue
-    line = line.replace('–', '-')
-    line = line.replace('–', '\t')
+    line = line.replaceAll('–', '-')
     // noinspection JSUnusedLocalSymbols
     const [level, maximum, minimum] = line.split('\t')
       .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
@@ -356,7 +357,7 @@ export const initializeTables = () => {
 
   for (let line of TABLE_STRIKE_ATTACK_RAW.split('\n')) {
     if (!line) continue
-    line = line.replace('–', '-')
+    line = line.replaceAll('–', '-')
     const [level, Extreme, High, Moderate, Low] = line.split('\t')
       .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
     const myDefinitionOfTerrible = Low - (Moderate - Low) - 1
@@ -395,7 +396,7 @@ export const initializeTables = () => {
 
   for (let line of TABLE_STRIKE_DAMAGE_RAW.split('\n')) {
     if (!line) continue
-    line = line.replace('–', '-')
+    line = line.replaceAll('–', '-')
     const [level, Extreme, High, Moderate, Low] = line.split('\t')
       .map(s => {
         const split = s.split(' ')
@@ -441,7 +442,7 @@ export const initializeTables = () => {
 
   for (let line of TABLE_SPELL_DC_AND_ATTACK_RAW.split('\n')) {
     if (!line) continue
-    line = line.replace('–', '-')
+    line = line.replaceAll('–', '-')
     const [level, extreme_dc, extreme_attack, high_dc, high_attack, moderate_dc, moderate_attack] = line.split('\t')
       .map(x => parseInt(x)).map(x => isNaN(x) ? null : x)
     TABLES.SPELL_DC[level] = {
