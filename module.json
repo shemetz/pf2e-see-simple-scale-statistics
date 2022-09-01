@@ -16,13 +16,13 @@
       "flags": {}
     }
   ],
-  "url": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics",
-  "manifest": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/raw/master/module.json",
-  "download": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/archive/master.zip",
-  "readme": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/blob/master/Readme.md",
-  "changelog": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/blob/master/Changelog.md",
-  "license": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/blob/master/License.txt",
-  "bugs": "https://github.com/itamarcu/pf2e-see-simple-scale-statistics/issues",
+  "url": "https://github.com/shemetz/pf2e-see-simple-scale-statistics",
+  "manifest": "https://github.com/shemetz/pf2e-see-simple-scale-statistics/raw/master/module.json",
+  "download": "https://github.com/shemetz/pf2e-see-simple-scale-statistics/archive/master.zip",
+  "readme": "https://github.com/shemetz/pf2e-see-simple-scale-statistics/blob/master/Readme.md",
+  "changelog": "https://github.com/shemetz/pf2e-see-simple-scale-statistics/blob/master/Changelog.md",
+  "license": "https://github.com/shemetz/pf2e-see-simple-scale-statistics/blob/master/License.txt",
+  "bugs": "https://github.com/shemetz/pf2e-see-simple-scale-statistics/issues",
   "relationships": {
     "systems": [
       {
@@ -38,23 +38,23 @@
   },
   "authors": [
     {
-      "name": "shem",
+      "name": "shemetz",
       "email": "itamarcu+foundry@gmail.com",
-      "discord": "shem#0226",
+      "discord": "shemetz#0226",
       "flags": {}
     }
   ],
   "media": [
     {
       "type": "icon",
-      "url": "https://raw.githubusercontent.com/itamarcu/pf2e-see-simple-scale-statistics/master/metadata/cover_1.png",
+      "url": "https://raw.githubusercontent.com/shemetz/pf2e-see-simple-scale-statistics/master/metadata/cover_1.png",
       "caption": "pF2e See Simple Scale Statistics",
       "loop": false,
       "flags": {}
     },
     {
       "type": "cover",
-      "url": "https://raw.githubusercontent.com/itamarcu/pf2e-see-simple-scale-statistics/master/metadata/cover_2.png",
+      "url": "https://raw.githubusercontent.com/shemetz/pf2e-see-simple-scale-statistics/master/metadata/cover_2.png",
       "caption": "pF2e See Simple Scale Statistics",
       "loop": false,
       "flags": {}
