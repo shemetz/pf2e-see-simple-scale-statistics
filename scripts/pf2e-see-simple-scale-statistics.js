@@ -185,14 +185,19 @@ const calculateAndMarkStatisticInNpcSheet = (html, npc, statistic, statisticValu
     console.warn(`got non-number as statistic value: ${statistic.name} = ${statisticValue}`)
     return
   }
+  const foundSelector = html.find(statistic.selector)
+  if (!foundSelector) {
+    console.warn(`failed to find selector ${statistic.selector} for actor ${npc.name}, statistic ${statistic.name}`)
+    return
+  }
   const currentModeNum = game.settings.get(MODULE_ID, 'current-mode-num')
   const currentMode = MODE_OPTIONS[currentModeNum]
   const simpleScale = getSimpleScale(statisticValue, npc.level, statistic.type)
   const newColor = statistic.hasDarkBackground ? simpleScale.brightColor : simpleScale.darkColor
   if (currentMode === 'Disabled') {
-    html.find(statistic.selector)[0].style.removeProperty(statistic.styleToChange)
+    foundSelector[0].style.removeProperty(statistic.styleToChange)
   } else {
-    html.find(statistic.selector)[0].style.setProperty(statistic.styleToChange, statistic.valueTemplate.replace('$c', newColor))
+    foundSelector[0].style.setProperty(statistic.styleToChange, statistic.valueTemplate.replace('$c', newColor))
   }
 }
 
