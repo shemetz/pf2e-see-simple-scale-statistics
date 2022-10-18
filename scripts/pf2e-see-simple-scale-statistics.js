@@ -185,7 +185,7 @@ const calculateAndMarkStatisticInNpcSheet = (html, npc, statistic, statisticValu
     console.warn(`got non-number as statistic value: ${statistic.name} = ${statisticValue}`)
     return
   }
-  const foundSelector = html.find(statistic.selector)
+  const foundSelector = html.find(statistic.selector)[0]
   if (!foundSelector) {
     console.warn(`failed to find selector ${statistic.selector} for actor ${npc.name}, statistic ${statistic.name}`)
     return
@@ -195,9 +195,9 @@ const calculateAndMarkStatisticInNpcSheet = (html, npc, statistic, statisticValu
   const simpleScale = getSimpleScale(statisticValue, npc.level, statistic.type)
   const newColor = statistic.hasDarkBackground ? simpleScale.brightColor : simpleScale.darkColor
   if (currentMode === 'Disabled') {
-    foundSelector[0].style.removeProperty(statistic.styleToChange)
+    foundSelector.style.removeProperty(statistic.styleToChange)
   } else {
-    foundSelector[0].style.setProperty(statistic.styleToChange, statistic.valueTemplate.replace('$c', newColor))
+    foundSelector.style.setProperty(statistic.styleToChange, statistic.valueTemplate.replace('$c', newColor))
   }
 }
 
