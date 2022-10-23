@@ -2,34 +2,6 @@ import { initializeTables, TABLES } from './statistics_tables.js'
 
 const MODULE_ID = 'pf2e-see-simple-scale-statistics'
 
-const SCALE = {
-  Terrible: {
-    name: 'Terrible',
-    darkColor: '#ff0000',
-    brightColor: '#ff0000',
-  },
-  Low: {
-    name: 'Low',
-    darkColor: '#ff8000',
-    brightColor: '#ff8000',
-  },
-  Moderate: {
-    name: 'Moderate',
-    darkColor: '#ffff54',
-    brightColor: '#ffff54',
-  },
-  High: {
-    name: 'High',
-    darkColor: '#3cff00',
-    brightColor: '#3cff00',
-  },
-  Extreme: {
-    name: 'Extreme',
-    darkColor: '#6cd8ff',
-    brightColor: '#6cd8ff',
-  },
-}
-
 const isCloserToMiddle = (key1, key2) => {
   if (key1 === 'Moderate') return true
   if (key2 === 'Moderate') return false
@@ -43,108 +15,84 @@ const getMainNpcStatistics = () => {
       type: 'ac',
       property: 'system.attributes.ac.base',
       selector: 'DIV.side-bar-label.armor-label   H4',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'HP',
       type: 'hp',
       property: 'system.attributes.hp.base',
       selector: 'DIV.health-section.side-bar-section   H4',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'Perception',
       type: 'perception',
       property: 'system.attributes.perception.base',
       selector: 'DIV.perception.labelled-field   A',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'Fortitude',
       type: 'save',
       property: 'system.saves.fortitude.base',
       selector: 'DIV[data-save="fortitude"]   LABEL',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'Reflex',
       type: 'save',
       property: 'system.saves.reflex.base',
       selector: 'DIV[data-save="reflex"]   LABEL',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'Will',
       type: 'save',
       property: 'system.saves.will.base',
       selector: 'DIV[data-save="will"]   LABEL',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'Strength',
       type: 'ability',
       property: 'system.abilities.str.mod',
       selector: 'DIV[data-attribute="str"]   LABEL',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'Dexterity',
       type: 'ability',
       property: 'system.abilities.dex.mod',
       selector: 'DIV[data-attribute="dex"]   LABEL',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'Constitution',
       type: 'ability',
       property: 'system.abilities.con.mod',
       selector: 'DIV[data-attribute="con"]   LABEL',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'Intelligence',
       type: 'ability',
       property: 'system.abilities.int.mod',
       selector: 'DIV[data-attribute="int"]   LABEL',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'Wisdom',
       type: 'ability',
       property: 'system.abilities.wis.mod',
       selector: 'DIV[data-attribute="wis"]   LABEL',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
     {
       name: 'Charisma',
       type: 'ability',
       property: 'system.abilities.cha.mod',
       selector: 'DIV[data-attribute="cha"]   LABEL',
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     },
   ]
 }
@@ -177,7 +125,7 @@ const getSimpleScale = (baseValue, level, statisticType) => {
       closestDiff = diff
     }
   }
-  return SCALE[closestKey]
+  return closestKey
 }
 
 const calculateAndMarkStatisticInNpcSheet = (html, npc, statistic, statisticValue) => {
@@ -185,19 +133,21 @@ const calculateAndMarkStatisticInNpcSheet = (html, npc, statistic, statisticValu
     console.warn(`got non-number as statistic value: ${statistic.name} = ${statisticValue}`)
     return
   }
-  const foundSelector = html.find(statistic.selector)[0]
-  if (!foundSelector) {
+  const foundSelector = html.find(statistic.selector)
+  if (!foundSelector[0]) {
     console.warn(`failed to find selector ${statistic.selector} for actor ${npc.name}, statistic ${statistic.name}`)
     return
   }
-  const currentModeNum = game.settings.get(MODULE_ID, 'current-mode-num')
-  const currentMode = MODE_OPTIONS[currentModeNum]
-  const simpleScale = getSimpleScale(statisticValue, npc.level, statistic.type)
-  const newColor = statistic.hasDarkBackground ? simpleScale.brightColor : simpleScale.darkColor
-  if (currentMode === 'Disabled') {
-    foundSelector.style.removeProperty(statistic.styleToChange)
-  } else {
-    foundSelector.style.setProperty(statistic.styleToChange, statistic.valueTemplate.replace('$c', newColor))
+  const isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
+  const useColors = game.settings.get(MODULE_ID, 'mark-with-colors')
+  const useBorders = game.settings.get(MODULE_ID, 'mark-with-borders')
+  const scaleKeyWord = getSimpleScale(statisticValue, npc.level, statistic.type)
+  const addOrRemoveClass = (isEnabled ? foundSelector.addClass : foundSelector.removeClass).bind(foundSelector)
+  if (useColors) {
+    addOrRemoveClass(`${MODULE_ID}-${scaleKeyWord}-color-${statistic.styleOptionUsed}`)
+  }
+  if (useBorders) {
+    addOrRemoveClass(`${MODULE_ID}-${scaleKeyWord}-border-${statistic.styleOptionUsed}`)
   }
 }
 
@@ -224,9 +174,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       name: 'Skill',
       type: 'skill',
       selector: `DIV.skills.section-container   DIV.list   DIV[data-skill="${slug}"]   a`,
-      styleToChange: 'text-shadow',
-      valueTemplate: '0 0 10px $c',
-      hasDarkBackground: false,
+      styleOptionUsed: 'primary',
     }
     // `base` will not be undefined for anything that is visibly there
     const skillValue = getProperty(npc, `system.skills.${slug}.base`)
@@ -238,9 +186,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
         name: 'Weaknesses',
         type: 'weaknesses',
         selector: `DIV.weaknesses   DIV.side-bar-section-content    DIV.weakness:nth-child(${nth})`,
-        styleToChange: 'text-shadow',
-        valueTemplate: '0 0 10px $c',
-        hasDarkBackground: false,
+        styleOptionUsed: 'primary',
       }
     const value = getProperty(npc, `system.traits.dv`)[index].value
     calculateAndMarkStatisticInNpcSheet(html, npc, statistic, value)
@@ -252,9 +198,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
         name: 'Resistances',
         type: 'resistances',
         selector: `DIV.resistances   DIV.side-bar-section-content    DIV.resistance:nth-child(${nth})`,
-        styleToChange: 'text-shadow',
-        valueTemplate: '0 0 10px $c',
-        hasDarkBackground: false,
+        styleOptionUsed: 'primary',
       }
     const value = getProperty(npc, `system.traits.dr`)[index].value
     calculateAndMarkStatisticInNpcSheet(html, npc, statistic, value)
@@ -267,9 +211,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       type: 'strike_attack',
       // selector for the first strike button (without the MAP strike buttons)
       selector: `OL.attacks-list   LI.attack[data-action-index="${actionIndex}"]   BUTTON[data-action="strike-attack"][data-variant-index="0"]`,
-      styleToChange: 'color',
-      valueTemplate: '$c',
-      hasDarkBackground: true,
+      styleOptionUsed: 'secondary',
     }, attackBonus)
     const damageRolls = npc.system.actions[actionIndex].item.system.damageRolls
     const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData.damage), 0)
@@ -282,9 +224,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       type: 'strike_damage',
       // selector for the first strike button (without the MAP strike buttons)
       selector: `OL.attacks-list   LI.attack[data-action-index="${actionIndex}"]   BUTTON[data-action="strike-damage"]`,
-      styleToChange: 'color',
-      valueTemplate: '$c',
-      hasDarkBackground: true,
+      styleOptionUsed: 'secondary',
     }, avgTotalDamage)
   }
   for (const spellcastingElem of html.find('DIV.tab.spells   LI.spellcasting-entry')) {
@@ -296,36 +236,51 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       name: 'Spell Attack Bonus',
       type: 'spell_attack',
       selector: `DIV.tab.spells   LI.spellcasting-entry[data-item-id="${spellcastingItemId}"]   DIV.spellAttack   label`,
-      styleToChange: 'color',
-      valueTemplate: '$c',
-      hasDarkBackground: true,
+      styleOptionUsed: 'secondary',
     }, spellAttack)
     calculateAndMarkStatisticInNpcSheet(html, npc, {
       name: 'Spell DC',
       type: 'spell_dc',
       selector: `DIV.tab.spells   LI.spellcasting-entry[data-item-id="${spellcastingItemId}"]   DIV.spellDC   label`,
-      styleToChange: 'color',
-      valueTemplate: '$c',
-      hasDarkBackground: true,
+      styleOptionUsed: 'secondary',
     }, spellDc)
   }
 }
 
-const colorLegend = (maybeActive) => {
+const colorLegend = () => {
+  const isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
+  const useColors = game.settings.get(MODULE_ID, 'mark-with-colors')
+  const useBorders = game.settings.get(MODULE_ID, 'mark-with-borders')
+  const colorsClass = (scaleKeyWord) => useColors ? `${MODULE_ID}-${scaleKeyWord}-color-legend` : ''
+  const bordersClass = (scaleKeyWord) => useBorders ? `${MODULE_ID}-${scaleKeyWord}-border-legend` : ''
   return `
-    <div class="pf2e-see-simple-scale-statistics-colors-legend ${maybeActive}">
-      <div class="pf2e-see-simple-scale-statistics-color-in-legend" style="background-color: ${SCALE.Terrible.brightColor};"></div>
-      <div class="pf2e-see-simple-scale-statistics-color-in-legend" style="background-color: ${SCALE.Low.brightColor};"></div>
-      <div class="pf2e-see-simple-scale-statistics-color-in-legend" style="background-color: ${SCALE.Moderate.brightColor};"></div>
-      <div class="pf2e-see-simple-scale-statistics-color-in-legend" style="background-color: ${SCALE.High.brightColor};"></div>
-      <div class="pf2e-see-simple-scale-statistics-color-in-legend" style="background-color: ${SCALE.Extreme.brightColor};"></div>
+    <div class="pf2e-see-simple-scale-statistics-colors-legend ${isEnabled}">
+      <div class="pf2e-see-simple-scale-statistics-color-in-legend 
+        ${colorsClass('Terrible')}
+        ${bordersClass('Terrible')}" 
+      ></div>
+      <div class="pf2e-see-simple-scale-statistics-color-in-legend
+        ${colorsClass('Low')}
+        ${bordersClass('Low')}" 
+      ></div>
+      <div class="pf2e-see-simple-scale-statistics-color-in-legend
+        ${colorsClass('Moderate')}
+        ${bordersClass('Moderate')}" 
+      ></div>
+      <div class="pf2e-see-simple-scale-statistics-color-in-legend
+        ${colorsClass('High')}
+        ${bordersClass('High')}" 
+      ></div>
+      <div class="pf2e-see-simple-scale-statistics-color-in-legend
+        ${colorsClass('Extreme')}
+        ${bordersClass('Extreme')}" 
+      ></div>
     </div>
   `
 }
 
 const addButtonToNpcSheet = (sheet, html) => {
-  let currentModeNum = game.settings.get(MODULE_ID, 'current-mode-num')
-  const isEnabled = MODE_OPTIONS[currentModeNum] !== 'Disabled'
+  let isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
   const maybeActive = isEnabled ? 'active' : ''
   const text = game.i18n.localize(`${MODULE_ID}.ToggleButton`)
   const newNode = `
@@ -333,7 +288,7 @@ const addButtonToNpcSheet = (sheet, html) => {
   <div>
     <a>${text}</a>
   </div>
-  ${colorLegend(maybeActive)}
+  ${colorLegend()}
 </div>
 `
   const $eliteElement = html.find('DIV.adjustment.elite')
@@ -348,25 +303,40 @@ ${newNode}
 `)
   }
   html.find('DIV.pf2e-see-simple-scale-statistics-change-mode > div > a').click(() => {
-    currentModeNum = (currentModeNum + 1) % MODE_OPTIONS.length
-    game.settings.set(MODULE_ID, 'current-mode-num', currentModeNum)
+    isEnabled = !isEnabled
+    game.settings.set(MODULE_ID, 'toggle-on', isEnabled)
     html.find('DIV.pf2e-see-simple-scale-statistics-change-mode').toggleClass('active')
     html.find('DIV.pf2e-see-simple-scale-statistics-colors-legend').toggleClass('active')
     markStatisticsInNpcSheet(sheet, html)
   })
 }
 
-const MODE_OPTIONS = ['Disabled', 'Show color-coded stats',]
+const MODE_OPTIONS = ['Disabled', 'Colors', 'Borders', 'Colors+borders']
 
 const registerSettings = () => {
-  game.settings.register(MODULE_ID, 'current-mode-num', {
-    name: `Current Mode`,
-    hint: `Switch mode - disabled, or show color-coded stats`,
+  game.settings.register(MODULE_ID, 'toggle-on', {
+    name: `toggle on`,
+    hint: `toggled directly within NPC sheets.  not visible to users`,
     scope: 'client',
     config: false,
-    type: Number,
-    default: 0,
-    choices: { 0: MODE_OPTIONS[0], 1: MODE_OPTIONS[1] },
+    type: Boolean,
+    default: false,
+  })
+  game.settings.register(MODULE_ID, 'mark-with-colors', {
+    name: `Mark with colors`,
+    hint: `Red, orange, yellow, green, blue - to match Terrible, Low, Moderate, High, Extreme.`,
+    scope: 'client',
+    config: true,
+    type: Boolean,
+    default: true,
+  })
+  game.settings.register(MODULE_ID, 'mark-with-borders', {
+    name: `Mark with borders`,
+    hint: `Inset, Groove, Dotted, Dashed, Solid - to match Terrible, Low, Moderate, High, Extreme.`,
+    scope: 'client',
+    config: true,
+    type: Boolean,
+    default: false,
   })
 }
 

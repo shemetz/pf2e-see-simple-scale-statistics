@@ -42,8 +42,15 @@ Also, special features like Regeneration or Sneak Attack aren't taken into accou
 ## Colors
 ![](metadata/color_scale.png)
 
-Colors are cyan (Extreme), green (High), yellowish-gray (Moderate), orange (Low), and red (Terrible).
+Colors are cyan (Extreme), green (High), yellow (Moderate), orange (Low), and red (Terrible).
 
+
+## Borders
+![](metadata/border_scale.png)
+
+To improve accessibility for color-blind folks, there's also a setting to use borders.
+
+Border scale is: solid (Extreme), dashed (High), dotted (Moderate), groove (Low), and inset (Terrible).
 
 ## Where is the scale taken from?
 [Building Creatures](https://2e.aonprd.com/Rules.aspx?ID=995), from the official Pathfinder 2e rules.
