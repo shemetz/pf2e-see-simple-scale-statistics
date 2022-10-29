@@ -38,7 +38,7 @@ a:hover {
     text-shadow: 0 0 10px #ff0000;
 }
 .pf2e-see-simple-scale-statistics-Terrible-color-secondary {
-    color: #ff0000;
+    color: #ff0000 !important;
 }
 .pf2e-see-simple-scale-statistics-Terrible-color-legend {
     background-color: #ff0000;
@@ -60,7 +60,7 @@ a:hover {
     text-shadow: 0 0 10px #ff8000;
 }
 .pf2e-see-simple-scale-statistics-Low-color-secondary {
-    color: #ff8000;
+    color: #ff8000 !important;
 }
 .pf2e-see-simple-scale-statistics-Low-color-legend {
     background-color: #ff8000;
@@ -82,7 +82,7 @@ a:hover {
     text-shadow: 0 0 10px #ffff54;
 }
 .pf2e-see-simple-scale-statistics-Moderate-color-secondary {
-    color: #ffff54;
+    color: #ffff54 !important;
 }
 .pf2e-see-simple-scale-statistics-Moderate-color-legend {
     background-color: #ffff54;
@@ -104,7 +104,7 @@ a:hover {
     text-shadow: 0 0 10px #3cff00;
 }
 .pf2e-see-simple-scale-statistics-High-color-secondary {
-    color: #3cff00;
+    color: #3cff00 !important;
 }
 .pf2e-see-simple-scale-statistics-High-color-legend {
     background-color: #3cff00;
@@ -126,7 +126,7 @@ a:hover {
     text-shadow: 0 0 10px #6cd8ff;
 }
 .pf2e-see-simple-scale-statistics-Extreme-color-secondary {
-    color: #6cd8ff;
+    color: #6cd8ff !important;
 }
 .pf2e-see-simple-scale-statistics-Extreme-color-legend {
     background-color: #6cd8ff;
