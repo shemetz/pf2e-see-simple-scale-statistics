@@ -254,7 +254,7 @@ const colorLegend = () => {
   const colorsClass = (scaleKeyWord) => useColors ? `${MODULE_ID}-${scaleKeyWord}-color-legend` : ''
   const bordersClass = (scaleKeyWord) => useBorders ? `${MODULE_ID}-${scaleKeyWord}-border-legend` : ''
   return `
-    <div class="pf2e-see-simple-scale-statistics-colors-legend ${isEnabled}">
+    <div class="pf2e-see-simple-scale-statistics-colors-legend ${isEnabled ? 'active' : ''}">
       <div class="pf2e-see-simple-scale-statistics-color-in-legend 
         ${colorsClass('Terrible')}
         ${bordersClass('Terrible')}" 
@@ -305,10 +305,19 @@ ${newNode}
   html.find('DIV.pf2e-see-simple-scale-statistics-change-mode > div > a').click(() => {
     isEnabled = !isEnabled
     game.settings.set(MODULE_ID, 'toggle-on', isEnabled)
-    html.find('DIV.pf2e-see-simple-scale-statistics-change-mode').toggleClass('active')
-    html.find('DIV.pf2e-see-simple-scale-statistics-colors-legend').toggleClass('active')
+    refreshLegend(html, isEnabled)
     markStatisticsInNpcSheet(sheet, html)
   })
+}
+
+const refreshLegend = (html, isEnabled) => {
+  if (isEnabled) {
+    html.find('DIV.pf2e-see-simple-scale-statistics-change-mode').addClass('active')
+    html.find('DIV.pf2e-see-simple-scale-statistics-colors-legend').addClass('active')
+  } else {
+    html.find('DIV.pf2e-see-simple-scale-statistics-change-mode').removeClass('active')
+    html.find('DIV.pf2e-see-simple-scale-statistics-colors-legend').removeClass('active')
+  }
 }
 
 const MODE_OPTIONS = ['Disabled', 'Colors', 'Borders', 'Colors+borders']
