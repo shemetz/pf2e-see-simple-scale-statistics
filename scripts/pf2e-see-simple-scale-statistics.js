@@ -155,12 +155,29 @@ const calcAvgDamage = (damageText) => {
   // a bit hacky
   const damageWithMultiplication = damageText.replace(
     /(\d+)d(\d+)/,
-    (all, dCount, dNum) => `${dCount}/2*(${dNum}+1)`
+    (all, dCount, dNum) => `${dCount}/2*(${dNum}+1)`,
   )
   const isMathExpression = /^[\s\d-+*/.()_]*$/.test(damageWithMultiplication)
   if (!isMathExpression) return -99999
   // eval is evil, but we did make sure it's a math expression
   return eval(damageWithMultiplication)
+}
+
+/**
+ * I chose to double the value of "wide" resistances, even though it's technically misleading.  The system rules suggest using Low for
+ * these wide resistances and High for narrow resistances, for balance reasons.  However, GMs who use SSSS are probably trying to
+ * either quickly see a creature's most important attributes at a glance, or to build a creature.  That makes it confusing
+ * when seeing a number marked as Low even though having a wide resistance is actually a big power-up.
+ * @param resistanceOrWeaknessData
+ * @returns {number}
+ */
+const artificiallyInflateIfVeryCommonType = (resistanceOrWeaknessData) => {
+  const typeName = resistanceOrWeaknessData.type
+  if (['physical', 'all-damage'].includes(typeName) &&
+    game.settings.get(MODULE_ID, 'treat-broad-iwr-as-more-important')) {
+    return 2
+  }
+  return 1
 }
 
 const markStatisticsInNpcSheet = (sheet, html) => {
@@ -183,27 +200,27 @@ const markStatisticsInNpcSheet = (sheet, html) => {
   html.find('DIV.weaknesses   DIV.side-bar-section-content    DIV.weakness').each((index) => {
     const nth = index + 1
     const statistic = {
-        name: 'Weaknesses',
-        type: 'weaknesses',
-        selector: `DIV.weaknesses   DIV.side-bar-section-content    DIV.weakness:nth-child(${nth})`,
-        styleOptionUsed: 'primary',
-      }
+      name: 'Weaknesses',
+      type: 'weaknesses',
+      selector: `DIV.weaknesses   DIV.side-bar-section-content    DIV.weakness:nth-child(${nth})`,
+      styleOptionUsed: 'primary',
+    }
     // note that weaknesses are flipped - so that a high weakness is colored as "low" (because it's a negative).
     // they are already flipped in the statistics tables, but this comment is here to remind you of this.
     const weaknessData = getProperty(npc, `system.attributes.weaknesses`)[index]
-    const weaknessValue = weaknessData.value
+    const weaknessValue = weaknessData.value * artificiallyInflateIfVeryCommonType(weaknessData)
     calculateAndMarkStatisticInNpcSheet(html, npc, statistic, weaknessValue)
   })
   html.find('DIV.resistances   DIV.side-bar-section-content    DIV.resistance').each((index) => {
     const nth = index + 1
     const statistic = {
-        name: 'Resistances',
-        type: 'resistances',
-        selector: `DIV.resistances   DIV.side-bar-section-content    DIV.resistance:nth-child(${nth})`,
-        styleOptionUsed: 'primary',
-      }
+      name: 'Resistances',
+      type: 'resistances',
+      selector: `DIV.resistances   DIV.side-bar-section-content    DIV.resistance:nth-child(${nth})`,
+      styleOptionUsed: 'primary',
+    }
     const resistanceData = getProperty(npc, `system.attributes.resistances`)[index]
-    const resistanceValue = resistanceData.value
+    const resistanceValue = resistanceData.value * artificiallyInflateIfVeryCommonType(resistanceData)
     calculateAndMarkStatisticInNpcSheet(html, npc, statistic, resistanceValue)
   })
   for (const attackElem of html.find('OL.attacks-list   LI.attack')) {
@@ -323,8 +340,6 @@ const refreshLegend = (html, isEnabled) => {
   }
 }
 
-const MODE_OPTIONS = ['Disabled', 'Colors', 'Borders', 'Colors+borders']
-
 const registerSettings = () => {
   game.settings.register(MODULE_ID, 'toggle-on', {
     name: `toggle on`,
@@ -345,6 +360,17 @@ const registerSettings = () => {
   game.settings.register(MODULE_ID, 'mark-with-borders', {
     name: `Mark with borders`,
     hint: `Inset, Groove, Dotted, Dashed, Solid - to match Terrible, Low, Moderate, High, Extreme.`,
+    scope: 'client',
+    config: true,
+    type: Boolean,
+    default: false,
+  })
+  game.settings.register(MODULE_ID, 'treat-broad-iwr-as-more-important', {
+    name: `Treat broad weaknesses/resistances as higher`,
+    hint: `E.g. will mark "resistance 5 to physical" as if it was "resistance 10 to bludgeoning" 
+    (often High/Extreme instead of Low/Terrible).  This is an odd exception to include, but it helps identify
+     when a creature is unusually resistant/weak, since these "broad" IWR are much more impactful and are always
+      expected to have a low/terrible statistic.  Applies only to "physical" and "all".`,
     scope: 'client',
     config: true,
     type: Boolean,
