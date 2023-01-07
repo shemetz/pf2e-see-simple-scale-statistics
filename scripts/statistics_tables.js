@@ -461,3 +461,16 @@ export const initializeTables = () => {
     }
   }
 }
+
+//
+// for (const tableName of ['ABILITY_MODIFIER', 'PERCEPTION', 'SKILLS', 'AC', 'SAVES', 'HP', 'WEAKNESSES', 'RESISTANCES', 'STRIKE_ATTACK', 'STRIKE_DAMAGE', 'SPELL_DC', 'SPELL_ATTACK']) {
+//   const table = PF2E_SEE_SIMPLE_SCALE_STATISTICS.TABLES[tableName]
+//   const csvt = []
+//   csvt.push('level\tExtreme\tHigh\tModerate\tLow\tTerrible')
+//   for (let level = -1; level <= 24; level++) {
+//     const bucket = table[level]
+//     csvt.push(`${level}\t${bucket['Extreme']}\t${bucket['High']}\t${bucket['Moderate']}\t${bucket['Low']}\t${bucket['Terrible']}`)
+//   }
+//   console.log(tableName)
+//   console.log(csvt.join('\n'))
+// }

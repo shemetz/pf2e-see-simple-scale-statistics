@@ -188,11 +188,13 @@ const markStatisticsInNpcSheet = (sheet, html) => {
         selector: `DIV.weaknesses   DIV.side-bar-section-content    DIV.weakness:nth-child(${nth})`,
         styleOptionUsed: 'primary',
       }
-    const value = getProperty(npc, `system.traits.dv`)[index].value
-    calculateAndMarkStatisticInNpcSheet(html, npc, statistic, value)
+    // note that weaknesses are flipped - so that a high weakness is colored as "low" (because it's a negative).
+    // they are already flipped in the statistics tables, but this comment is here to remind you of this.
+    const weaknessData = getProperty(npc, `system.attributes.weaknesses`)[index]
+    const weaknessValue = weaknessData.value
+    calculateAndMarkStatisticInNpcSheet(html, npc, statistic, weaknessValue)
   })
   html.find('DIV.resistances   DIV.side-bar-section-content    DIV.resistance').each((index) => {
-    // const slug = skillElem.dataset.weakness  // TODO - probably PF2e system bug  https://github.com/foundryvtt/pf2e/issues/3657
     const nth = index + 1
     const statistic = {
         name: 'Resistances',
@@ -200,8 +202,9 @@ const markStatisticsInNpcSheet = (sheet, html) => {
         selector: `DIV.resistances   DIV.side-bar-section-content    DIV.resistance:nth-child(${nth})`,
         styleOptionUsed: 'primary',
       }
-    const value = getProperty(npc, `system.traits.dr`)[index].value
-    calculateAndMarkStatisticInNpcSheet(html, npc, statistic, value)
+    const resistanceData = getProperty(npc, `system.attributes.resistances`)[index]
+    const resistanceValue = resistanceData.value
+    calculateAndMarkStatisticInNpcSheet(html, npc, statistic, resistanceValue)
   })
   for (const attackElem of html.find('OL.attacks-list   LI.attack')) {
     const actionIndex = parseInt(attackElem.dataset.actionIndex)
