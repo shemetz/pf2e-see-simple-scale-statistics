@@ -58,5 +58,8 @@ Border scale is: solid (Extreme), dashed (High), dotted (Moderate), groove (Low)
 Note that I added my own definition of "Terrible" for some scales that were missing explicit values, defining it as the Low value reduced by its difference to the Moderate value and further decreased by 1.
 It feels pretty good, but technically it's not the same as the official definition.  I don't have a PhD in terribleness.
 
+Also note that there's a special setting to treat resistance/weakness to "all"/"physical" as double its value, which I find useful
+as a way to quickly understand when a creature has one of them.
+
 ![](metadata/demo_1.gif)
 
