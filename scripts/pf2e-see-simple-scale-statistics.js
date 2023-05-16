@@ -240,8 +240,13 @@ const markStatisticsInNpcSheet = (sheet, html) => {
     }, attackBonus)
     const damageRolls = npc.system.actions[actionIndex].item.system.damageRolls
     const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData.damage), 0)
+    if (avgTotalDamage === 0) {
+      // no damage, e.g. web attack
+      continue
+    }
     if (avgTotalDamage < 0) {
-      // failed parsing math expression
+      const actionName = npc.system.actions[actionIndex].item.name
+      console.warn(`failed parsing math expression for strike damage: actor ${npc.name}, attack ${actionName}`)
       continue
     }
     calculateAndMarkStatisticInNpcSheet(html, npc, {
