@@ -19,6 +19,8 @@ Click the new button on the top right of each NPC character sheet to toggle the 
 
 Each important statistic of the creature will be recolored to indicate where it lies on a simple scale!
 
+The module will not "notice" Elite/Weak, or any other effects - it will always color statistics based on their source/base value.
+
 
 ## Use cases (for the GM)
 - When a player uses Recall Knowledge and you want to tell them about well-known stats, or about whether a particular stat is high or low.
