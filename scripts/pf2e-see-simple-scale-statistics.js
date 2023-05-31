@@ -11,24 +11,10 @@ const isCloserToMiddle = (key1, key2) => {
 const getMainNpcStatistics = () => {
   return [
     {
-      name: 'AC',
-      type: 'ac',
-      property: 'system.attributes.ac.base',
-      selector: 'DIV.side-bar-label.armor-label   H4',
-      styleOptionUsed: 'primary',
-    },
-    {
       name: 'HP',
       type: 'hp',
       property: 'system.attributes.hp.base',
       selector: 'DIV.health-section.side-bar-section   H4',
-      styleOptionUsed: 'primary',
-    },
-    {
-      name: 'Perception',
-      type: 'perception',
-      property: 'system.attributes.perception.base',
-      selector: 'DIV.perception.labelled-field   A',
       styleOptionUsed: 'primary',
     },
     {
@@ -187,9 +173,33 @@ const artificiallyInflateIfVeryCommonType = (resistanceOrWeaknessData) => {
 
 const markStatisticsInNpcSheet = (sheet, html) => {
   const npc = sheet.object
+
+  // HP, Saves, and Ability mods - all easy to access and set
   for (const statistic of getMainNpcStatistics()) {
     calculateAndMarkStatisticInNpcSheet(html, npc, statistic, getProperty(npc, statistic.property))
   }
+
+  // AC
+  // TODO - it used to be cleaner, but as of pf2e v4.12.x the AC and Perception base values aren't directly accessible
+  const baseAc = npc.system.attributes.ac.modifiers.find(m => m.slug === 'base').modifier + 10
+  calculateAndMarkStatisticInNpcSheet(html, npc, {
+    name: 'AC',
+    type: 'ac',
+    selector: 'DIV.side-bar-label.armor-label   H4',
+    styleOptionUsed: 'primary',
+  }, baseAc)
+
+  // Perception
+  const basePerception = npc.system.attributes.perception.modifiers.find(m => m.slug === 'base').modifier + 10
+  calculateAndMarkStatisticInNpcSheet(html, npc,
+    {
+      name: 'Perception',
+      type: 'perception',
+      selector: 'DIV.perception.labelled-field   A',
+      styleOptionUsed: 'primary',
+    }, basePerception)
+
+  // Skills
   for (const skillElem of html.find('DIV.skills.section-container   DIV.list   DIV.skill-entry')) {
     const slug = skillElem.dataset.skill
     const statistic = {
@@ -202,6 +212,8 @@ const markStatisticsInNpcSheet = (sheet, html) => {
     const skillValue = getProperty(npc, `system.skills.${slug}.base`)
     calculateAndMarkStatisticInNpcSheet(html, npc, statistic, skillValue)
   }
+
+  // Weaknesses and Resistances
   html.find('DIV.weaknesses   DIV.side-bar-section-content    DIV.weakness').each((index) => {
     const nth = index + 1
     const statistic = {
@@ -228,6 +240,8 @@ const markStatisticsInNpcSheet = (sheet, html) => {
     const resistanceValue = resistanceData.value * artificiallyInflateIfVeryCommonType(resistanceData)
     calculateAndMarkStatisticInNpcSheet(html, npc, statistic, resistanceValue)
   })
+
+  // Attacks/Strikes (marking both attack bonus and damage dice/numbers)
   for (const attackElem of html.find('OL.attacks-list   LI.attack')) {
     const actionIndex = parseInt(attackElem.dataset.actionIndex)
     const attackBonus = npc.system.actions[actionIndex].item.system.bonus.value
@@ -257,6 +271,8 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       styleOptionUsed: 'secondary',
     }, avgTotalDamage)
   }
+
+  // Spell attack and spell DC
   for (const spellcastingElem of html.find('DIV.tab.spells   LI.spellcasting-entry')) {
     const spellcastingItemId = spellcastingElem.dataset.itemId
     const spellcasting = npc.spellcasting.get(spellcastingItemId)
