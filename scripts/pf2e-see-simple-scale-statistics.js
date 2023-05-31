@@ -11,72 +11,86 @@ const isCloserToMiddle = (key1, key2) => {
 const getMainNpcStatistics = () => {
   return [
     {
+      name: 'AC',
+      type: 'ac',
+      property: '_source.system.attributes.ac.value',
+      selector: 'DIV.side-bar-label.armor-label   H4',
+      styleOptionUsed: 'primary',
+    },
+    {
       name: 'HP',
       type: 'hp',
-      property: 'system.attributes.hp.base',
+      property: '_source.system.attributes.hp.value',
       selector: 'DIV.health-section.side-bar-section   H4',
+      styleOptionUsed: 'primary',
+    },
+    {
+      name: 'Perception',
+      type: 'perception',
+      property: '_source.system.attributes.perception.value',
+      selector: 'DIV.perception.labelled-field   A',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Fortitude',
       type: 'save',
-      property: 'system.saves.fortitude.base',
+      property: '_source.system.saves.fortitude.value',
       selector: 'DIV[data-save="fortitude"]   LABEL',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Reflex',
       type: 'save',
-      property: 'system.saves.reflex.base',
+      property: '_source.system.saves.reflex.value',
       selector: 'DIV[data-save="reflex"]   LABEL',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Will',
       type: 'save',
-      property: 'system.saves.will.base',
+      property: '_source.system.saves.will.value',
       selector: 'DIV[data-save="will"]   LABEL',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Strength',
       type: 'ability',
-      property: 'system.abilities.str.mod',
+      property: '_source.system.abilities.str.mod',
       selector: 'DIV[data-attribute="str"]   LABEL',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Dexterity',
       type: 'ability',
-      property: 'system.abilities.dex.mod',
+      property: '_source.system.abilities.dex.mod',
       selector: 'DIV[data-attribute="dex"]   LABEL',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Constitution',
       type: 'ability',
-      property: 'system.abilities.con.mod',
+      property: '_source.system.abilities.con.mod',
       selector: 'DIV[data-attribute="con"]   LABEL',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Intelligence',
       type: 'ability',
-      property: 'system.abilities.int.mod',
+      property: '_source.system.abilities.int.mod',
       selector: 'DIV[data-attribute="int"]   LABEL',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Wisdom',
       type: 'ability',
-      property: 'system.abilities.wis.mod',
+      property: '_source.system.abilities.wis.mod',
       selector: 'DIV[data-attribute="wis"]   LABEL',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Charisma',
       type: 'ability',
-      property: 'system.abilities.cha.mod',
+      property: '_source.system.abilities.cha.mod',
       selector: 'DIV[data-attribute="cha"]   LABEL',
       styleOptionUsed: 'primary',
     },
@@ -174,30 +188,10 @@ const artificiallyInflateIfVeryCommonType = (resistanceOrWeaknessData) => {
 const markStatisticsInNpcSheet = (sheet, html) => {
   const npc = sheet.object
 
-  // HP, Saves, and Ability mods - all easy to access and set
+  // HP, AC, Perception, Saves, and Ability mods - all easy to access and set
   for (const statistic of getMainNpcStatistics()) {
     calculateAndMarkStatisticInNpcSheet(html, npc, statistic, getProperty(npc, statistic.property))
   }
-
-  // AC
-  // TODO - it used to be cleaner, but as of pf2e v4.12.x the AC and Perception base values aren't directly accessible
-  const baseAc = npc.system.attributes.ac.modifiers.find(m => m.slug === 'base').modifier + 10
-  calculateAndMarkStatisticInNpcSheet(html, npc, {
-    name: 'AC',
-    type: 'ac',
-    selector: 'DIV.side-bar-label.armor-label   H4',
-    styleOptionUsed: 'primary',
-  }, baseAc)
-
-  // Perception
-  const basePerception = npc.system.attributes.perception.modifiers.find(m => m.slug === 'base').modifier + 10
-  calculateAndMarkStatisticInNpcSheet(html, npc,
-    {
-      name: 'Perception',
-      type: 'perception',
-      selector: 'DIV.perception.labelled-field   A',
-      styleOptionUsed: 'primary',
-    }, basePerception)
 
   // Skills
   for (const skillElem of html.find('DIV.skills.section-container   DIV.list   DIV.skill-entry')) {

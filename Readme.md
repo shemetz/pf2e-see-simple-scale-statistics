@@ -27,14 +27,15 @@ Each important statistic of the creature will be recolored to indicate where it 
 
 
 ## Supported stats
-All stats mentioned in [Building Creatures](https://2e.aonprd.com/Rules.aspx?ID=995) are supported, except for Resistances and Weaknesses.
-Also, special features like Regeneration or Sneak Attack aren't taken into account.
+All stats mentioned in [Building Creatures](https://2e.aonprd.com/Rules.aspx?ID=995) are supported.
+However, special features like Regeneration or Sneak Attack aren't taken into account.
 
 - AC
 - HP
 - Perception
 - Saves: Fortitude, Reflex, Will
 - Abilities: Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma
+- Resistances and Weaknesses (**note**: colors are flipped for weaknesses, because it's a negative attribute to have)
 - Strikes (for each attack): Attack bonus and average damage (**note**: this does not take any traits or other features into account)
 - Spellcasting (for each spellcasting ability): Attack bonus and DC
 
