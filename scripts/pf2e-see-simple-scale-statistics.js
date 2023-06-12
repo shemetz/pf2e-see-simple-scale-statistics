@@ -56,42 +56,42 @@ const getMainNpcStatistics = () => {
       name: 'Strength',
       type: 'ability',
       property: '_source.system.abilities.str.mod',
-      selector: 'DIV[data-attribute="str"]   LABEL',
+      selector: 'DIV[data-attribute="str"]   A',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Dexterity',
       type: 'ability',
       property: '_source.system.abilities.dex.mod',
-      selector: 'DIV[data-attribute="dex"]   LABEL',
+      selector: 'DIV[data-attribute="dex"]   A',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Constitution',
       type: 'ability',
       property: '_source.system.abilities.con.mod',
-      selector: 'DIV[data-attribute="con"]   LABEL',
+      selector: 'DIV[data-attribute="con"]   A',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Intelligence',
       type: 'ability',
       property: '_source.system.abilities.int.mod',
-      selector: 'DIV[data-attribute="int"]   LABEL',
+      selector: 'DIV[data-attribute="int"]   A',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Wisdom',
       type: 'ability',
       property: '_source.system.abilities.wis.mod',
-      selector: 'DIV[data-attribute="wis"]   LABEL',
+      selector: 'DIV[data-attribute="wis"]   A',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Charisma',
       type: 'ability',
       property: '_source.system.abilities.cha.mod',
-      selector: 'DIV[data-attribute="cha"]   LABEL',
+      selector: 'DIV[data-attribute="cha"]   A',
       styleOptionUsed: 'primary',
     },
   ]
@@ -140,7 +140,7 @@ const calculateAndMarkStatisticInNpcSheet = (html, npc, statistic, statisticValu
   }
   const foundSelector = html.find(statistic.selector)
   if (!foundSelector[0]) {
-    console.warn(`failed to find selector ${statistic.selector} for actor ${npc.name}, statistic ${statistic.name}`)
+    console.warn(`failed to find selector \`${statistic.selector}\` for actor ${npc.name}, statistic ${statistic.name}`)
     return
   }
   const isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
