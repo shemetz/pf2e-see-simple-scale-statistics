@@ -5,7 +5,8 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.3.2] - 2023-06-12
-- Changed to be compatible with pf2e v5.0.0 (Foundry V11)
+- Changed to be compatible with pf2e v5.0.0-beta1 (Foundry V11)
+- v1.3.3 - fix for v5.0.0-beta2
 
 ## [1.3.1] - 2023-05-31
 - Improved code for previous fix
