@@ -31,7 +31,7 @@
       "name": "简体中文",
       "path": "lang/cn.json",
       "flags": {}
-    },
+    }
   ],
   "url": "https://github.com/shemetz/pf2e-see-simple-scale-statistics",
   "manifest": "https://github.com/shemetz/pf2e-see-simple-scale-statistics/raw/master/module.json",
