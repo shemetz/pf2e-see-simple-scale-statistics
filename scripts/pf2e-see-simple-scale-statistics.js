@@ -270,6 +270,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
   for (const spellcastingElem of html.find('DIV.tab.spells   LI.spellcasting-entry')) {
     const spellcastingItemId = spellcastingElem.dataset.itemId
     const spellcasting = npc.spellcasting.get(spellcastingItemId)
+    if (spellcasting.system?.spelldc === undefined) continue  // skipping "rituals" which is a spellcasting section
     const spellAttack = spellcasting.system.spelldc.value
     const spellDc = spellcasting.system.spelldc.dc
     calculateAndMarkStatisticInNpcSheet(html, npc, {
