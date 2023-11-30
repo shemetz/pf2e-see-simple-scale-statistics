@@ -20,7 +20,7 @@ const getMainNpcStatistics = () => {
     {
       name: 'HP',
       type: 'hp',
-      property: '_source.system.attributes.hp.value',
+      property: '_source.system.attributes.hp.max',
       selector: 'DIV.health-section.side-bar-section   H4',
       styleOptionUsed: 'primary',
     },
