@@ -15,6 +15,7 @@ const getMainNpcStatistics = () => {
       type: 'ac',
       property: '_source.system.attributes.ac.value',
       selector: 'DIV.side-bar-label.armor-label   H4',
+      ittSelector: 'div[data-section="ac"]',
       styleOptionUsed: 'primary',
     },
     {
@@ -22,6 +23,7 @@ const getMainNpcStatistics = () => {
       type: 'hp',
       property: '_source.system.attributes.hp.max',
       selector: 'DIV.health-section.side-bar-section   H4',
+      ittSelector: 'div[data-section="hp"]',
       styleOptionUsed: 'primary',
     },
     {
@@ -29,6 +31,7 @@ const getMainNpcStatistics = () => {
       type: 'perception',
       property: '_source.system.attributes.perception.value',
       selector: 'DIV.perception.labelled-field   A',
+      ittSelector: 'a[data-slug="perception"]',
       styleOptionUsed: 'primary',
     },
     {
@@ -36,6 +39,7 @@ const getMainNpcStatistics = () => {
       type: 'save',
       property: '_source.system.saves.fortitude.value',
       selector: 'DIV[data-save="fortitude"]   A',
+      ittSelector: 'a[data-save="fortitude"]',
       styleOptionUsed: 'primary',
     },
     {
@@ -43,6 +47,7 @@ const getMainNpcStatistics = () => {
       type: 'save',
       property: '_source.system.saves.reflex.value',
       selector: 'DIV[data-save="reflex"]   A',
+      ittSelector: 'a[data-save="reflex"]',
       styleOptionUsed: 'primary',
     },
     {
@@ -50,6 +55,7 @@ const getMainNpcStatistics = () => {
       type: 'save',
       property: '_source.system.saves.will.value',
       selector: 'DIV[data-save="will"]   A',
+      ittSelector: 'a[data-save="will"]',
       styleOptionUsed: 'primary',
     },
     {
@@ -57,6 +63,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.str.mod',
       selector: 'DIV[data-attribute="str"]   A',
+      ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
     {
@@ -64,6 +71,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.dex.mod',
       selector: 'DIV[data-attribute="dex"]   A',
+      ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
     {
@@ -71,6 +79,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.con.mod',
       selector: 'DIV[data-attribute="con"]   A',
+      ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
     {
@@ -78,6 +87,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.int.mod',
       selector: 'DIV[data-attribute="int"]   A',
+      ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
     {
@@ -85,6 +95,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.wis.mod',
       selector: 'DIV[data-attribute="wis"]   A',
+      ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
     {
@@ -92,6 +103,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.cha.mod',
       selector: 'DIV[data-attribute="cha"]   A',
+      ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
   ]
@@ -133,7 +145,7 @@ const getSimpleScale = (baseValue, level, statisticType) => {
   return closestKey
 }
 
-const calculateAndMarkStatisticInNpcSheet = (html, npc, statistic, statisticValue) => {
+const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) => {
   if (typeof statisticValue !== 'number') {
     console.warn(`got non-number as statistic value: ${statistic.name} = ${statisticValue}`)
     return
@@ -185,12 +197,10 @@ const artificiallyInflateIfVeryCommonType = (resistanceOrWeaknessData) => {
   return 1
 }
 
-const markStatisticsInNpcSheet = (sheet, html) => {
-  const npc = sheet.object
-
+const markStatisticsInNpcSheet = (npc, html) => {
   // HP, AC, Perception, Saves, and Ability mods - all easy to access and set
   for (const statistic of getMainNpcStatistics()) {
-    calculateAndMarkStatisticInNpcSheet(html, npc, statistic, getProperty(npc, statistic.property))
+    calculateAndMarkStatisticInHtml(html, npc, statistic, getProperty(npc, statistic.property))
   }
 
   // Skills
@@ -204,7 +214,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
     }
     // `base` will not be undefined for anything that is visibly there
     const skillValue = getProperty(npc, `system.skills.${slug}.base`)
-    calculateAndMarkStatisticInNpcSheet(html, npc, statistic, skillValue)
+    calculateAndMarkStatisticInHtml(html, npc, statistic, skillValue)
   }
 
   // Weaknesses and Resistances
@@ -220,7 +230,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
     // they are already flipped in the statistics tables, but this comment is here to remind you of this.
     const weaknessData = getProperty(npc, `system.attributes.weaknesses`)[index]
     const weaknessValue = weaknessData.value * artificiallyInflateIfVeryCommonType(weaknessData)
-    calculateAndMarkStatisticInNpcSheet(html, npc, statistic, weaknessValue)
+    calculateAndMarkStatisticInHtml(html, npc, statistic, weaknessValue)
   })
   html.find('DIV.resistances   DIV.side-bar-section-content    DIV.resistance').each((index) => {
     const nth = index + 1
@@ -232,14 +242,14 @@ const markStatisticsInNpcSheet = (sheet, html) => {
     }
     const resistanceData = getProperty(npc, `system.attributes.resistances`)[index]
     const resistanceValue = resistanceData.value * artificiallyInflateIfVeryCommonType(resistanceData)
-    calculateAndMarkStatisticInNpcSheet(html, npc, statistic, resistanceValue)
+    calculateAndMarkStatisticInHtml(html, npc, statistic, resistanceValue)
   })
 
   // Attacks/Strikes (marking both attack bonus and damage dice/numbers)
   for (const attackElem of html.find('OL.attacks-list   LI.attack')) {
     const actionIndex = parseInt(attackElem.dataset.actionIndex)
     const attackBonus = npc.system.actions[actionIndex].item.system.bonus.value
-    calculateAndMarkStatisticInNpcSheet(html, npc, {
+    calculateAndMarkStatisticInHtml(html, npc, {
       name: 'Strike Attack Bonus',
       type: 'strike_attack',
       // selector for the first strike button (without the MAP strike buttons)
@@ -257,7 +267,7 @@ const markStatisticsInNpcSheet = (sheet, html) => {
       console.warn(`failed parsing math expression for strike damage: actor ${npc.name}, attack ${actionName}`)
       continue
     }
-    calculateAndMarkStatisticInNpcSheet(html, npc, {
+    calculateAndMarkStatisticInHtml(html, npc, {
       name: 'Strike Damage',
       type: 'strike_damage',
       // selector for the first strike button (without the MAP strike buttons)
@@ -273,19 +283,109 @@ const markStatisticsInNpcSheet = (sheet, html) => {
     if (spellcasting.system?.spelldc === undefined) continue  // skipping "rituals" which is a spellcasting section
     const spellAttack = spellcasting.system.spelldc.value
     const spellDc = spellcasting.system.spelldc.dc
-    calculateAndMarkStatisticInNpcSheet(html, npc, {
+    calculateAndMarkStatisticInHtml(html, npc, {
       name: 'Spell Attack Bonus',
       type: 'spell_attack',
       selector: `DIV.tab.spells   LI.spellcasting-entry[data-item-id="${spellcastingItemId}"]   DIV.spellAttack   label`,
       styleOptionUsed: 'secondary',
     }, spellAttack)
-    calculateAndMarkStatisticInNpcSheet(html, npc, {
+    calculateAndMarkStatisticInHtml(html, npc, {
       name: 'Spell DC',
       type: 'spell_dc',
       selector: `DIV.tab.spells   LI.spellcasting-entry[data-item-id="${spellcastingItemId}"]   DIV.spellDC   label`,
       styleOptionUsed: 'secondary',
     }, spellDc)
   }
+}
+
+const markStatisticsInNpcInteractiveTokenTooltip = (npc, html) => {
+  // HP, AC, Perception, Saves
+  for (const statistic of getMainNpcStatistics().filter(s => s.ittSelector !== undefined)) {
+    statistic.selector = statistic.ittSelector
+    calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getProperty(npc, statistic.property))
+  }
+  // Passive stealth and passive athletics
+  for (const frontSkillName of ['stealth', 'athletics']) {
+    const statistic = {
+      name: 'Skill',
+      type: 'skill',
+      ittSelector: `A[data-slug="${frontSkillName}"]`,
+      styleOptionUsed: 'primary',
+    }
+    statistic.selector = statistic.ittSelector
+    calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getSkillProperty(npc, frontSkillName))
+  }
+
+  // Skills - in another sidebar
+  // Attacks - in another sidebar
+  // Weaknesses and Resistances - skipped
+  // Spell attack and spell DC - skipped
+}
+
+const markStatisticsInNpcInteractiveTokenTooltipSkillsSidebar = (npc, html) => {
+  for (const skillElem of html.find('DIV.skill    A[data-action="roll-skill"]')) {
+    const longSlug = skillElem.dataset.slug
+    const statistic = {
+      name: 'Skill',
+      type: 'skill',
+      ittSelector: `DIV.skill    A[data-action="roll-skill"][data-slug="${longSlug}"]`,
+      styleOptionUsed: 'primary',
+    }
+    statistic.selector = statistic.ittSelector
+    calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getSkillProperty(npc, longSlug))
+  }
+}
+const markStatisticsInNpcInteractiveTokenTooltipActionsSidebar = (npc, html) => {
+  for (const strikeElem of html.find('DIV.strike.details')) {
+    const actionIndex = parseInt(strikeElem.dataset.index)
+    const attackBonus = npc.system.actions[actionIndex].item.system.bonus.value
+    calculateAndMarkStatisticInHtmlInItt(html, npc, {
+      name: 'Strike Attack Bonus',
+      type: 'strike_attack',
+      // selector for the first strike button (without the MAP strike buttons)
+      selector: `DIV.strike.details[data-index="${actionIndex}"]   DIV.variants    DIV[data-action="strike-attack"][data-index="0"]`,
+      styleOptionUsed: 'secondary',
+    }, attackBonus)
+    const damageRolls = npc.system.actions[actionIndex].item.system.damageRolls
+    const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData.damage), 0)
+    if (avgTotalDamage === 0) {
+      // no damage, e.g. web attack
+      continue
+    }
+    if (avgTotalDamage < 0) {
+      const actionName = npc.system.actions[actionIndex].item.name
+      console.warn(`failed parsing math expression for strike damage: actor ${npc.name}, attack ${actionName}`)
+      continue
+    }
+    calculateAndMarkStatisticInHtmlInItt(html, npc, {
+      name: 'Strike Damage',
+      type: 'strike_damage',
+      // selector for the first strike button (without the MAP strike buttons)
+      selector: `DIV.strike.details[data-index="${actionIndex}"]   DIV.variants    DIV[data-action="strike-damage"]`,
+      styleOptionUsed: 'secondary',
+    }, avgTotalDamage)
+  }
+}
+
+const getSkillProperty = (npc, skillName) => {
+  if (skillName === 'perception') // not actually a skill but still shown in that skills sidebar
+    return getProperty(npc, '_source.system.attributes.perception.value')
+  return getProperty(npc, `skills.${skillName}.base`)
+    // untrained will sadly be affected by some status effects (is not "base"/"source")
+    || getProperty(npc, `skills.${skillName}.modifiers.0.modifier`)
+}
+
+const calculateAndMarkStatisticInHtmlInItt = (html, npc, statistic, statisticValue) => {
+  if (game.modules.get('pf2e-dorako-ui')?.active) {
+    statistic.styleOptionUsed = 'secondary'
+    const useColors = game.settings.get(MODULE_ID, 'mark-with-colors')
+    if (useColors && game.settings.get('pf2e-dorako-ui', 'external-module.colorize-idle-hud') === true) {
+      game.settings.set('pf2e-dorako-ui', 'external-module.colorize-idle-hud', false)
+      ui.notifications.info(
+        'See Simple Scale Statistics disabled Dorako UI\'s Colorize Interactive Token Tooltip option, for clarity.')
+    }
+  }
+  return calculateAndMarkStatisticInHtml(html, npc, statistic, statisticValue)
 }
 
 const colorLegend = () => {
@@ -347,7 +447,7 @@ ${newNode}
     isEnabled = !isEnabled
     game.settings.set(MODULE_ID, 'toggle-on', isEnabled)
     refreshLegend(html, isEnabled)
-    markStatisticsInNpcSheet(sheet, html)
+    markStatisticsInNpcSheet(sheet.object, html)
   })
 }
 
@@ -363,10 +463,10 @@ const refreshLegend = (html, isEnabled) => {
 
 const registerSettings = () => {
   game.settings.register(MODULE_ID, 'toggle-on', {
-    name: `toggle on`,
-    hint: `toggled directly within NPC sheets.  not visible to users`,
+    name: `Toggle on/off`,
+    hint: `This can also be toggled directly within NPC sheets (top right corner).`,
     scope: 'client',
-    config: false,
+    config: true,
     type: Boolean,
     default: false,
   })
@@ -405,7 +505,21 @@ Hooks.once('init', () => {
   Hooks.on('renderActorSheetPF2e', (sheet, html, _) => {
     if (sheet.object.type !== 'npc') return
     addButtonToNpcSheet(sheet, html)
-    markStatisticsInNpcSheet(sheet, html)
+    markStatisticsInNpcSheet(sheet.object, html)
+  })
+  // integration - PF2E interactive token tooltip
+  Hooks.on('renderHUD', (application, pf2eTokenHudHtml, _someActorData) => {
+    if (!game.settings.get(MODULE_ID, 'toggle-on')) return
+    if (application.actor.type !== 'npc') return
+    markStatisticsInNpcInteractiveTokenTooltip(application.actor, pf2eTokenHudHtml)
+  })
+  Hooks.on('renderHUDSidebar', (sidebarType, pf2eTokenHudHtml, application) => {
+    if (!game.settings.get(MODULE_ID, 'toggle-on')) return
+    if (application.actor.type !== 'npc') return
+    if (sidebarType === 'skills')
+      markStatisticsInNpcInteractiveTokenTooltipSkillsSidebar(application.actor, pf2eTokenHudHtml)
+    if (sidebarType === 'actions')
+      markStatisticsInNpcInteractiveTokenTooltipActionsSidebar(application.actor, pf2eTokenHudHtml)
   })
   console.log(`${MODULE_ID}: Initialized`)
 })
