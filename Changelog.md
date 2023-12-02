@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2023-12-02
+- Change colorblind border styles, now more gradual in shapes and widths
+- Add setting to independently control ITT colorization in Dorako UI
+- Avoid warnings when ITT settings have some fields disabled
+
 ## [1.4.0] - 2023-12-02
 - Changed HP stat to be based on maximum and not current (I have NO IDEA why it took me this long to realize it was like this)
 - Added integration with PF2e Interactive Token Tooltip! (and integration with PF2e Dorako UI's integration with PF2e Interactive Token Tooltip)
@@ -95,5 +100,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.3.2]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.3.1...1.3.3
 [1.3.4]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.3.3...1.3.4
 [1.3.5]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.3.4...1.3.5
-[1.4.0]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.4.0...1.4.0
-[Unreleased]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.4.0...HEAD
+[1.4.0]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.3.5...1.4.0
+[1.4.1]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.4.0...1.4.1
+[Unreleased]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.4.1...HEAD
