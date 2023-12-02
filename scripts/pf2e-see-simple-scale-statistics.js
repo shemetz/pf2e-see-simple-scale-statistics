@@ -301,11 +301,18 @@ const markStatisticsInNpcSheet = (npc, html) => {
 const markStatisticsInNpcInteractiveTokenTooltip = (npc, html) => {
   // HP, AC, Perception, Saves
   for (const statistic of getMainNpcStatistics().filter(s => s.ittSelector !== undefined)) {
+    if (game.settings.get('pf2e-token-hud', 'saves') === 'none')
+      if (['Fortitude', 'Reflex', 'Will'].includes(statistic.name))
+        continue
+    if (game.settings.get('pf2e-token-hud', 'others') === 'none')
+      if (['Perception'].includes(statistic.name))
+        continue
     statistic.selector = statistic.ittSelector
     calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getProperty(npc, statistic.property))
   }
   // Passive stealth and passive athletics
   for (const frontSkillName of ['stealth', 'athletics']) {
+    if (game.settings.get('pf2e-token-hud', 'others') === 'none') continue
     const statistic = {
       name: 'Skill',
       type: 'skill',
