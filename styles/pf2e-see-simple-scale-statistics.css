@@ -14,7 +14,7 @@
 
 .pf2e-see-simple-scale-statistics-colors-legend {
     display: flex;
-    height: 5px;
+    height: 8px;
 }
 
 .pf2e-see-simple-scale-statistics-colors-legend:not(.active) {
@@ -36,17 +36,17 @@
     background-color: #ff0000;
 }
 .pf2e-see-simple-scale-statistics-Terrible-border-primary {
-    border-style: inset;
-    border-width: 2px;
+    border-style: dotted hidden hidden dotted;
+    border-width: 1px;
 }
 .pf2e-see-simple-scale-statistics-Terrible-border-secondary {
-    border-style: inset !important;
-    border-width: 2px !important;
+    border-style: dotted hidden hidden dotted !important;
+    border-width: 1px !important;
 }
 .pf2e-see-simple-scale-statistics-Terrible-border-legend {
-    border-style: inset;
+    border-style: dotted hidden hidden dotted;
     border-width: 1px;
-    border-color: white;
+    border-color: black;
 }
 .pf2e-see-simple-scale-statistics-Low-color-primary:not(:hover) {
     text-shadow: 0 0 10px #ff8000;
@@ -58,17 +58,17 @@
     background-color: #ff8000;
 }
 .pf2e-see-simple-scale-statistics-Low-border-primary {
-    border-style: groove;
-    border-width: 2px;
+    border-style: dotted;
+    border-width: 2px 1px 1px 2px;
 }
 .pf2e-see-simple-scale-statistics-Low-border-secondary {
-    border-style: groove !important;
-    border-width: 2px !important;
+    border-style: dotted !important;
+    border-width: 2px 1px 1px 2px !important;
 }
 .pf2e-see-simple-scale-statistics-Low-border-legend {
-    border-style: groove;
-    border-width: 1px;
-    border-color: white;
+    border-style: dotted;
+    border-width: 2px 1px 1px 2px;
+    border-color: black;
 }
 .pf2e-see-simple-scale-statistics-Moderate-color-primary:not(:hover) {
     text-shadow: 0 0 10px #ffff54;
@@ -80,17 +80,17 @@
     background-color: #ffff54;
 }
 .pf2e-see-simple-scale-statistics-Moderate-border-primary {
-    border-style: dotted;
+    border-style: dashed dotted dotted dashed;
     border-width: 2px;
 }
 .pf2e-see-simple-scale-statistics-Moderate-border-secondary {
-    border-style: dotted !important;
+    border-style: dashed dotted dotted dashed !important;
     border-width: 2px !important;
 }
 .pf2e-see-simple-scale-statistics-Moderate-border-legend {
-    border-style: dotted;
-    border-width: 1px;
-    border-color: white;
+    border-style: dashed dotted dotted dashed;
+    border-width: 2px;
+    border-color: black;
 }
 .pf2e-see-simple-scale-statistics-High-color-primary:not(:hover) {
     text-shadow: 0 0 10px #3cff00;
@@ -102,17 +102,17 @@
     background-color: #3cff00;
 }
 .pf2e-see-simple-scale-statistics-High-border-primary {
-    border-style: dashed;
-    border-width: 2px;
+    border-style: solid dashed dashed solid;
+    border-width: 3px;
 }
 .pf2e-see-simple-scale-statistics-High-border-secondary {
-    border-style: dashed !important;
-    border-width: 2px !important;
+    border-style: solid dashed dashed solid !important;
+    border-width: 3px !important;
 }
 .pf2e-see-simple-scale-statistics-High-border-legend {
-    border-style: dashed;
-    border-width: 1px;
-    border-color: white;
+    border-style: solid dashed dashed solid;
+    border-width: 3px;
+    border-color: black;
 }
 .pf2e-see-simple-scale-statistics-Extreme-color-primary:not(:hover) {
     text-shadow: 0 0 10px #6cd8ff;
@@ -133,6 +133,6 @@
 }
 .pf2e-see-simple-scale-statistics-Extreme-border-legend {
     border-style: solid;
-    border-width: 2px;
-    border-color: white;
+    border-width: 3px;
+    border-color: black;
 }
