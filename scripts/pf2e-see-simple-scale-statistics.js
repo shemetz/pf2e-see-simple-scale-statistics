@@ -376,15 +376,9 @@ const getSkillProperty = (npc, skillName) => {
 }
 
 const calculateAndMarkStatisticInHtmlInItt = (html, npc, statistic, statisticValue) => {
-  if (game.modules.get('pf2e-dorako-ui')?.active) {
-    statistic.styleOptionUsed = 'secondary'
-    const useColors = game.settings.get(MODULE_ID, 'mark-with-colors')
-    if (useColors && game.settings.get('pf2e-dorako-ui', 'external-module.colorize-idle-hud') === true) {
-      game.settings.set('pf2e-dorako-ui', 'external-module.colorize-idle-hud', false)
-      ui.notifications.info(
-        'See Simple Scale Statistics disabled Dorako UI\'s Colorize Interactive Token Tooltip option, for clarity.')
-    }
-  }
+  const ittIntegration = game.settings.get(MODULE_ID, 'pf2e-itt-integration')
+  if (ittIntegration === 'disabled') return
+  if (ittIntegration === 'color') statistic.styleOptionUsed = 'secondary'
   return calculateAndMarkStatisticInHtml(html, npc, statistic, statisticValue)
 }
 
@@ -486,6 +480,19 @@ const registerSettings = () => {
     type: Boolean,
     default: false,
   })
+  game.settings.register(MODULE_ID, 'pf2e-itt-integration', {
+    name: `PF2e Interactive Token Tooltip integration`,
+    hint: `Integration with the PF2eITT module.`,
+    scope: 'client',
+    config: true,
+    type: String,
+    choices: {
+      'disabled': 'Disabled',
+      'shadows': 'Colorize shadows around icons and text (if "Mark with colors" is enabled)',
+      'color': `Colorize text, and possibly icons, and possibly borders`,
+    },
+    default: 'shadows',
+  })
   game.settings.register(MODULE_ID, 'treat-broad-iwr-as-more-important', {
     name: `Treat broad weaknesses/resistances as higher`,
     hint: `E.g. will mark "resistance 5 to physical" as if it was "resistance 10 to bludgeoning" 
@@ -509,13 +516,19 @@ Hooks.once('init', () => {
   })
   // integration - PF2E interactive token tooltip
   Hooks.on('renderHUD', (application, pf2eTokenHudHtml, _someActorData) => {
-    if (!game.settings.get(MODULE_ID, 'toggle-on')) return
-    if (application.actor.type !== 'npc') return
+    if (!game.settings.get(MODULE_ID, 'toggle-on')
+      || game.settings.get(MODULE_ID, 'pf2e-itt-integration') === 'disabled')
+      return
+    if (application.actor.type !== 'npc')
+      return
     markStatisticsInNpcInteractiveTokenTooltip(application.actor, pf2eTokenHudHtml)
   })
   Hooks.on('renderHUDSidebar', (sidebarType, pf2eTokenHudHtml, application) => {
-    if (!game.settings.get(MODULE_ID, 'toggle-on')) return
-    if (application.actor.type !== 'npc') return
+    if (!game.settings.get(MODULE_ID, 'toggle-on')
+      || game.settings.get(MODULE_ID, 'pf2e-itt-integration') === 'disabled')
+      return
+    if (application.actor.type !== 'npc')
+      return
     if (sidebarType === 'skills')
       markStatisticsInNpcInteractiveTokenTooltipSkillsSidebar(application.actor, pf2eTokenHudHtml)
     if (sidebarType === 'actions')
