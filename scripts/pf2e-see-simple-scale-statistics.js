@@ -14,7 +14,7 @@ const getMainNpcStatistics = () => {
       name: 'AC',
       type: 'ac',
       property: '_source.system.attributes.ac.value',
-      selector: 'DIV.side-bar-label.armor-label   H4',
+      selector: 'input[data-property="system.attributes.ac.value"]',
       ittSelector: 'div[data-section="ac"]',
       styleOptionUsed: 'primary',
     },
@@ -22,15 +22,15 @@ const getMainNpcStatistics = () => {
       name: 'HP',
       type: 'hp',
       property: '_source.system.attributes.hp.max',
-      selector: 'DIV.health-section.side-bar-section   H4',
+      selector: 'input[data-property="system.attributes.hp.max"]',
       ittSelector: 'div[data-section="hp"]',
       styleOptionUsed: 'primary',
     },
     {
       name: 'Perception',
       type: 'perception',
-      property: '_source.system.attributes.perception.value',
-      selector: 'DIV.perception.labelled-field   A',
+      property: '_source.system.perception.mod',
+      selector: 'input[data-property="system.perception.mod"]',
       ittSelector: 'a[data-slug="perception"]',
       styleOptionUsed: 'primary',
     },
@@ -38,7 +38,7 @@ const getMainNpcStatistics = () => {
       name: 'Fortitude',
       type: 'save',
       property: '_source.system.saves.fortitude.value',
-      selector: 'DIV[data-save="fortitude"]   A',
+      selector: 'input[data-property="system.saves.fortitude.value"]',
       ittSelector: 'a[data-save="fortitude"]',
       styleOptionUsed: 'primary',
     },
@@ -46,7 +46,7 @@ const getMainNpcStatistics = () => {
       name: 'Reflex',
       type: 'save',
       property: '_source.system.saves.reflex.value',
-      selector: 'DIV[data-save="reflex"]   A',
+      selector: 'input[data-property="system.saves.reflex.value"]',
       ittSelector: 'a[data-save="reflex"]',
       styleOptionUsed: 'primary',
     },
@@ -54,7 +54,7 @@ const getMainNpcStatistics = () => {
       name: 'Will',
       type: 'save',
       property: '_source.system.saves.will.value',
-      selector: 'DIV[data-save="will"]   A',
+      selector: 'input[data-property="system.saves.will.value"]',
       ittSelector: 'a[data-save="will"]',
       styleOptionUsed: 'primary',
     },
@@ -62,7 +62,7 @@ const getMainNpcStatistics = () => {
       name: 'Strength',
       type: 'ability',
       property: '_source.system.abilities.str.mod',
-      selector: 'DIV[data-attribute="str"]   A',
+      selector: 'input[data-property="system.abilities.str.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
@@ -70,7 +70,7 @@ const getMainNpcStatistics = () => {
       name: 'Dexterity',
       type: 'ability',
       property: '_source.system.abilities.dex.mod',
-      selector: 'DIV[data-attribute="dex"]   A',
+      selector: 'input[data-property="system.abilities.dex.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
@@ -78,7 +78,7 @@ const getMainNpcStatistics = () => {
       name: 'Constitution',
       type: 'ability',
       property: '_source.system.abilities.con.mod',
-      selector: 'DIV[data-attribute="con"]   A',
+      selector: 'input[data-property="system.abilities.con.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
@@ -86,7 +86,7 @@ const getMainNpcStatistics = () => {
       name: 'Intelligence',
       type: 'ability',
       property: '_source.system.abilities.int.mod',
-      selector: 'DIV[data-attribute="int"]   A',
+      selector: 'input[data-property="system.abilities.int.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
@@ -94,7 +94,7 @@ const getMainNpcStatistics = () => {
       name: 'Wisdom',
       type: 'ability',
       property: '_source.system.abilities.wis.mod',
-      selector: 'DIV[data-attribute="wis"]   A',
+      selector: 'input[data-property="system.abilities.wis.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
@@ -102,7 +102,7 @@ const getMainNpcStatistics = () => {
       name: 'Charisma',
       type: 'ability',
       property: '_source.system.abilities.cha.mod',
-      selector: 'DIV[data-attribute="cha"]   A',
+      selector: 'input[data-property="system.abilities.cha.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
     },
@@ -147,12 +147,13 @@ const getSimpleScale = (baseValue, level, statisticType) => {
 
 const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) => {
   if (typeof statisticValue !== 'number') {
-    console.warn(`got non-number as statistic value: ${statistic.name} = ${statisticValue}`)
+    console.error(`got non-number as statistic value: ${statistic.name} = ${statisticValue}`)
     return
   }
   const foundSelector = html.find(statistic.selector)
   if (!foundSelector[0]) {
-    console.warn(`failed to find selector \`${statistic.selector}\` for actor ${npc.name}, statistic ${statistic.name}`)
+    console.error(
+      `failed to find selector \`${statistic.selector}\` for actor ${npc.name}, statistic ${statistic.name}`)
     return
   }
   const isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
@@ -205,25 +206,24 @@ const markStatisticsInNpcSheet = (npc, html) => {
 
   // Skills
   for (const skillElem of html.find('DIV.skills.section-container   DIV.list   DIV.skill-entry')) {
-    const slug = skillElem.dataset.skill
+    const longSlug = skillElem.dataset.statistic
     const statistic = {
-      name: 'Skill',
+      name: `Skill: ${longSlug}`,
       type: 'skill',
-      selector: `DIV.skills.section-container   DIV.list   DIV[data-skill="${slug}"]   a`,
+      selector: `DIV.skills.section-container   DIV.list   DIV[data-statistic="${longSlug}"]   a`,
       styleOptionUsed: 'primary',
     }
     // `base` will not be undefined for anything that is visibly there
-    const skillValue = getProperty(npc, `system.skills.${slug}.base`)
+    const skillValue = getSkillProperty(npc, longSlug)
     calculateAndMarkStatisticInHtml(html, npc, statistic, skillValue)
   }
 
   // Weaknesses and Resistances
-  html.find('DIV.weaknesses   DIV.side-bar-section-content    DIV.weakness').each((index) => {
-    const nth = index + 1
+  html.find('li[data-weakness]').each((index) => {
     const statistic = {
       name: 'Weaknesses',
       type: 'weaknesses',
-      selector: `DIV.weaknesses   DIV.side-bar-section-content    DIV.weakness:nth-child(${nth})`,
+      selector: `li[data-weakness]:nth(${index})`,
       styleOptionUsed: 'primary',
     }
     // note that weaknesses are flipped - so that a high weakness is colored as "low" (because it's a negative).
@@ -232,12 +232,11 @@ const markStatisticsInNpcSheet = (npc, html) => {
     const weaknessValue = weaknessData.value * artificiallyInflateIfVeryCommonType(weaknessData)
     calculateAndMarkStatisticInHtml(html, npc, statistic, weaknessValue)
   })
-  html.find('DIV.resistances   DIV.side-bar-section-content    DIV.resistance').each((index) => {
-    const nth = index + 1
+  html.find('li[data-resistance]').each((index) => {
     const statistic = {
       name: 'Resistances',
       type: 'resistances',
-      selector: `DIV.resistances   DIV.side-bar-section-content    DIV.resistance:nth-child(${nth})`,
+      selector: `li[data-resistance]:nth(${index})`,
       styleOptionUsed: 'primary',
     }
     const resistanceData = getProperty(npc, `system.attributes.resistances`)[index]
@@ -264,7 +263,7 @@ const markStatisticsInNpcSheet = (npc, html) => {
     }
     if (avgTotalDamage < 0) {
       const actionName = npc.system.actions[actionIndex].item.name
-      console.warn(`failed parsing math expression for strike damage: actor ${npc.name}, attack ${actionName}`)
+      console.error(`failed parsing math expression for strike damage: actor ${npc.name}, attack ${actionName}`)
       continue
     }
     calculateAndMarkStatisticInHtml(html, npc, {
@@ -361,7 +360,7 @@ const markStatisticsInNpcInteractiveTokenTooltipActionsSidebar = (npc, html) => 
     }
     if (avgTotalDamage < 0) {
       const actionName = npc.system.actions[actionIndex].item.name
-      console.warn(`failed parsing math expression for strike damage: actor ${npc.name}, attack ${actionName}`)
+      console.error(`failed parsing math expression for strike damage: actor ${npc.name}, attack ${actionName}`)
       continue
     }
     calculateAndMarkStatisticInHtmlInItt(html, npc, {
@@ -376,7 +375,7 @@ const markStatisticsInNpcInteractiveTokenTooltipActionsSidebar = (npc, html) => 
 
 const getSkillProperty = (npc, skillName) => {
   if (skillName === 'perception') // not actually a skill but still shown in that skills sidebar
-    return getProperty(npc, '_source.system.attributes.perception.value')
+    return getProperty(npc, '_source.system.perception.mod')
   return getProperty(npc, `skills.${skillName}.base`)
     // untrained will sadly be affected by some status effects (is not "base"/"source")
     || getProperty(npc, `skills.${skillName}.modifiers.0.modifier`)
@@ -433,13 +432,13 @@ const addButtonToNpcSheet = (sheet, html) => {
   ${colorLegend()}
 </div>
 `
-  const $eliteElement = html.find('DIV.adjustment.elite')
-  if ($eliteElement.length > 0) {
-    html.find('DIV.adjustment.elite').before(newNode)
+  const $adjustmentsElement = html.find('div.adjustments')
+  if ($adjustmentsElement.length > 0) {
+    html.find('div.adjustments > a.elite').before(newNode)
   } else {
     // e.g. for NPC sheets opened through compendium
-    html.find('HEADER.npc-sheet-header > div:nth-child(2)').append(`
-<div class="adjustment-select flexrow" style="flex: auto; justify-content: flex-end;">
+    html.find('div.rarity-size').append(`
+<div class="adjustments" style="flex: auto; justify-content: flex-end;">
 ${newNode}
 </div>
 `)
