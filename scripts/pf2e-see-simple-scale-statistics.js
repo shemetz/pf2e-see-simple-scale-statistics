@@ -527,6 +527,8 @@ Hooks.once('init', () => {
       return
     if (application.actor.type !== 'npc')
       return
+    if (application.actor.permission < CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER)
+      return
     markStatisticsInNpcInteractiveTokenTooltip(application.actor, pf2eTokenHudHtml)
   })
   Hooks.on('renderHUDSidebar', (sidebarType, pf2eTokenHudHtml, application) => {
