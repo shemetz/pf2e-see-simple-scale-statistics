@@ -245,14 +245,14 @@ const markStatisticsInNpcSheet = (npc, html) => {
   })
 
   // Attacks/Strikes (marking both attack bonus and damage dice/numbers)
-  for (const attackElem of html.find('OL.attacks-list   LI.attack')) {
+  for (const attackElem of html.find('OL.strikes-list   LI.item.action')) {
     const actionIndex = parseInt(attackElem.dataset.actionIndex)
     const attackBonus = npc.system.actions[actionIndex].item.system.bonus.value
     calculateAndMarkStatisticInHtml(html, npc, {
       name: 'Strike Attack Bonus',
       type: 'strike_attack',
       // selector for the first strike button (without the MAP strike buttons)
-      selector: `OL.attacks-list   LI.attack[data-action-index="${actionIndex}"]   BUTTON[data-action="strike-attack"][data-variant-index="0"]`,
+      selector: `OL.strikes-list   LI.item.action[data-action-index="${actionIndex}"]   BUTTON[data-action="strike-attack"][data-variant-index="0"]`,
       styleOptionUsed: 'secondary',
     }, attackBonus)
     const damageRolls = npc.system.actions[actionIndex].item.system.damageRolls
@@ -270,7 +270,7 @@ const markStatisticsInNpcSheet = (npc, html) => {
       name: 'Strike Damage',
       type: 'strike_damage',
       // selector for the first strike button (without the MAP strike buttons)
-      selector: `OL.attacks-list   LI.attack[data-action-index="${actionIndex}"]   BUTTON[data-action="strike-damage"]`,
+      selector: `OL.strikes-list   LI.item.action[data-action-index="${actionIndex}"]   BUTTON[data-action="strike-damage"]`,
       styleOptionUsed: 'secondary',
     }, avgTotalDamage)
   }
