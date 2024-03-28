@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.3] - 2024-03-28
+- Fixed compatibility with pf2e v5.15.0 (#15)
+- Fixed console errors thrown on certain situations during integration with ITT
+
 ## [1.4.2] - 2024-01-07
 - Fixed compatibility with pf2e v5.12.0
 
@@ -106,4 +110,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.4.0]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.3.5...1.4.0
 [1.4.1]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.4.0...1.4.1
 [1.4.2]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.4.1...1.4.2
-[Unreleased]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.4.2...HEAD
+[1.4.3]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.4.2...1.4.3
+[Unreleased]: https://github.com/shemetz/pf2e-see-simple-scale-statistics/compare/1.4.3...HEAD
