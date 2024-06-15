@@ -201,7 +201,7 @@ const artificiallyInflateIfVeryCommonType = (resistanceOrWeaknessData) => {
 const markStatisticsInNpcSheet = (npc, html) => {
   // HP, AC, Perception, Saves, and Ability mods - all easy to access and set
   for (const statistic of getMainNpcStatistics()) {
-    calculateAndMarkStatisticInHtml(html, npc, statistic, getProperty(npc, statistic.property))
+    calculateAndMarkStatisticInHtml(html, npc, statistic, foundry.utils.getProperty(npc, statistic.property))
   }
 
   // Skills
@@ -228,7 +228,7 @@ const markStatisticsInNpcSheet = (npc, html) => {
     }
     // note that weaknesses are flipped - so that a high weakness is colored as "low" (because it's a negative).
     // they are already flipped in the statistics tables, but this comment is here to remind you of this.
-    const weaknessData = getProperty(npc, `system.attributes.weaknesses`)[index]
+    const weaknessData = foundry.utils.getProperty(npc, `system.attributes.weaknesses`)[index]
     const weaknessValue = weaknessData.value * artificiallyInflateIfVeryCommonType(weaknessData)
     calculateAndMarkStatisticInHtml(html, npc, statistic, weaknessValue)
   })
@@ -239,7 +239,7 @@ const markStatisticsInNpcSheet = (npc, html) => {
       selector: `li[data-resistance]:nth(${index})`,
       styleOptionUsed: 'primary',
     }
-    const resistanceData = getProperty(npc, `system.attributes.resistances`)[index]
+    const resistanceData = foundry.utils.getProperty(npc, `system.attributes.resistances`)[index]
     const resistanceValue = resistanceData.value * artificiallyInflateIfVeryCommonType(resistanceData)
     calculateAndMarkStatisticInHtml(html, npc, statistic, resistanceValue)
   })
@@ -307,7 +307,7 @@ const markStatisticsInNpcInteractiveTokenTooltip = (npc, html) => {
       if (['Perception'].includes(statistic.name))
         continue
     statistic.selector = statistic.ittSelector
-    calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getProperty(npc, statistic.property))
+    calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, foundry.utils.getProperty(npc, statistic.property))
   }
   // Passive stealth and passive athletics
   for (const frontSkillName of ['stealth', 'athletics']) {
@@ -375,10 +375,10 @@ const markStatisticsInNpcInteractiveTokenTooltipActionsSidebar = (npc, html) => 
 
 const getSkillProperty = (npc, skillName) => {
   if (skillName === 'perception') // not actually a skill but still shown in that skills sidebar
-    return getProperty(npc, '_source.system.perception.mod')
-  return getProperty(npc, `skills.${skillName}.base`)
+    return foundry.utils.getProperty(npc, '_source.system.perception.mod')
+  return foundry.utils.getProperty(npc, `skills.${skillName}.base`)
     // untrained will sadly be affected by some status effects (is not "base"/"source")
-    || getProperty(npc, `skills.${skillName}.modifiers.0.modifier`)
+    || foundry.utils.getProperty(npc, `skills.${skillName}.modifiers.0.modifier`)
 }
 
 const calculateAndMarkStatisticInHtmlInItt = (html, npc, statistic, statisticValue) => {
