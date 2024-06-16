@@ -525,7 +525,7 @@ Hooks.once('init', () => {
     if (!game.settings.get(MODULE_ID, 'toggle-on')
       || game.settings.get(MODULE_ID, 'pf2e-itt-integration') === 'disabled')
       return
-    if (application.actor.type !== 'npc')
+    if (application.actor?.type !== 'npc')
       return
     if (application.actor.permission < CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER)
       return
