@@ -219,27 +219,31 @@ const markStatisticsInNpcSheet = (npc, html) => {
   }
 
   // Weaknesses and Resistances
-  html.find('li[data-weakness]').each((index) => {
+  html.find('li[data-weakness]').each((index, $el) => {
     const statistic = {
       name: 'Weaknesses',
       type: 'weaknesses',
       selector: `li[data-weakness]:nth(${index})`,
       styleOptionUsed: 'primary',
     }
+    const weaknessType = $el.dataset['weakness'] // e.g. "acid"
     // note that weaknesses are flipped - so that a high weakness is colored as "low" (because it's a negative).
     // they are already flipped in the statistics tables, but this comment is here to remind you of this.
-    const weaknessData = foundry.utils.getProperty(npc, `system.attributes.weaknesses`)[index]
+    const weaknessData = foundry.utils.getProperty(npc, `system.attributes.weaknesses`).
+      find(w => w.type === weaknessType)
     const weaknessValue = weaknessData.value * artificiallyInflateIfVeryCommonType(weaknessData)
     calculateAndMarkStatisticInHtml(html, npc, statistic, weaknessValue)
   })
-  html.find('li[data-resistance]').each((index) => {
+  html.find('li[data-resistance]').each((index, $el) => {
     const statistic = {
       name: 'Resistances',
       type: 'resistances',
       selector: `li[data-resistance]:nth(${index})`,
       styleOptionUsed: 'primary',
     }
-    const resistanceData = foundry.utils.getProperty(npc, `system.attributes.resistances`)[index]
+    const resistanceType = $el.dataset['resistance'] // e.g. "acid"
+    const resistanceData = foundry.utils.getProperty(npc, `system.attributes.resistances`).
+      find(w => w.type === resistanceType)
     const resistanceValue = resistanceData.value * artificiallyInflateIfVeryCommonType(resistanceData)
     calculateAndMarkStatisticInHtml(html, npc, statistic, resistanceValue)
   })
