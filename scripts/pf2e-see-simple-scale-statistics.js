@@ -109,6 +109,10 @@ const getMainNpcStatistics = () => {
   ]
 }
 
+const getMainStatisticsSimpleNpc = () => {
+  return getMainNpcStatistics().filter(s => ['HP', 'Perception', 'Will'].includes(s.name))
+}
+
 const getSimpleScale = (baseValue, level, statisticType) => {
   if (level >= 25 || level < -1) {
     // stats are off the charts.  we'll do the best we can by treating this as level 24 or level -1.
@@ -198,7 +202,15 @@ const artificiallyInflateIfVeryCommonType = (resistanceOrWeaknessData) => {
   return 1
 }
 
-const markStatisticsInNpcSheet = (npc, html) => {
+const markStatisticsInNpcSheet = (npc, html, template) => {
+  const isSimpleSheet = template === 'systems/pf2e/templates/actors/npc/simple-sheet.hbs'
+  if (isSimpleSheet) {
+    for (const statistic of getMainStatisticsSimpleNpc()) {
+      calculateAndMarkStatisticInHtml(html, npc, statistic, foundry.utils.getProperty(npc, statistic.property))
+    }
+    return
+  }
+
   // HP, AC, Perception, Saves, and Ability mods - all easy to access and set
   for (const statistic of getMainNpcStatistics()) {
     calculateAndMarkStatisticInHtml(html, npc, statistic, foundry.utils.getProperty(npc, statistic.property))
@@ -436,22 +448,17 @@ const addButtonToNpcSheet = (sheet, html) => {
   ${colorLegend()}
 </div>
 `
-  const $adjustmentsElement = html.find('div.adjustments')
-  if ($adjustmentsElement.length > 0) {
+  if (html.find('div.adjustments').length > 0) {
     html.find('div.adjustments > a.elite').before(newNode)
-  } else {
-    // e.g. for NPC sheets opened through compendium
-    html.find('div.rarity-size').append(`
-<div class="adjustments" style="flex: auto; justify-content: flex-end;">
-${newNode}
-</div>
-`)
+  } else if (html.find('select.size-select').length > 0) {
+    // e.g. for NPC sheets opened through compendium, also for simple npc sheets
+    html.find('select.size-select').after(newNode)
   }
   html.find('DIV.pf2e-see-simple-scale-statistics-change-mode > div > a').click(() => {
     isEnabled = !isEnabled
     game.settings.set(MODULE_ID, 'toggle-on', isEnabled)
     refreshLegend(html, isEnabled)
-    markStatisticsInNpcSheet(sheet.object, html)
+    markStatisticsInNpcSheet(sheet.object, html, sheet.template)
   })
 }
 
@@ -522,7 +529,7 @@ Hooks.once('init', () => {
   Hooks.on('renderActorSheetPF2e', (sheet, html, _) => {
     if (sheet.object.type !== 'npc') return
     addButtonToNpcSheet(sheet, html)
-    markStatisticsInNpcSheet(sheet.object, html)
+    markStatisticsInNpcSheet(sheet.object, html, sheet.template)
   })
   // integration - PF2E interactive token tooltip
   Hooks.on('renderHUD', (application, pf2eTokenHudHtml, _someActorData) => {
