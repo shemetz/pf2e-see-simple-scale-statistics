@@ -1,3 +1,6 @@
+## 1.4.6 - 2024-12-17
+- Fixed handling of simple NPC sheet
+
 ## 1.4.5 - 2024-09-13
 - Fixed order bug with weaknesses and resistances (#17)
 
