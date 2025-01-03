@@ -1,3 +1,6 @@
+## 1.4.7 - 2025-01-03
+- Improved github workflow automation
+
 ## 1.4.6 - 2024-12-17
 - Fixed handling of simple NPC sheet
 
