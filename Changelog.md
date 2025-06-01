@@ -1,3 +1,6 @@
+## 1.4.8 - 2025-06-01
+- Marked as v13 compatible
+
 ## 1.4.7 - 2025-01-03
 - Improved github workflow automation
 
