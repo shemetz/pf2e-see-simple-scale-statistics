@@ -5,7 +5,7 @@
   "version": "1.4.7",
   "compatibility": {
     "minimum": "12",
-    "verified": "12"
+    "verified": "13"
   },
   "esmodules": [
     "scripts/pf2e-see-simple-scale-statistics.js"
@@ -48,7 +48,7 @@
         "manifest": "https://github.com/foundryvtt/pf2e/releases/download/latest/system.json",
         "compatibility": {
           "minimum": "5.15.0",
-          "verified": "6.7.2"
+          "verified": "7.0.0"
         }
       }
     ]
