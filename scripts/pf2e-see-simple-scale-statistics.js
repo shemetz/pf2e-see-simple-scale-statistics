@@ -109,7 +109,7 @@ const getMainNpcStatistics = () => {
   ]
 }
 
-const getMainStatisticsSimpleNpc = () => {
+const getMainNpcStatisticsForSimpleSheetNpc = () => {
   return getMainNpcStatistics().filter(s => ['HP', 'Perception', 'Will'].includes(s.name))
 }
 
@@ -235,7 +235,7 @@ const artificiallyInflateIfVeryCommonType = (resistanceOrWeaknessData) => {
 const markStatisticsInNpcSheet = (npc, html, template) => {
   const isSimpleSheet = template === 'systems/pf2e/templates/actors/npc/simple-sheet.hbs'
   if (isSimpleSheet) {
-    for (const statistic of getMainStatisticsSimpleNpc()) {
+    for (const statistic of getMainNpcStatisticsForSimpleSheetNpc()) {
       calculateAndMarkStatisticInHtml(html, npc, statistic, foundry.utils.getProperty(npc, statistic.property))
     }
     return
