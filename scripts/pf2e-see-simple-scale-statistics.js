@@ -179,6 +179,7 @@ const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) =
   const useBorders = game.settings.get(MODULE_ID, 'mark-with-borders')
   const scaleKeyWord = getSimpleScale(statisticValue, npc.level, statistic.type)
   const addOrRemoveClass = (isEnabled ? foundSelector.addClass : foundSelector.removeClass).bind(foundSelector)
+  addOrRemoveClass('pf2e-ssss')
   if (useColors) {
     addOrRemoveClass(`${MODULE_ID}-${scaleKeyWord}-color-${statistic.styleOptionUsed}`)
   }
@@ -783,16 +784,24 @@ const addElementToNpcSheet = (sheet, html) => {
     game.settings.set(MODULE_ID, 'toggle-on', isEnabled)
     refreshLegend(html, isEnabled)
     markStatisticsInNpcSheet(sheet.object, html, sheet.template)
+    // TODO refactor and streamline these a little, also increase performance
+    if (isEnabled) {
+      const warnings = judgeNpcAndAddWarningsInSheet(sheet.object)
+      refreshWarningsElement(html, warnings)
+    }
   })
 }
 
 const addWarningsToNpcSheet = (sheet, html) => {
+  const isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
   const newNode = `
 <a class="pf2e-see-simple-scale-statistics-warnings-button"></a>
 `
   html.find('DIV.pf2e-see-simple-scale-statistics-change-mode').before(newNode)
-  const warnings = judgeNpcAndAddWarningsInSheet(sheet.object)
-  refreshWarningsElement(html, warnings)
+  if (isEnabled) {
+    const warnings = judgeNpcAndAddWarningsInSheet(sheet.object)
+    refreshWarningsElement(html, warnings)
+  }
 
   html.find('A.pf2e-see-simple-scale-statistics-warnings-button').click(() => {
     const warnings = judgeNpcAndAddWarningsInSheet(sheet.object)
@@ -814,7 +823,7 @@ const refreshWarningsElement = (html, warnings) => {
   const warningsButton = html.find('A.pf2e-see-simple-scale-statistics-warnings-button')
   if (warnings.length === 0) {
     warningsButton.removeClass('active')
-    warningsButton.html(`<i class="fa fa-solid fa-list-check"/>`)
+    warningsButton.html(`<i class="fa fa-solid fa-list-check fa-xl"/>`)
     warningsButton.attr('data-tooltip', `<p>No guideline-breaking statistics found!  Click to re-check.</p>`)
     return
   }
@@ -898,10 +907,22 @@ Hooks.once('init', () => {
   Hooks.on('renderActorSheetPF2e', (sheet, html, _) => {
     if (sheet.object.type !== 'npc') return
     addElementToNpcSheet(sheet, html)
-    markStatisticsInNpcSheet(sheet.object, html, sheet.template)
+    // todo cleanup code a bit, increase performance for frequent renders
+    const isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
+    if (isEnabled) {
+      markStatisticsInNpcSheet(sheet.object, html, sheet.template)
+    } else {
+      // find all elements with pf2e-ssss class
+      // remove their other classes that start with pf2e-ssss
+      html.find(`.pf2e-ssss`).each((_, el) => {
+        const $el = $(el)
+        $el.removeClass((_index, className) => className.startsWith(MODULE_ID))
+      })
+    }
     addWarningsToNpcSheet(sheet, html)
   })
   // integration - PF2E interactive token tooltip
+  // TODO - integrate with pf2e-hud instead
   Hooks.on('renderHUD', (application, pf2eTokenHudHtml, _someActorData) => {
     if (!game.settings.get(MODULE_ID, 'toggle-on')
       || game.settings.get(MODULE_ID, 'pf2e-itt-integration') === 'disabled')
