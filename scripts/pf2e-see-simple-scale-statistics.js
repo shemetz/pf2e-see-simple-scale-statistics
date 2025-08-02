@@ -2,6 +2,8 @@ import { initializeTables, TABLES } from './statistics_tables.js'
 
 const MODULE_ID = 'pf2e-see-simple-scale-statistics'
 
+const { getProperty } = foundry.utils
+
 const isCloserToMiddle = (key1, key2) => {
   if (key1 === 'Moderate') return true
   if (key2 === 'Moderate') return false
@@ -236,14 +238,14 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
   const isSimpleSheet = template === 'systems/pf2e/templates/actors/npc/simple-sheet.hbs'
   if (isSimpleSheet) {
     for (const statistic of getMainNpcStatisticsForSimpleSheetNpc()) {
-      calculateAndMarkStatisticInHtml(html, npc, statistic, foundry.utils.getProperty(npc, statistic.property))
+      calculateAndMarkStatisticInHtml(html, npc, statistic, getProperty(npc, statistic.property))
     }
     return
   }
 
   // HP, AC, Perception, Saves, and Ability mods - all easy to access and set
   for (const statistic of getMainNpcStatistics()) {
-    calculateAndMarkStatisticInHtml(html, npc, statistic, foundry.utils.getProperty(npc, statistic.property))
+    calculateAndMarkStatisticInHtml(html, npc, statistic, getProperty(npc, statistic.property))
   }
 
   // Skills
@@ -271,7 +273,7 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
     const weaknessType = $el.dataset['weakness'] // e.g. "acid"
     // note that weaknesses are flipped - so that a high weakness is colored as "low" (because it's a negative).
     // they are already flipped in the statistics tables, but this comment is here to remind you of this.
-    const weaknessData = foundry.utils.getProperty(npc, `system.attributes.weaknesses`).
+    const weaknessData = getProperty(npc, `system.attributes.weaknesses`).
       find(w => w.type === weaknessType)
     const weaknessValue = weaknessData.value * artificiallyInflateIfVeryCommonType(weaknessData)
     calculateAndMarkStatisticInHtml(html, npc, statistic, weaknessValue)
@@ -284,7 +286,7 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
       styleOptionUsed: 'primary',
     }
     const resistanceType = $el.dataset['resistance'] // e.g. "acid"
-    const resistanceData = foundry.utils.getProperty(npc, `system.attributes.resistances`).
+    const resistanceData = getProperty(npc, `system.attributes.resistances`).
       find(w => w.type === resistanceType)
     const resistanceValue = resistanceData.value * artificiallyInflateIfVeryCommonType(resistanceData)
     calculateAndMarkStatisticInHtml(html, npc, statistic, resistanceValue)
@@ -353,7 +355,7 @@ const markStatisticsInNpcInteractiveTokenTooltip = (npc, html) => {
       if (['Perception'].includes(statistic.name))
         continue
     statistic.selector = statistic.ittSelector
-    calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, foundry.utils.getProperty(npc, statistic.property))
+    calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getProperty(npc, statistic.property))
   }
   // Passive stealth and passive athletics
   for (const frontSkillName of ['stealth', 'athletics']) {
@@ -421,10 +423,10 @@ const markStatisticsInNpcInteractiveTokenTooltipActionsSidebar = (npc, html) => 
 
 const getSkillProperty = (npc, skillName) => {
   if (skillName === 'perception') // not actually a skill but still shown in that skills sidebar
-    return foundry.utils.getProperty(npc, '_source.system.perception.mod')
-  return foundry.utils.getProperty(npc, `skills.${skillName}.base`)
+    return getProperty(npc, '_source.system.perception.mod')
+  return getProperty(npc, `skills.${skillName}.base`)
     // untrained will sadly be affected by some status effects (is not "base"/"source")
-    || foundry.utils.getProperty(npc, `skills.${skillName}.modifiers.0.modifier`)
+    || getProperty(npc, `skills.${skillName}.modifiers.0.modifier`)
 }
 
 const calculateAndMarkStatisticInHtmlInItt = (html, npc, statistic, statisticValue) => {
