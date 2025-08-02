@@ -1,3 +1,8 @@
+## 1.5.0 - 2025-08-03
+- (#20) Add warnings based on creature building guidelines!  Look for the ⚠️ icon on the top right of the NPC sheet, in outlier creatures such as Lesser Death.
+- Calculate persistent damage at 2x
+- Calculate persistent damage at 1.5x
+
 ## 1.4.8 - 2025-06-01
 - Marked as v13 compatible
 

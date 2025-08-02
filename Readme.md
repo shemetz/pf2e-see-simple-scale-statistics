@@ -14,7 +14,29 @@ or [directly copy the manifest link for the latest release](https://github.com/i
 
 ![](metadata/demo_2_v2.gif)
 
-## Features
+## New Feature - Creature-building warnings!
+
+![](metadata/warnings_lesser_death.png)
+
+If the creature has problematic statistics, a list of warnings will appear, visible by hovering over the ⚠️ icon with
+your cursor.
+
+Warnings are based on the [Building Creatures guidelines](https://2e.aonprd.com/Rules.aspx?ID=2874), such as:
+
+- creature has no low primary statistics at all (ac, hp, saves, attacks, damages, spell dc -- all at Moderate scale or
+  higher)
+- creature has four high (or extreme) defenses
+- creature has extreme AC and high HP
+- creature has a high attack bonus with extreme damage
+- low-level creature has both a fly speed and a ranged attack
+
+All of these guidelines are being followed by the majority of official creatures -- most of them are 95% followed or
+99% followed.  (that last one is an outlier, 20% of the low-level flying creatures break it, but it's still
+helpful to have)
+
+Some examples of problematic creatures that will trigger warnings: Lesser Death. Tzitzimitl, Floolf
+
+## Feature - Color-coded statistics
 
 Click the new button on the top right of each NPC character sheet to toggle the mod's functionality (setting is
 client-side and global for all sheets).
