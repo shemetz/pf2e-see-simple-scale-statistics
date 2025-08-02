@@ -189,6 +189,10 @@ const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) =
  *   - this is still true for higher level bombs, e.g. at level 17 with 1.5 PDC they're worth:  22, 24, 25
  */
 const PERSISTENT_DAMAGE_COEFFICIENT = 1.5
+/**
+ * For Splash... IDK, but 2 feels right, it
+ */
+const SPLASH_DAMAGE_COEFFICIENT = 2
 const calcAvgDamage = (damageObj) => {
   const damageText = damageObj.damage
   // a bit hacky
@@ -203,6 +207,10 @@ const calcAvgDamage = (damageObj) => {
   if (damageObj.category === 'persistent') {
     // persistent damage is valued at 1.5x
     avgValue *= PERSISTENT_DAMAGE_COEFFICIENT
+  }
+  if (damageObj.category === 'splash') {
+    // splash damage is valued at 2x
+    avgValue *= SPLASH_DAMAGE_COEFFICIENT
   }
   return avgValue
 }
