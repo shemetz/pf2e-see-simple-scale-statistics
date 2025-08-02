@@ -114,7 +114,7 @@ const getMainNpcStatisticsForSimpleSheetNpc = () => {
 }
 
 const getSimpleScale = (baseValue, level, statisticType) => {
-  if (level >= 25 || level < -1) {
+  if (level >= 25 || level <= -2) {
     // stats are off the charts.  we'll do the best we can by treating this as level 24 or level -1.
     // (this comes up with the Tarrasque, level 25 creature)
     level = Math.max(-1, Math.min(24, level))

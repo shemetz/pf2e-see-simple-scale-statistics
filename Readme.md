@@ -5,7 +5,8 @@
 ![GitHub All Releases](https://img.shields.io/github/downloads/itamarcu/pf2e-see-simple-scale-statistics/total?style=for-the-badge&label=Downloads+total)
 ![Latest Supported Foundry Version](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https://github.com/itamarcu/pf2e-see-simple-scale-statistics/raw/master/module.json)
 
-FoundryVTT module for the PF2e system, which allows the GM to see where creatures' stats lie on the Terrible-Low-Moderate-High-Extreme scale.
+FoundryVTT module for the PF2e system, which allows the GM to see where creatures' stats lie on the
+Terrible-Low-Moderate-High-Extreme scale.
 
 To install, browse for it in the module browser,
 or [directly copy the manifest link for the latest release](https://github.com/itamarcu/pf2e-see-simple-scale-statistics/releases/latest/download/module.json)
@@ -13,22 +14,25 @@ or [directly copy the manifest link for the latest release](https://github.com/i
 
 ![](metadata/demo_2_v2.gif)
 
-
 ## Features
-Click the new button on the top right of each NPC character sheet to toggle the mod's functionality (setting is client-side and global for all sheets).
+
+Click the new button on the top right of each NPC character sheet to toggle the mod's functionality (setting is
+client-side and global for all sheets).
 
 Each important statistic of the creature will be recolored to indicate where it lies on a simple scale!
 
-The module will not "notice" Elite/Weak, or any other effects - it will always color statistics based on their source/base value.
-
+The module will not "notice" Elite/Weak, or any other effects - it will always color statistics based on their
+source/base value.
 
 ## Use cases (for the GM)
-- When a player uses Recall Knowledge and you want to tell them about well-known stats, or about whether a particular stat is high or low.
-- When you want to quickly grasp roughly how a creature is meant to be played (brute, sniper, etc), at a glance
-- When you're homebrewing or altering a creature - you want to avoid having too many extreme stats. 
 
+- When a player uses Recall Knowledge and you want to tell them about well-known stats, or about whether a particular
+  stat is high or low.
+- When you want to quickly grasp roughly how a creature is meant to be played (brute, sniper, etc), at a glance
+- When you're homebrewing or altering a creature - you want to avoid having too many extreme stats.
 
 ## Supported stats
+
 All stats mentioned in [Building Creatures](https://2e.aonprd.com/Rules.aspx?ID=995) are supported.
 However, special features like Regeneration or Sneak Attack aren't taken into account.
 
@@ -38,17 +42,18 @@ However, special features like Regeneration or Sneak Attack aren't taken into ac
 - Saves: Fortitude, Reflex, Will
 - Abilities: Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma
 - Resistances and Weaknesses (**note**: colors are flipped for weaknesses, because it's a negative attribute to have)
-- Strikes (for each attack): Attack bonus and average damage (**note**: this does not take any traits or other features into account)
+- Strikes (for each attack): Attack bonus and average damage (**note**: this does not take any traits or other features
+  into account)
 - Spellcasting (for each spellcasting ability): Attack bonus and DC
 
-
 ## Colors
+
 ![](metadata/color_scale.png)
 
 Colors are cyan (Extreme), green (High), yellow (Moderate), orange (Low), and red (Terrible).
 
-
 ## Borders
+
 ![](metadata/border_scale.png)
 
 To improve accessibility for color-blind folks, there's also a setting to use borders.
@@ -56,13 +61,28 @@ To improve accessibility for color-blind folks, there's also a setting to use bo
 Border scale is: solid (Extreme), dashed (High), dotted (Moderate), groove (Low), and inset (Terrible).
 
 ## Where is the scale taken from?
+
 [Building Creatures](https://2e.aonprd.com/Rules.aspx?ID=995), from the official Pathfinder 2e rules.
 
-Note that I added my own definition of "Terrible" for some scales that were missing explicit values, defining it as the Low value reduced by its difference to the Moderate value and further decreased by 1.
-It feels pretty good, but technically it's not the same as the official definition.  I don't have a PhD in terribleness.
+This is opinionated and some extra steps are taken:
 
-Also note that there's a special setting to treat resistance/weakness to "all"/"physical" as double its value, which I find useful
-as a way to quickly understand when a creature has one of them.
+- I added my own definition of "Terrible" for some scales that were missing explicit values, defining it as the Low
+  value reduced by its difference to the Moderate value and further decreased by 1.
+  It feels pretty good, but technically it's not the same as the official definition. I don't have a PhD in
+  terribleness.
+- If a resistance/weakness is "all"/"physical" (a "broad" resistance) it will count as double its value, to more
+  explicitly warn against high broad resistances.
+- Persistent damage is treated as 1.5x as strong as normal damage
+- Splash damage is treated as 2x as strong as normal damage
+- I "tiebreak" towards moderate, so e.g. if +15 is High and +13 is Moderate and +11 is Low, a +14 will count as Moderate
+  and a +12 will also count as Moderate.
+- Creatures above level 24 (i.e. the Tarrasque) are treated as level 24
+
+Obviously, some aspects are ignored, so don't put TOO much stock in what the module says:
+
+- Strike traits and special effects are ignored even if they're important for the damage calculation (too hard to
+  implement)
+- Special exceptions to defenses (e.g. AC with/without shield, will save bonus against mental) are ignored
 
 ![](metadata/demo_1.gif)
 
