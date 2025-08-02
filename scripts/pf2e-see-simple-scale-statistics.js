@@ -173,7 +173,24 @@ const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) =
   }
 }
 
-const calcAvgDamage = (damageText) => {
+/**
+ * How much is persistent damage worth, compared to normal damage?
+ * - Convergence (total over infinity rounds) says 3.333
+ * - non-stackability says 0.0001
+ * - https://www.reddit.com/r/Pathfinder2e/comments/1e7578f/live_wire_new_cantrip_calculations_and_comparisons/ says 1.5 or 1.7
+ * - what if we compare different level 1 bombs?  (ignoring splash)
+ *   - acid flask is 1 direct, 1d6 (3.5) persistent
+ *   - alchemist's fire is 1d8 (4.5) direct, 1 persistent
+ *   - blight bomb is 1d4 (2.5) direct, 1d4 (2.5) persistent
+ *   - if we value persistent as 1:  they are worth 4.5, 5.5, 5
+ *   - if we value persistent as 1.5: they are worth 6.25, 6, 6.25
+ *   - if we value persistent as 2: they are worth 8, 6.5, 7.5
+ *   - 1.5 sounds good
+ *   - this is still true for higher level bombs, e.g. at level 17 with 1.5 PDC they're worth:  22, 24, 25
+ */
+const PERSISTENT_DAMAGE_COEFFICIENT = 1.5
+const calcAvgDamage = (damageObj) => {
+  const damageText = damageObj.damage
   // a bit hacky
   const damageWithMultiplication = damageText.replace(
     /(\d+)d(\d+)/,
@@ -182,7 +199,12 @@ const calcAvgDamage = (damageText) => {
   const isMathExpression = /^[\s\d-+*/.()_]*$/.test(damageWithMultiplication)
   if (!isMathExpression) return -99999
   // eval is evil, but we did make sure it's a math expression
-  return eval(damageWithMultiplication)
+  let avgValue = eval(damageWithMultiplication)
+  if (damageObj.category === 'persistent') {
+    // persistent damage is valued at 1.5x
+    avgValue *= PERSISTENT_DAMAGE_COEFFICIENT
+  }
+  return avgValue
 }
 
 /**
@@ -272,7 +294,7 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
       styleOptionUsed: 'secondary',
     }, attackBonus)
     const damageRolls = npc.system.actions[actionIndex].item.system.damageRolls
-    const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData.damage), 0)
+    const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData), 0)
     if (avgTotalDamage === 0) {
       // no damage, e.g. web attack
       continue
@@ -369,7 +391,7 @@ const markStatisticsInNpcInteractiveTokenTooltipActionsSidebar = (npc, html) => 
       styleOptionUsed: 'secondary',
     }, attackBonus)
     const damageRolls = npc.system.actions[actionIndex].item.system.damageRolls
-    const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData.damage), 0)
+    const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData), 0)
     if (avgTotalDamage === 0) {
       // no damage, e.g. web attack
       continue
