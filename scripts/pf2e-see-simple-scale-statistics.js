@@ -362,6 +362,14 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
 }
 
 const judgeNpcAndAddWarningsInSheet = (npc) => {
+  if (
+    npc.system.saves.fortitude.value === 0
+  && npc.system.saves.reflex.value === 0
+  && npc.system.saves.will.value === 0
+  ) {
+    // this actor has just been created, ignore it
+    return []
+  }
   const summarizedStatistics = {
     hp: null,
     ac: null,
