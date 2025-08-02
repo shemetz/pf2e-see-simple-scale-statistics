@@ -80,6 +80,8 @@ This is opinionated and some extra steps are taken:
 
 Obviously, some aspects are ignored, so don't put TOO much stock in what the module says:
 
+- Strike damage sometimes includes a passive increase (e.g. the Azer's 1d6 fire damage) which is not taken into account
+  and thus is calculated as if it were lower
 - Strike traits and special effects are ignored even if they're important for the damage calculation (too hard to
   implement)
 - Special exceptions to defenses (e.g. AC with/without shield, will save bonus against mental) are ignored

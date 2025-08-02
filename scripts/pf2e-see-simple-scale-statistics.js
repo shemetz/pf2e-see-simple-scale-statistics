@@ -14,6 +14,7 @@ const getMainNpcStatistics = () => {
   return [
     {
       name: 'AC',
+      id: 'ac',
       type: 'ac',
       property: '_source.system.attributes.ac.value',
       selector: 'input[data-property="system.attributes.ac.value"]',
@@ -22,6 +23,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'HP',
+      id: 'hp',
       type: 'hp',
       property: '_source.system.attributes.hp.max',
       selector: 'input[data-property="system.attributes.hp.max"]',
@@ -30,6 +32,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'Perception',
+      id: 'perception',
       type: 'perception',
       property: '_source.system.perception.mod',
       selector: 'input[data-property="system.perception.mod"]',
@@ -38,6 +41,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'Fortitude',
+      id: 'fortitude',
       type: 'save',
       property: '_source.system.saves.fortitude.value',
       selector: 'input[data-property="system.saves.fortitude.value"]',
@@ -46,6 +50,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'Reflex',
+      id: 'reflex',
       type: 'save',
       property: '_source.system.saves.reflex.value',
       selector: 'input[data-property="system.saves.reflex.value"]',
@@ -54,6 +59,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'Will',
+      id: 'will',
       type: 'save',
       property: '_source.system.saves.will.value',
       selector: 'input[data-property="system.saves.will.value"]',
@@ -62,6 +68,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'Strength',
+      id: 'str',
       type: 'ability',
       property: '_source.system.abilities.str.mod',
       selector: 'input[data-property="system.abilities.str.mod"]',
@@ -70,6 +77,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'Dexterity',
+      id: 'dex',
       type: 'ability',
       property: '_source.system.abilities.dex.mod',
       selector: 'input[data-property="system.abilities.dex.mod"]',
@@ -78,6 +86,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'Constitution',
+      id: 'con',
       type: 'ability',
       property: '_source.system.abilities.con.mod',
       selector: 'input[data-property="system.abilities.con.mod"]',
@@ -86,6 +95,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'Intelligence',
+      id: 'int',
       type: 'ability',
       property: '_source.system.abilities.int.mod',
       selector: 'input[data-property="system.abilities.int.mod"]',
@@ -94,6 +104,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'Wisdom',
+      id: 'wis',
       type: 'ability',
       property: '_source.system.abilities.wis.mod',
       selector: 'input[data-property="system.abilities.wis.mod"]',
@@ -102,6 +113,7 @@ const getMainNpcStatistics = () => {
     },
     {
       name: 'Charisma',
+      id: 'cha',
       type: 'ability',
       property: '_source.system.abilities.cha.mod',
       selector: 'input[data-property="system.abilities.cha.mod"]',
@@ -195,6 +207,9 @@ const PERSISTENT_DAMAGE_COEFFICIENT = 1.5
  * For Splash... IDK, but 2 feels right, it
  */
 const SPLASH_DAMAGE_COEFFICIENT = 2
+// TODO - include passive damage increases in this, e.g. the Azer's +1d6.
+// I know it's possible via calling `action.damage({getFormula: true}), but that's an async function and it returns a
+// string that requires parsing, and I am really not looking forward to working with that, so maybe I never will
 const calcAvgDamage = (damageObj) => {
   const damageText = damageObj.damage
   // a bit hacky
@@ -345,6 +360,278 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
   }
 }
 
+const judgeNpcAndAddWarningsInSheet = (npc) => {
+  const summarizedStatistics = {
+    hp: null,
+    ac: null,
+    perception: null,
+    fortitude: null,
+    reflex: null,
+    will: null,
+    str: null,
+    dex: null,
+    con: null,
+    int: null,
+    wis: null,
+    cha: null,
+    attack1: null,
+    attack2: null,
+    damage1: null,
+    damage2: null,
+    spellAttack: null,
+    spellDc: null,
+  }
+  let hasBroadResistance = false
+  // HP, AC, Perception, Saves, and Ability mods
+  for (const statistic of getMainNpcStatistics()) {
+    summarizedStatistics[statistic.id] = getSimpleScale(getProperty(npc, statistic.property), npc.level, statistic.type)
+  }
+  for (const resistance of npc.system.attributes.resistances) {
+    if (['physical', 'all-damage'].includes(resistance.type)) {
+      const scale = getSimpleScale(resistance.value * 2, npc.level, 'resistances')
+      if (scale !== 'Terrible') {
+        hasBroadResistance = true
+      }
+    }
+  }
+  // Strikes
+  for (const action of npc.system.actions) {
+    if (action.type !== 'strike') continue
+    const strike = action.item
+    const attackBonus = strike.system.bonus.value
+    const damageRolls = strike.system.damageRolls
+    const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData), 0)
+    if (avgTotalDamage === 0) {
+      // no damage, e.g. web attack
+      continue
+    }
+    if (avgTotalDamage < 0) {
+      const actionName = strike.name
+      console.error(`failed parsing math expression for strike damage: actor ${npc.name}, attack ${actionName}`)
+      continue
+    }
+    if (summarizedStatistics.attack1 === null) {
+      summarizedStatistics.attack1 = getSimpleScale(attackBonus, npc.level, 'strike_attack')
+      summarizedStatistics.damage1 = getSimpleScale(avgTotalDamage, npc.level, 'strike_damage')
+    } else if (summarizedStatistics.attack2 === null) {
+      summarizedStatistics.attack2 = getSimpleScale(attackBonus, npc.level, 'strike_attack')
+      summarizedStatistics.damage2 = getSimpleScale(avgTotalDamage, npc.level, 'strike_damage')
+    } else break
+  }
+  // Spell attack and spell DC
+  for (const spellcasting of npc.spellcasting.contents) {
+    if (spellcasting.system?.spelldc === undefined) continue  // skipping "rituals" which is a spellcasting section
+    summarizedStatistics.spellAttack = getSimpleScale(spellcasting.system.spelldc.value, npc.level, 'spell_attack')
+    summarizedStatistics.spellDc = getSimpleScale(spellcasting.system.spelldc.dc, npc.level, 'spell_dc')
+  }
+
+  // Warning checks now!
+  /*
+  This section is heavily based on https://2e.aonprd.com/Rules.aspx?ID=2874
+  and also on my own statistical analysis, with the goal of having each warning here apply to no more
+  than 5% of all NPCs in my database, under the assumption that most NPCs are "built right".
+   */
+
+  const warnings = []
+  const mainValues = Object.entries(summarizedStatistics).filter(([k, v]) => v !== null
+    && ['ac', 'hp', 'fortitude', 'reflex', 'will', 'attack1', 'damage1', 'spellAttack', 'spellDc'].includes(k),
+  ).map(([, v]) => v)
+  const defenseValues = Object.entries(summarizedStatistics).
+    filter(([k, v]) => v !== null && ['ac', 'fortitude', 'reflex', 'will'].includes(k)).map(([, v]) => v)
+
+  // > Just about all creatures have at least one high value
+  // > If you've made a creature that has four high stats and nothing low, or vice-versa, take another look.
+  // e.g. Ghastly Bear, Clockwork Brewer, Harrow Doll
+  if (
+    !mainValues.some(stat => stat === 'High' || stat === 'Extreme') &&
+    mainValues.some(stat => stat === 'Low' || stat === 'Terrible')
+  ) {
+    warnings.push(
+      {
+        id: 'no-high-statistics-at-least-one-low',
+        directText: 'This creature has no high statistics at all (but at least one low).',
+        reasoningQuote: 'Just about all creatures have at least one high value.',
+        percentThatFailThis: '3%',
+      },
+    )
+  }
+  // > Most creatures should have at least one low statistic
+  // > If you've made a creature that has four high stats and nothing low, or vice-versa, take another look.
+  // e.g. Veksciralenix, Smiler, Bebilith, Kelpie
+  if (!mainValues.some(stat => stat === 'Low' || stat === 'Terrible')) {
+    warnings.push(
+      {
+        id: 'no-low-statistics-at-all',
+        directText: 'This creature has no low statistics at all.',
+        reasoningQuote: 'Most creatures should have at least one low statistic.',
+        percentThatFailThis: '1%',
+      },
+    )
+  }
+  // > Statistics should be balanced overall. That means if you're giving a creature an extreme statistic, it should have some low or terrible statistics to compensate.
+  // > At higher levels, give each creature more extreme statistics. Having one extreme statistic becomes typical around 11th level. A creature of 15th level or higher typically has two extreme statistics, and one of 20th level or higher should have three or four.
+  // e.g. Tenome, Floolf
+  if (npc.level > 1 && npc.level < 10 && mainValues.includes('Extreme') && !mainValues.includes('Terrible') &&
+    mainValues.filter(v => v === 'Low').length < 2) {
+    warnings.push(
+      {
+        id: 'extreme-statistic-without-low',
+        directText: 'This creature has an extreme statistic, but no terrible statistics and few low ones.',
+        reasoningQuote: 'Statistics should be balanced overall. That means if you\'re giving a creature an extreme statistic, it should have some low or terrible statistics to compensate.',
+        percentThatFailThis: '5%',
+      },
+    )
+  }
+  // > Almost no creature has great defenses in all areas, and such creatures often result in frustrating fights.
+  // e.g. Abbot Tsujon, Lesser Death, Aiudara Wraith
+  if (defenseValues.filter(v => v === 'High' || v === 'Extreme').length >= 4) {
+    warnings.push(
+      {
+        id: 'all-high-defenses',
+        directText: `All four of this creature's defenses are high (AC > ${TABLES.AC[npc.level]['Moderate']}, saves > ${TABLES.SAVES[npc.level]['Moderate']}).`,
+        reasoningQuote: 'Almost no creature has great defenses in all areas, and such creatures often result in frustrating fights.',
+        percentThatFailThis: '0.1%',
+      },
+    )
+  }
+    // > Almost no creature should have more than one extreme save, even at high levels.
+  // e.g. Lesser Death
+  else if (defenseValues.filter(v => v === 'Extreme').length >= 2) {
+    warnings.push(
+      {
+        id: 'more-than-one-extreme-save',
+        directText: `This creature has more than one extreme save (${TABLES.SAVES[npc.level]['Extreme']} is extreme).`,
+        reasoningQuote: 'Almost no creature should have more than one extreme save, even at high levels.',
+        percentThatFailThis: '0.2%',
+      },
+    )
+  }
+  // e.g. Vazgorlu, Weredigo, Syndara the Sculptor
+  else if (defenseValues.filter(v => v === 'High' || v === 'Extreme').length === 3 &&
+    !defenseValues.includes('Terrible')) {
+    warnings.push(
+      {
+        id: 'three-high-defenses-no-terrible',
+        directText: `This creature has three high defenses and no terrible defense (terrible AC would be ${TABLES.AC[npc.level]['Terrible']}, terrible save would be ${TABLES.SAVES[npc.level]['Terrible']}).`,
+        reasoningQuote: 'Statistics should be balanced overall. Almost no creature has great defenses in all areas, and such creatures often result in frustrating fights.',
+        percentThatFailThis: '1%',
+      },
+    )
+  }
+  // e.g. Hunter, Simulacrum, Blink Dog, Enormous Flame Drake, Owb Prophet
+  else if (defenseValues.filter(v => v === 'Moderate' || v === 'High' || v === 'Extreme').length >= 4) {
+    warnings.push(
+      {
+        id: 'no-low-defenses',
+        directText: `This creature has no low defenses, they're all moderate (${TABLES.AC[npc.level]['Moderate']} AC, ${TABLES.SAVES[npc.level]['Moderate']} saves) or higher.`,
+        reasoningQuote: 'This might be intentional, but it\'s unusual.',
+        percentThatFailThis: '4%',
+      },
+    )
+  }
+  // > As mentioned in the Defenses section above, you don't want a creature with extreme AC to have high HP too.
+  // e.g. Farmer Drystan's Scarecrow (1-2)
+  if (npc.level >= 1 &&
+    [summarizedStatistics.ac, summarizedStatistics.hp].includes('Extreme') &&
+    [summarizedStatistics.ac, summarizedStatistics.hp].filter(v => v === 'High' || v === 'Extreme').length >= 2
+  ) {
+    warnings.push(
+      {
+        id: 'high-ac-and-hp',
+        directText: `This creature has very high AC (>${TABLES.AC[npc.level]['Moderate']}) and HP (>${TABLES.HP[npc.level]['Moderate']}), one of them extreme.`,
+        reasoningQuote: 'Almost no creature has great defenses in all areas, and such creatures often result in frustrating fights. You don\'t want a creature with extreme AC to have high HP too.',
+        percentThatFailThis: '0.1%',
+      },
+    )
+  }
+  // > A creature with a resistance, especially a broad resistance or a physical resistance, usually has fewer HP.
+  // e.g. Fire Jellyfish Swarm, Cyclops Zombie
+  if (hasBroadResistance && (summarizedStatistics.hp === 'High' || summarizedStatistics.hp === 'Extreme')) {
+    warnings.push(
+      {
+        id: 'broad-resistance-and-high-hp',
+        directText: `This creature has a broad resistance and its HP is high (>${TABLES.HP[npc.level]['Moderate']}).`,
+        reasoningQuote: 'A creature with a resistance, especially a broad resistance or a physical resistance, usually has fewer HP.',
+        percentThatFailThis: '2%', // of creatures with High+ HP
+      },
+    )
+  }
+  // > While you can give your creature a fly Speed at those low levels, it's better to wait until around 7th level (when PCs gain access to fly) to give your creature a fly Speed if it also has ranged attacks or another way to harry the PCs from a distance indefinitely.
+  // e.g. Living Thunderclap
+  if (npc.level <= 5
+    && npc.system.attributes.speed.otherSpeeds.some(sp => sp.type === 'fly')
+    && npc.system.actions.some(a => a.type === 'strike' && a.item.isRanged)
+  ) {
+    warnings.push(
+      {
+        id: 'fly-speed-at-low-level',
+        directText: 'This low-level creature has a fly speed and a ranged attack.',
+        reasoningQuote: 'While you can give your creature a fly Speed at those low levels, it\'s better to wait until around 7th level (when PCs gain access to fly) to give your creature a fly Speed if it also has ranged attacks or another way to harry the PCs from a distance indefinitely.',
+        percentThatFailThis: '20%', // of low-level creatures with fly speed
+      },
+    )
+  }
+  // > You might use a lower category if the creature has better accuracy, or a higher category if its accuracy is lower.
+  // > A creature that's meant to be highly damaging uses the extreme damage values, but might then have a moderate attack bonus.
+  // e.g. Aspect of Insects, Sea Devil Invader, Brimorak
+  for (const [att, dam] of [['attack1', 'damage1'], ['attack2', 'damage2']]) {
+    const scales = [summarizedStatistics[att], summarizedStatistics[dam]]
+    if (scales.includes('Extreme')
+      && !scales.includes('Moderate') && !scales.includes('Low') && !scales.includes('Terrible')) {
+      warnings.push(
+        {
+          id: `high-attack-and-damage`,
+          directText: `This creature has an attack with extreme attack bonus and high damage, or vice versa.  Usually if one of these is extreme, the other is moderate or low.`,
+          reasoningQuote: 'You might use a lower category if the creature has better accuracy, or a higher category if its accuracy is lower. A creature that\'s meant to be highly damaging uses the extreme damage values, but might then have a moderate attack bonus.',
+          percentThatFailThis: '1.5%',
+        },
+      )
+    }
+  }
+  // > A creature that's meant to be primarily a melee threat uses high damage for its melee Strikes, or moderate for melee Strikes that have the agile trait. Ranged attacks more typically use the moderate value, or even low.
+  // e.g. Tzitzimitl
+  if (npc.level >= 2) {
+    for (const action of npc.system.actions) {
+      if (action.type === 'strike') {
+        const strike = action.item
+        const damageRolls = strike.system.damageRolls
+        const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData), 0)
+        const damageScale = getSimpleScale(avgTotalDamage, npc.level, 'strike_damage')
+        if (action.traits.includes(t => t.name === 'agile') && damageScale === 'Extreme') {
+          warnings.push(
+            {
+              id: 'agile-strike-with-extreme-damage',
+              directText: 'This creature has an agile strike with extreme damage.',
+              reasoningQuote: 'A creature that\'s meant to be primarily a melee threat uses high damage for its melee Strikes, or moderate for melee Strikes that have the agile trait.',
+              percentThatFailThis: '0.2%', // of creatures with agile strikes, level 2+
+            },
+          )
+        }
+        if (action.item.isRanged && damageScale === 'Extreme') {
+          warnings.push(
+            {
+              id: 'ranged-strike-with-extreme-damage',
+              directText: 'This creature has a ranged strike with extreme damage.',
+              reasoningQuote: 'A creature that\'s meant to be primarily a melee threat uses high damage for its melee Strikes, or moderate for melee Strikes that have the agile trait. ' +
+                'Ranged attacks more typically use the moderate value, or even low.',
+              percentThatFailThis: '0.1%', // of creatures with ranged strikes, level 2+
+            },
+          )
+        }
+      }
+    }
+  }
+  // deduplicate by id
+  const uniqueWarnings = new Map()
+  for (const warning of warnings) {
+    if (!uniqueWarnings.has(warning.id)) {
+      uniqueWarnings.set(warning.id, warning)
+    }
+  }
+  // return as array
+  return Array.from(uniqueWarnings.values())
+}
+
 const markStatisticsInNpcInteractiveTokenTooltip = (npc, html) => {
   // HP, AC, Perception, Saves
   for (const statistic of getMainNpcStatistics().filter(s => s.ittSelector !== undefined)) {
@@ -468,16 +755,18 @@ const colorLegend = () => {
   `
 }
 
-const addButtonToNpcSheet = (sheet, html) => {
+const addElementToNpcSheet = (sheet, html) => {
   let isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
   const maybeActive = isEnabled ? 'active' : ''
   const text = game.i18n.localize(`${MODULE_ID}.ToggleButton`)
   const newNode = `
-<div class="pf2e-see-simple-scale-statistics-change-mode ${maybeActive}">
-  <div>
-    <a>${text}</a>
+<div class="pf2e-see-simple-scale-statistics-container">
+  <div class="pf2e-see-simple-scale-statistics-change-mode ${maybeActive}">
+    <div>
+      <a>${text}</a>
+    </div>
+    ${colorLegend()}
   </div>
-  ${colorLegend()}
 </div>
 `
   if (html.find('div.adjustments').length > 0) {
@@ -485,12 +774,29 @@ const addButtonToNpcSheet = (sheet, html) => {
   } else if (html.find('select.size-select').length > 0) {
     // e.g. for NPC sheets opened through compendium, also for simple npc sheets
     html.find('select.size-select').after(newNode)
+  } else if (html.find('header > div.rarity-size > div.tags').length > 0) {
+    // uhhh for other NPC sheets opened through compendium
+    html.find('header > div.rarity-size > div.tags').after(newNode)
   }
   html.find('DIV.pf2e-see-simple-scale-statistics-change-mode > div > a').click(() => {
     isEnabled = !isEnabled
     game.settings.set(MODULE_ID, 'toggle-on', isEnabled)
     refreshLegend(html, isEnabled)
     markStatisticsInNpcSheet(sheet.object, html, sheet.template)
+  })
+}
+
+const addWarningsToNpcSheet = (sheet, html) => {
+  const newNode = `
+<a class="pf2e-see-simple-scale-statistics-warnings-button"></a>
+`
+  html.find('DIV.pf2e-see-simple-scale-statistics-change-mode').before(newNode)
+  const warnings = judgeNpcAndAddWarningsInSheet(sheet.object)
+  refreshWarningsElement(html, warnings)
+
+  html.find('A.pf2e-see-simple-scale-statistics-warnings-button').click(() => {
+    const warnings = judgeNpcAndAddWarningsInSheet(sheet.object)
+    refreshWarningsElement(html, warnings)
   })
 }
 
@@ -502,6 +808,37 @@ const refreshLegend = (html, isEnabled) => {
     html.find('DIV.pf2e-see-simple-scale-statistics-change-mode').removeClass('active')
     html.find('DIV.pf2e-see-simple-scale-statistics-colors-legend').removeClass('active')
   }
+}
+
+const refreshWarningsElement = (html, warnings) => {
+  const warningsButton = html.find('A.pf2e-see-simple-scale-statistics-warnings-button')
+  if (warnings.length === 0) {
+    warningsButton.removeClass('active')
+    warningsButton.html(`<i class="fa fa-solid fa-list-check"/>`)
+    warningsButton.attr('data-tooltip', `<p>No guideline-breaking statistics found!  Click to re-check.</p>`)
+    return
+  }
+  warningsButton.addClass('active')
+  warningsButton.html(
+    `<span class="fa-stack fa-fw">
+        <i class="fa fa-stack-2x fa-solid fa-triangle" style="color: gold"></i>
+        <i class="fa fa-stack-2x fa-regular fa-triangle-exclamation" style="color: black"></i>
+        <i class="fa fa-stack-1x fa-solid fa-circle " style="color: tomato; transform: scale(1.2) translate(7px, -9px)"></i>
+        <i class="fa fa-stack-1x fa-solid fa-${warnings.length}" style="color: white; transform: scale(0.9) translate(9px, -12px)"></i>
+    </span>`,
+  )
+
+  const warningsHtml = warnings.map((w, i) =>
+      `<p>
+  <b>${i + 1}. ${w.directText}</b>
+  <br/>
+  <i>${w.reasoningQuote}</i>
+  <br/>
+  (only ${w.percentThatFailThis} of relevant creatures fail this guideline.)
+</p>`,
+    ).join('')
+    + `<p><br/><br/><i>Click to re-check.</i></p>`
+  warningsButton.attr('data-tooltip', warningsHtml)
 }
 
 const registerSettings = () => {
@@ -560,8 +897,9 @@ Hooks.once('init', () => {
   registerSettings()
   Hooks.on('renderActorSheetPF2e', (sheet, html, _) => {
     if (sheet.object.type !== 'npc') return
-    addButtonToNpcSheet(sheet, html)
+    addElementToNpcSheet(sheet, html)
     markStatisticsInNpcSheet(sheet.object, html, sheet.template)
+    addWarningsToNpcSheet(sheet, html)
   })
   // integration - PF2E interactive token tooltip
   Hooks.on('renderHUD', (application, pf2eTokenHudHtml, _someActorData) => {

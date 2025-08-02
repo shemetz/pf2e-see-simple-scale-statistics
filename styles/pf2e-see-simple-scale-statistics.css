@@ -1,3 +1,10 @@
+.pf2e-see-simple-scale-statistics-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
 .pf2e-see-simple-scale-statistics-change-mode {
     background: #646363;
     border: 2px solid #d8c384;
@@ -24,6 +31,10 @@
 .pf2e-see-simple-scale-statistics-color-in-legend {
     flex: 1;
     /* background-color: defined in the code*/
+}
+
+.pf2e-see-simple-scale-statistics-change-mode {
+    align-content: center;
 }
 
 
