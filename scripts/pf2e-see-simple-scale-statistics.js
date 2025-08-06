@@ -364,8 +364,8 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
 const judgeNpcAndAddWarningsInSheet = (npc) => {
   if (
     npc.system.saves.fortitude.value === 0
-  && npc.system.saves.reflex.value === 0
-  && npc.system.saves.will.value === 0
+    && npc.system.saves.reflex.value === 0
+    && npc.system.saves.will.value === 0
   ) {
     // this actor has just been created, ignore it
     return []
@@ -433,6 +433,10 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
     summarizedStatistics.spellAttack = getSimpleScale(spellcasting.system.spelldc.value, npc.level, 'spell_attack')
     summarizedStatistics.spellDc = getSimpleScale(spellcasting.system.spelldc.dc, npc.level, 'spell_dc')
   }
+  const traits = npc.system.traits.value
+  const weaknesses = npc.system.attributes.weaknesses.map(w => w.type)
+  const resistances = npc.system.attributes.resistances.map(r => r.type)
+  const immunities = npc.system.attributes.immunities.map(i => i.type)
 
   // Warning checks now!
   /*
@@ -442,6 +446,145 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
    */
 
   const warnings = []
+
+  const warnIfMissingTrait = (traitWith, traitWithout, pctFailing) => {
+    if (traits.includes(traitWith) && !traits.includes(traitWithout)) {
+      let addition = ''
+      if (traitWithout.includes('holy') && !npc.system.details.publication.remaster)
+        addition = ' This pre-Remaster creature should have the trait added now!'
+      warnings.push({
+        id: `missing-trait-${traitWithout}`,
+        directText: `This creature does not have the ${traitWithout} trait`,
+        reasoningQuote: `Creatures with the ${traitWith} trait always have the ${traitWithout} trait.` + addition,
+        percentThatFailThis: pctFailing,
+      })
+    }
+  }
+  const warnIfMissingWeakness = (traitWith, weaknessWithout, pctFailing) => {
+    if (traits.includes(traitWith) && !weaknesses.includes(weaknessWithout)) {
+      let addition = ''
+      if (weaknessWithout.includes('holy') && !npc.system.details.publication.remaster)
+        addition = ' This pre-Remaster creature should have the weakness added now!'
+      warnings.push({
+        id: `missing-weakness-${weaknessWithout}`,
+        directText: `This creature does not have a weakness to ${weaknessWithout}`,
+        reasoningQuote: `Creatures with the ${traitWith} trait tend to have weakness to ${weaknessWithout}.` + addition,
+        percentThatFailThis: pctFailing,
+      })
+    }
+  }
+  const warnIfMissingResistance = (traitWith, resistanceWithout, pctFailing) => {
+    if (traits.includes(traitWith) && !immunities.includes(resistanceWithout)) {
+      warnings.push({
+        id: `missing-resistance-${resistanceWithout}`,
+        directText: `This creature does not have a resistance to ${resistanceWithout}`,
+        reasoningQuote: `Creatures with the ${traitWith} trait tend to have resistance to ${resistanceWithout}.`,
+        percentThatFailThis: pctFailing,
+      })
+    }
+  }
+  const warnIfMissingImmunity = (traitWith, immunityWithout, pctFailing) => {
+    if (traits.includes(traitWith) && !immunities.includes(immunityWithout)) {
+      warnings.push({
+        id: `missing-immunity-${immunityWithout}`,
+        directText: `This creature does not have a immunity to ${immunityWithout}`,
+        reasoningQuote: `Creatures with the ${traitWith} trait tend to have immunity to ${immunityWithout}.`,
+        percentThatFailThis: pctFailing,
+      })
+    }
+  }
+  const warnIfMissingImmunityOrResistance = (traitWith, immunityWithout, pctFailing) => {
+    if (traits.includes(traitWith) && !immunities.includes(immunityWithout) && !resistances.includes(immunityWithout)) {
+      warnings.push({
+        id: `missing-imm-or-res-${immunityWithout}`,
+        directText: `This creature does not have a immunity or resistance to ${immunityWithout}`,
+        reasoningQuote: `Creatures with the ${traitWith} trait tend to have immunity or resistance to ${immunityWithout}.`,
+        percentThatFailThis: pctFailing,
+      })
+    }
+  }
+
+  // e.g. Lomori Sprout
+  warnIfMissingTrait('aeon', 'monitor', '9%')
+  warnIfMissingTrait('angel', 'celestial', '0%')
+  // e.g. Planetar, Movanic deva
+  warnIfMissingTrait('angel', 'holy', '40%')
+  warnIfMissingTrait('archon', 'celestial', '0%')
+  // e.g. Lantern Archon, Trumpet Archon
+  warnIfMissingTrait('archon', 'holy', '45%')
+  warnIfMissingTrait('azata', 'celestial', '0%')
+  // e.g. Ghaele, Bralani
+  warnIfMissingTrait('azata', 'holy', '37%')
+  warnIfMissingWeakness('azata', 'cold iron', '0%')
+  warnIfMissingTrait('celestial', 'holy', '60%')
+  warnIfMissingWeakness('celestial', 'unholy', '0%')
+  warnIfMissingImmunityOrResistance('cold', 'cold', '4%')
+  warnIfMissingTrait('daemon', 'fiend', '0%')
+  warnIfMissingTrait('daemon', 'unholy', '66%')
+  warnIfMissingImmunity('daemon', 'death-effects', '0%')
+  warnIfMissingTrait('demon', 'fiend', '0%')
+  warnIfMissingTrait('demon', 'unholy', '66%')
+  warnIfMissingWeakness('demon', 'cold iron', '6%')
+  warnIfMissingTrait('devil', 'fiend', '0%')
+  warnIfMissingTrait('devil', 'unholy', '66%')
+  warnIfMissingWeakness('devil', 'holy', '50%')
+  warnIfMissingImmunity('devil', 'fire', '4%')
+  //disabled:  e.g. Uthul, Zaramuun, Young Brine Dragon, Muurfeli, Ararda, Jaathoom...
+  //warnIfMissingImmunity("elemental", "bleed", "30%")
+  //warnIfMissingImmunity("elemental", "paralyzed", "30%")
+  //warnIfMissingImmunity("elemental", "poison", "30%")
+  //warnIfMissingImmunity("elemental", "sleep", "30%")
+  warnIfMissingWeakness('fey', 'cold iron', '0%')
+  warnIfMissingTrait('fiend', 'unholy', '66%')
+  warnIfMissingWeakness('fiend', 'holy', '50%')
+  warnIfMissingImmunityOrResistance('fire', 'fire', '2%')
+  // Oozes usually have terrible AC
+  if (traits.includes('ooze')) {
+    if (summarizedStatistics.ac !== 'Terrible') {
+      // e.g. Omox Slime Pool
+      warnings.push({
+        id: 'ooze-ac-not-terrible',
+        directText: `This ooze has AC that isn't terrible! (terrible would be ${TABLES.AC[npc.level]['Terrible']}).`,
+        reasoningQuote: 'Oozes usually have terrible AC.',
+        percentThatFailThis: '10%',
+      })
+    }
+  }
+  warnIfMissingTrait('protean', 'monitor', '0%')
+  warnIfMissingResistance('protean', 'precision', '0%')
+  warnIfMissingTrait('psychopomp', 'monitor', '0%')
+  warnIfMissingImmunity('psychopomp', 'death-effects', '0%')
+  warnIfMissingImmunity('psychopomp', 'disease', '0%')
+  warnIfMissingResistance('psychopomp', 'poison', '0%')
+  warnIfMissingResistance('psychopomp', 'void', '0%')
+  // Swarms usually have low HP
+  if (traits.includes('swarm')) {
+    if (summarizedStatistics.hp !== 'Moderate' && summarizedStatistics.hp !== 'Low' && summarizedStatistics.hp !==
+      'Terrible') {
+      // e.g. Bone Skipper Swarm, Orchid Mantis Swarm
+      warnings.push({
+        id: 'swarm-hp-not-low',
+        directText: `This creature has HP that isn't low! (low would be ${TABLES.HP[npc.level]['Low']}).`,
+        reasoningQuote: 'Swarm creatures typically have low HP.',
+        percentThatFailThis: '8%',
+      })
+    }
+  }
+  warnIfMissingTrait('undead', 'unholy', '0%')
+  //Wood
+  //Weaknesses fire and axes or slashing
+  if (traits.includes('wood')
+    && !weaknesses.includes('fire') && !weaknesses.includes('slashing')
+    && !traits.includes('fire') && !traits.includes('incorporeal') && !traits.includes('dragon')
+  ) {
+    warnings.push({
+      id: `missing-wood-weaknesses`,
+      directText: `This creature does not have a weakness to fire, slashing, or axes`,
+      reasoningQuote: `Creatures with the wood trait tend to have weakness to fire and axes or slashing.`,
+      percentThatFailThis: '2%',
+    })
+  }
+
   const mainValues = Object.entries(summarizedStatistics).filter(([k, v]) => v !== null
     && ['ac', 'hp', 'fortitude', 'reflex', 'will', 'attack1', 'damage1', 'spellAttack', 'spellDc'].includes(k),
   ).map(([, v]) => v)
@@ -854,7 +997,7 @@ const refreshWarningsElement = (html, warnings) => {
   (only ${w.percentThatFailThis} of relevant creatures fail this guideline.)
 </p>`,
     ).join('')
-    + `<p><br/><br/><i>Click to re-check.</i></p>`
+    //+ `<p><br/><br/><i>Click to re-check.</i></p>`
   warningsButton.attr('data-tooltip', warningsHtml)
 }
 
