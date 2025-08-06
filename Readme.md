@@ -29,10 +29,16 @@ Warnings are based on the [Building Creatures guidelines](https://2e.aonprd.com/
 - creature has extreme AC and high HP
 - creature has a high attack bonus with extreme damage
 - low-level creature has both a fly speed and a ranged attack
+- creature with the devil trait is missing the fiend trait
+- creature with the fiend trait is missing the unholy trait or missing weakness to holy damage (this is very common in
+  pre-Remaster creatures!)
 
 All of these guidelines are being followed by the majority of official creatures -- most of them are 95% followed or
-99% followed.  (that last one is an outlier, 20% of the low-level flying creatures break it, but it's still
-helpful to have)
+99% followed.
+
+Outliers that are commonly broken but I still chose to warn about:
+- low-level flying with ranged attack - 20% of the low-level flying creatures break it, but it's still helpful to see
+- everything about holy/unholy missing, because it's just pre-Remaster creatures missing these
 
 Some examples of problematic creatures that will trigger warnings: Lesser Death. Tzitzimitl, Floolf
 

@@ -1,3 +1,6 @@
+## 1.5.1 - 2025-08-06
+- Add warnings based on traits about missing traits and missing I/W/R. Holy/Unholy will appear a lot in warnings!
+
 ## 1.5.0 - 2025-08-03
 - (#20) Add warnings based on creature building guidelines!  Look for the ⚠️ icon on the top right of the NPC sheet, in outlier creatures such as Lesser Death.
 - Calculate splash damage at 2x
