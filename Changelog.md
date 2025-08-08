@@ -1,3 +1,7 @@
+## 1.5.3 - 2025-08-09
+- Nevermind, Holy/Unholy won't appear that much, my statistics were wrong!
+- Added a separate setting for the warnings
+
 ## 1.5.1 - 2025-08-06
 - Add warnings based on traits about missing traits and missing I/W/R. Holy/Unholy will appear a lot in warnings!
 
