@@ -38,7 +38,6 @@ All of these guidelines are being followed by the majority of official creatures
 
 Outliers that are commonly broken but I still chose to warn about:
 - low-level flying with ranged attack - 20% of the low-level flying creatures break it, but it's still helpful to see
-- everything about holy/unholy missing, because it's just pre-Remaster creatures missing these
 
 Some examples of problematic creatures that will trigger warnings: Lesser Death. Tzitzimitl, Floolf
 

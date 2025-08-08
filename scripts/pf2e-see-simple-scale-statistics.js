@@ -289,8 +289,7 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
     const weaknessType = $el.dataset['weakness'] // e.g. "acid"
     // note that weaknesses are flipped - so that a high weakness is colored as "low" (because it's a negative).
     // they are already flipped in the statistics tables, but this comment is here to remind you of this.
-    const weaknessData = getProperty(npc, `system.attributes.weaknesses`).
-      find(w => w.type === weaknessType)
+    const weaknessData = getProperty(npc, `system.attributes.weaknesses`).find(w => w.type === weaknessType)
     const weaknessValue = weaknessData.value * artificiallyInflateIfVeryCommonType(weaknessData)
     calculateAndMarkStatisticInHtml(html, npc, statistic, weaknessValue)
   })
@@ -302,8 +301,7 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
       styleOptionUsed: 'primary',
     }
     const resistanceType = $el.dataset['resistance'] // e.g. "acid"
-    const resistanceData = getProperty(npc, `system.attributes.resistances`).
-      find(w => w.type === resistanceType)
+    const resistanceData = getProperty(npc, `system.attributes.resistances`).find(w => w.type === resistanceType)
     const resistanceValue = resistanceData.value * artificiallyInflateIfVeryCommonType(resistanceData)
     calculateAndMarkStatisticInHtml(html, npc, statistic, resistanceValue)
   })
@@ -370,6 +368,7 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
     // this actor has just been created, ignore it
     return []
   }
+  const mode = game.settings.get(MODULE_ID, 'warnings-mode')
   const summarizedStatistics = {
     hp: null,
     ac: null,
@@ -450,8 +449,10 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
   const warnIfMissingTrait = (traitWith, traitWithout, pctFailing) => {
     if (traits.includes(traitWith) && !traits.includes(traitWithout)) {
       let addition = ''
-      if (traitWithout.includes('holy') && !npc.system.details.publication.remaster)
+      if (traitWithout.includes('holy') && !npc.system.details.publication.remaster) {
+        if (mode === 'atheist') return
         addition = ' This pre-Remaster creature should have the trait added now!'
+      }
       warnings.push({
         id: `missing-trait-${traitWithout}`,
         directText: `This creature does not have the ${traitWithout} trait`,
@@ -463,8 +464,10 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
   const warnIfMissingWeakness = (traitWith, weaknessWithout, pctFailing) => {
     if (traits.includes(traitWith) && !weaknesses.includes(weaknessWithout)) {
       let addition = ''
-      if (weaknessWithout.includes('holy') && !npc.system.details.publication.remaster)
+      if (weaknessWithout.includes('holy') && !npc.system.details.publication.remaster) {
+        if (mode === 'atheist') return
         addition = ' This pre-Remaster creature should have the weakness added now!'
+      }
       warnings.push({
         id: `missing-weakness-${weaknessWithout}`,
         directText: `This creature does not have a weakness to ${weaknessWithout}`,
@@ -504,30 +507,26 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
     }
   }
 
-  // e.g. Lomori Sprout
   warnIfMissingTrait('aeon', 'monitor', '9%')
   warnIfMissingTrait('angel', 'celestial', '0%')
-  // e.g. Planetar, Movanic deva
-  warnIfMissingTrait('angel', 'holy', '40%')
+  warnIfMissingTrait('angel', 'holy', '14%')
   warnIfMissingTrait('archon', 'celestial', '0%')
-  // e.g. Lantern Archon, Trumpet Archon
-  warnIfMissingTrait('archon', 'holy', '45%')
+  warnIfMissingTrait('archon', 'holy', '0%')
   warnIfMissingTrait('azata', 'celestial', '0%')
-  // e.g. Ghaele, Bralani
-  warnIfMissingTrait('azata', 'holy', '37%')
+  warnIfMissingTrait('azata', 'holy', '0%')
   warnIfMissingWeakness('azata', 'cold-iron', '0%')
-  warnIfMissingTrait('celestial', 'holy', '60%')
+  warnIfMissingTrait('celestial', 'holy', '12%')
   warnIfMissingWeakness('celestial', 'unholy', '0%')
   warnIfMissingImmunityOrResistance('cold', 'cold', '4%')
   warnIfMissingTrait('daemon', 'fiend', '0%')
-  warnIfMissingTrait('daemon', 'unholy', '66%')
+  warnIfMissingTrait('daemon', 'unholy', '0%')
   warnIfMissingImmunity('daemon', 'death-effects', '0%')
   warnIfMissingTrait('demon', 'fiend', '0%')
-  warnIfMissingTrait('demon', 'unholy', '66%')
+  warnIfMissingTrait('demon', 'unholy', '2%')
   warnIfMissingWeakness('demon', 'cold-iron', '6%')
   warnIfMissingTrait('devil', 'fiend', '0%')
-  warnIfMissingTrait('devil', 'unholy', '66%')
-  warnIfMissingWeakness('devil', 'holy', '50%')
+  warnIfMissingTrait('devil', 'unholy', '2%')
+  warnIfMissingWeakness('devil', 'holy', '2%')
   warnIfMissingImmunity('devil', 'fire', '4%')
   //disabled:  e.g. Uthul, Zaramuun, Young Brine Dragon, Muurfeli, Ararda, Jaathoom...
   //warnIfMissingImmunity("elemental", "bleed", "30%")
@@ -535,8 +534,8 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
   //warnIfMissingImmunity("elemental", "poison", "30%")
   //warnIfMissingImmunity("elemental", "sleep", "30%")
   warnIfMissingWeakness('fey', 'cold-iron', '0%')
-  warnIfMissingTrait('fiend', 'unholy', '66%')
-  warnIfMissingWeakness('fiend', 'holy', '50%')
+  warnIfMissingTrait('fiend', 'unholy', '2%')
+  warnIfMissingWeakness('fiend', 'holy', '2%')
   warnIfMissingImmunityOrResistance('fire', 'fire', '2%')
   // Oozes usually have terrible AC
   if (traits.includes('ooze')) {
@@ -588,8 +587,7 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
   const mainValues = Object.entries(summarizedStatistics).filter(([k, v]) => v !== null
     && ['ac', 'hp', 'fortitude', 'reflex', 'will', 'attack1', 'damage1', 'spellAttack', 'spellDc'].includes(k),
   ).map(([, v]) => v)
-  const defenseValues = Object.entries(summarizedStatistics).
-    filter(([k, v]) => v !== null && ['ac', 'fortitude', 'reflex', 'will'].includes(k)).map(([, v]) => v)
+  const defenseValues = Object.entries(summarizedStatistics).filter(([k, v]) => v !== null && ['ac', 'fortitude', 'reflex', 'will'].includes(k)).map(([, v]) => v)
 
   // > Just about all creatures have at least one high value
   // > If you've made a creature that has four high stats and nothing low, or vice-versa, take another look.
@@ -944,7 +942,7 @@ const addElementToNpcSheet = (sheet, html) => {
 }
 
 const addWarningsToNpcSheet = (sheet, html) => {
-  const isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
+  const isEnabled = game.settings.get(MODULE_ID, 'warnings-mode') !== 'disabled'
   const newNode = `
 <a class="pf2e-see-simple-scale-statistics-warnings-button"></a>
 `
@@ -989,15 +987,15 @@ const refreshWarningsElement = (html, warnings) => {
   )
 
   const warningsHtml = warnings.map((w, i) =>
-      `<p>
+    `<p>
   <b>${i + 1}. ${w.directText}</b>
   <br/>
   <i>${w.reasoningQuote}</i>
   <br/>
-  (only ${w.percentThatFailThis} of relevant creatures fail this guideline.)
+  (${w.percentThatFailThis === "0%" ? "" : "only "}${w.percentThatFailThis} of relevant creatures fail this guideline.)
 </p>`,
-    ).join('')
-    //+ `<p><br/><br/><i>Click to re-check.</i></p>`
+  ).join('')
+  //+ `<p><br/><br/><i>Click to re-check.</i></p>`
   warningsButton.attr('data-tooltip', warningsHtml)
 }
 
@@ -1049,6 +1047,19 @@ const registerSettings = () => {
     config: true,
     type: Boolean,
     default: false,
+  })
+  game.settings.register(MODULE_ID, 'warnings-mode', {
+    name: `Warn about guideline-breaking statistics`,
+    hint: `Warnings are shown next to the button, in NPC sheets that e.g. have too many extreme statistics.`,
+    scope: 'client',
+    config: true,
+    type: String,
+    choices: {
+      'disabled': 'Disabled',
+      'full': 'Fully enabled',
+      'atheist': 'Yes, except don\'t warn about missing Holy and Unholy traits pre-remaster',
+    },
+    default: 'full',
   })
 }
 
