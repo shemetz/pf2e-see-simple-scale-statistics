@@ -1,3 +1,11 @@
+:root {
+    --color-pf2e-ssss-terrible: #ff0000;
+    --color-pf2e-ssss-low: #ff8000;
+    --color-pf2e-ssss-moderate: #ffff54;
+    --color-pf2e-ssss-high: #3cff00;
+    --color-pf2e-ssss-extreme: #6cd8ff;
+}
+
 .pf2e-see-simple-scale-statistics-container {
     display: flex;
     flex-direction: row;
@@ -39,15 +47,15 @@
 
 
 .pf2e-see-simple-scale-statistics-Terrible-color-primary:not(:hover) {
-    text-shadow: 0 0 10px #ff0000;
+    text-shadow: 0 0 10px var(--color-pf2e-ssss-terrible);
 }
 
 .pf2e-see-simple-scale-statistics-Terrible-color-secondary {
-    color: #ff0000 !important;
+    color: var(--color-pf2e-ssss-terrible) !important;
 }
 
 .pf2e-see-simple-scale-statistics-Terrible-color-legend {
-    background-color: #ff0000;
+    background-color: var(--color-pf2e-ssss-terrible);
 }
 
 .pf2e-see-simple-scale-statistics-Terrible-border-primary {
@@ -67,15 +75,15 @@
 }
 
 .pf2e-see-simple-scale-statistics-Low-color-primary:not(:hover) {
-    text-shadow: 0 0 10px #ff8000;
+    text-shadow: 0 0 10px var(--color-pf2e-ssss-low);
 }
 
 .pf2e-see-simple-scale-statistics-Low-color-secondary {
-    color: #ff8000 !important;
+    color: var(--color-pf2e-ssss-low) !important;
 }
 
 .pf2e-see-simple-scale-statistics-Low-color-legend {
-    background-color: #ff8000;
+    background-color: var(--color-pf2e-ssss-low);
 }
 
 .pf2e-see-simple-scale-statistics-Low-border-primary {
@@ -95,15 +103,15 @@
 }
 
 .pf2e-see-simple-scale-statistics-Moderate-color-primary:not(:hover) {
-    text-shadow: 0 0 10px #ffff54;
+    text-shadow: 0 0 10px var(--color-pf2e-ssss-moderate);
 }
 
 .pf2e-see-simple-scale-statistics-Moderate-color-secondary {
-    color: #ffff54 !important;
+    color: var(--color-pf2e-ssss-moderate) !important;
 }
 
 .pf2e-see-simple-scale-statistics-Moderate-color-legend {
-    background-color: #ffff54;
+    background-color: var(--color-pf2e-ssss-moderate);
 }
 
 .pf2e-see-simple-scale-statistics-Moderate-border-primary {
@@ -123,15 +131,15 @@
 }
 
 .pf2e-see-simple-scale-statistics-High-color-primary:not(:hover) {
-    text-shadow: 0 0 10px #3cff00;
+    text-shadow: 0 0 10px var(--color-pf2e-ssss-high);
 }
 
 .pf2e-see-simple-scale-statistics-High-color-secondary {
-    color: #3cff00 !important;
+    color: var(--color-pf2e-ssss-high) !important;
 }
 
 .pf2e-see-simple-scale-statistics-High-color-legend {
-    background-color: #3cff00;
+    background-color: var(--color-pf2e-ssss-high);
 }
 
 .pf2e-see-simple-scale-statistics-High-border-primary {
@@ -151,15 +159,15 @@
 }
 
 .pf2e-see-simple-scale-statistics-Extreme-color-primary:not(:hover) {
-    text-shadow: 0 0 10px #6cd8ff;
+    text-shadow: 0 0 10px var(--color-pf2e-ssss-extreme);
 }
 
 .pf2e-see-simple-scale-statistics-Extreme-color-secondary {
-    color: #6cd8ff !important;
+    color: var(--color-pf2e-ssss-extreme) !important;
 }
 
 .pf2e-see-simple-scale-statistics-Extreme-color-legend {
-    background-color: #6cd8ff;
+    background-color: var(--color-pf2e-ssss-extreme);
 }
 
 .pf2e-see-simple-scale-statistics-Extreme-border-primary {
