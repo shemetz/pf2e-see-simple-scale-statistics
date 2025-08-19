@@ -1,3 +1,6 @@
+## 1.5.4 - 2025-08-19
+- Fixed code typo in resistance warning check (fixes #21)
+
 ## 1.5.3 - 2025-08-09
 - Nevermind, Holy/Unholy won't appear that much, my statistics were wrong!
 - Added a separate setting for the warnings
