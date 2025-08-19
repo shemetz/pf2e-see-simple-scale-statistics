@@ -59,6 +59,7 @@
 }
 
 .pf2e-see-simple-scale-statistics-Terrible-border-primary {
+    border-color: black;
     border-style: dotted hidden hidden dotted;
     border-width: 1px;
 }
@@ -87,6 +88,7 @@
 }
 
 .pf2e-see-simple-scale-statistics-Low-border-primary {
+    border-color: black;
     border-style: dotted;
     border-width: 2px 1px 1px 2px;
 }
@@ -115,6 +117,7 @@
 }
 
 .pf2e-see-simple-scale-statistics-Moderate-border-primary {
+    border-color: black;
     border-style: dashed dotted dotted dashed;
     border-width: 2px;
 }
@@ -143,6 +146,7 @@
 }
 
 .pf2e-see-simple-scale-statistics-High-border-primary {
+    border-color: black;
     border-style: solid dashed dashed solid;
     border-width: 3px;
 }
@@ -171,6 +175,7 @@
 }
 
 .pf2e-see-simple-scale-statistics-Extreme-border-primary {
+    border-color: black;
     border-style: solid;
     border-width: 3px;
 }
