@@ -477,7 +477,7 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
     }
   }
   const warnIfMissingResistance = (traitWith, resistanceWithout, pctFailing) => {
-    if (traits.includes(traitWith) && !immunities.includes(resistanceWithout)) {
+    if (traits.includes(traitWith) && !resistances.includes(resistanceWithout)) {
       warnings.push({
         id: `missing-resistance-${resistanceWithout}`,
         directText: `This creature does not have a resistance to ${resistanceWithout}`,
