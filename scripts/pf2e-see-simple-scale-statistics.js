@@ -1046,7 +1046,7 @@ const registerSettings = () => {
     scope: 'client',
     config: true,
     type: Boolean,
-    default: false,
+    default: true,
   })
   game.settings.register(MODULE_ID, 'warnings-mode', {
     name: `Warn about guideline-breaking statistics`,
