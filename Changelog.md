@@ -1,3 +1,8 @@
+## 1.5.5 - 2025-08-19
+- Fix borders not applying on primary statistics (#23)
+- Add CSS variables for colors (#23)
+- Change `treat-broad-iwr-as-more-important` default to true
+
 ## 1.5.4 - 2025-08-19
 - Fixed code typo in resistance warning check (fixes #21)
 
