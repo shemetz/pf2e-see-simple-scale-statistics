@@ -1,3 +1,6 @@
+## 1.5.6 - 2025-08-22
+- Change accessible border styling to be more prominent (#23)
+
 ## 1.5.5 - 2025-08-19
 - Fix borders not applying on primary statistics (#23)
 - Add CSS variables for colors (#23)
