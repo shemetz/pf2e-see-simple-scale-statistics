@@ -115,3 +115,6 @@ Obviously, some aspects are ignored, so don't put TOO much stock in what the mod
 
 ![](metadata/demo_1.gif)
 
+## Discussion
+
+You can discuss this module in its [dedicated thread in the Pathfinder on Foundry discord server](https://discord.com/channels/880968862240239708/1384807515967193098), or open a github issue here if it's a bug or a feature request.
