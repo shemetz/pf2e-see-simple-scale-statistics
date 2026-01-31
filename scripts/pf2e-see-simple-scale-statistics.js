@@ -252,6 +252,7 @@ const artificiallyInflateIfVeryCommonType = (resistanceOrWeaknessData) => {
 
 const markStatisticsInNpcSheet = (npc, html, template) => {
   const isSimpleSheet = template === 'systems/pf2e/templates/actors/npc/simple-sheet.hbs'
+    || template === 'systems/sf2e/templates/actors/npc/simple-sheet.hbs'
   if (isSimpleSheet) {
     for (const statistic of getMainNpcStatisticsForSimpleSheetNpc()) {
       calculateAndMarkStatisticInHtml(html, npc, statistic, getProperty(npc, statistic.property))
@@ -992,7 +993,7 @@ const refreshWarningsElement = (html, warnings) => {
   <br/>
   <i>${w.reasoningQuote}</i>
   <br/>
-  (${w.percentThatFailThis === "0%" ? "" : "only "}${w.percentThatFailThis} of relevant creatures fail this guideline.)
+  (${w.percentThatFailThis === '0%' ? '' : 'only '}${w.percentThatFailThis} of relevant creatures fail this guideline.)
 </p>`,
   ).join('')
   //+ `<p><br/><br/><i>Click to re-check.</i></p>`
