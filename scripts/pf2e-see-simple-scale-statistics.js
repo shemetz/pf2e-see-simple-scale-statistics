@@ -586,7 +586,7 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
   }
 
   const mainValues = Object.entries(summarizedStatistics).filter(([k, v]) => v !== null
-    && ['ac', 'hp', 'fortitude', 'reflex', 'will', 'attack1', 'damage1', 'spellAttack', 'spellDc'].includes(k),
+    && ['ac', 'hp', 'fortitude', 'reflex', 'will', 'attack1', 'damage1', 'attack2', 'damage2', 'attack3', 'damage3', 'spellAttack', 'spellDc'].includes(k),
   ).map(([, v]) => v)
   const defenseValues = Object.entries(summarizedStatistics).filter(([k, v]) => v !== null && ['ac', 'fortitude', 'reflex', 'will'].includes(k)).map(([, v]) => v)
 
