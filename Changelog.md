@@ -1,3 +1,6 @@
+## 1.6.0 - 2026-02-02
+- Added Starfinder 2e compatibility
+
 ## 1.5.6 - 2025-08-22
 - Change accessible border styling to be more prominent (#23)
 
