@@ -513,12 +513,14 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
   warnIfMissingTrait('angel', 'holy', '14%')
   warnIfMissingTrait('archon', 'celestial', '0%')
   warnIfMissingTrait('archon', 'holy', '0%')
+  warnIfMissingImmunityOrResistance('archon', 'fear', '33%') // e.g. Lantern Archon.  but Monster Core 2 or 3 will probably fix them
   warnIfMissingTrait('azata', 'celestial', '0%')
   warnIfMissingTrait('azata', 'holy', '0%')
   warnIfMissingWeakness('azata', 'cold-iron', '0%')
   warnIfMissingTrait('celestial', 'holy', '12%')
   warnIfMissingWeakness('celestial', 'unholy', '0%')
   warnIfMissingImmunityOrResistance('cold', 'cold', '4%')
+  warnIfMissingTrait('drift', 'cosmic', '0%')
   warnIfMissingTrait('daemon', 'fiend', '0%')
   warnIfMissingTrait('daemon', 'unholy', '0%')
   warnIfMissingImmunity('daemon', 'death-effects', '0%')
@@ -557,6 +559,9 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
   warnIfMissingImmunity('psychopomp', 'disease', '0%')
   warnIfMissingResistance('psychopomp', 'poison', '0%')
   warnIfMissingResistance('psychopomp', 'void', '0%')
+  warnIfMissingTrait('spectra', 'cosmic', '0%')
+  warnIfMissingTrait('spectra', 'specter', '0%')
+  warnIfMissingImmunity('swarm', 'precision', '5%')
   // Swarms usually have low HP
   if (traits.includes('swarm')) {
     if (summarizedStatistics.hp !== 'Moderate' && summarizedStatistics.hp !== 'Low' && summarizedStatistics.hp !==
@@ -645,6 +650,18 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
       },
     )
   }
+  // > Creatures with an extreme AC at lower levels can make for frustrating foes that require exceptionally high rolls to hit
+  // e.g. Mister Beak, Champion of Rovagug, Reefclaw, Quickling, Vanara Disciple
+  if (npc.level <= 5 && summarizedStatistics.ac === 'Extreme') {
+    warnings.push(
+      {
+        id: 'all-high-defenses',
+        directText: `This low-level creature's AC is Extreme (AC near ${TABLES.AC[npc.level]['Extreme']}).`,
+        reasoningQuote: 'Creatures with an extreme AC at lower levels can make for frustrating foes that require exceptionally high rolls to hit',
+        percentThatFailThis: '1%', // 1% in pathfinder, 0 in Starfinder,
+      },
+    )
+  }
     // > Almost no creature should have more than one extreme save, even at high levels.
   // e.g. Lesser Death
   else if (defenseValues.filter(v => v === 'Extreme').length >= 2) {
@@ -709,8 +726,9 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
   }
   // > While you can give your creature a fly Speed at those low levels, it's better to wait until around 7th level (when PCs gain access to fly) to give your creature a fly Speed if it also has ranged attacks or another way to harry the PCs from a distance indefinitely.
   // e.g. Living Thunderclap
-  if (npc.level <= 5
-    && npc.system.attributes.speed.otherSpeeds.some(sp => sp.type === 'fly')
+  if (game.system.id === "pf2e"
+    && npc.level <= 5
+    && npc.system.movement.speeds.fly
     && npc.system.actions.some(a => a.type === 'strike' && a.item.isRanged)
   ) {
     warnings.push(
@@ -719,6 +737,22 @@ const judgeNpcAndAddWarningsInSheet = (npc) => {
         directText: 'This low-level creature has a fly speed and a ranged attack.',
         reasoningQuote: 'While you can give your creature a fly Speed at those low levels, it\'s better to wait until around 7th level (when PCs gain access to fly) to give your creature a fly Speed if it also has ranged attacks or another way to harry the PCs from a distance indefinitely.',
         percentThatFailThis: '20%', // of low-level creatures with fly speed
+      },
+    )
+  }
+  // in starfinder the limit is lower and the system still breaks its guidelines often...
+  // e.g. Noquasar Spark, Hardlight Dragonet, Clangit
+  if (game.system.id === "sf2e"
+    && npc.level <= 0
+    && npc.system.movement.speeds.fly
+    && npc.system.actions.some(a => a.type === 'strike' && a.item.isRanged)
+  ) {
+    warnings.push(
+      {
+        id: 'fly-speed-at-low-level',
+        directText: 'This very-low-level creature has a fly speed and a ranged attack.',
+        reasoningQuote: 'it\'s better to wait until around 3rd level (when PCs have enough feats to support ranged attacks and access to items like jump jets and jet packs) to give your creature a fly Speed if it also has ranged attacks or another way to harry the PCs from a distance indefinitely.',
+        percentThatFailThis: '35%', // of very-low-level creatures with a ranged attack
       },
     )
   }
