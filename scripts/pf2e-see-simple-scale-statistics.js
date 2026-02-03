@@ -264,7 +264,7 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
     }
     return
   }
-  if (npc.adjustments.elite || npc.adjustments.weak) {
+  if (npc.attributes.adjustment === "elite" || npc.attributes.adjustment === "weak") {
     // won't touch Elite/Weak sheets, we don't know how to easily take this into account
     return
   }
@@ -378,9 +378,9 @@ const judgeNpcStatisticsByGuidelines = (npc) => {
     // this actor has just been created, ignore it
     return []
   }
-  if (npc.adjustments.elite || npc.adjustments.weak) {
+  if (npc.attributes.adjustment === "elite" || npc.attributes.adjustment === "weak") {
     // won't touch Elite/Weak sheets, we don't know how to easily take this into account
-    return
+    return []
   }
   let level = npc.level
   if (level >= 25 || level <= -2) {
@@ -1202,7 +1202,7 @@ Hooks.once('init', () => {
     if (sheet.object.type !== 'npc') return
     addElementToNpcSheet(sheet, html)
     // todo cleanup code a bit, increase performance for frequent renders
-    const isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
+    const isEnabled = game.settings.get(MODULE_ID, 'toggle-on') && !(sheet.object.attributes.adjustment === "elite" || sheet.object.attributes.adjustment === "weak")
     if (isEnabled) {
       markStatisticsInNpcSheet(sheet.object, html, sheet.template)
     } else {
