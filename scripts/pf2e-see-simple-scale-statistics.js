@@ -877,7 +877,7 @@ const judgeNpcStatisticsByGuidelines = (npc) => {
         const damageRolls = strike.system.damageRolls
         const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData), 0)
         const damageScale = getSimpleScale(avgTotalDamage, level, 'strike_damage')
-        if (action.traits.includes(t => t.name === 'agile') && damageScale === 'Extreme') {
+        if (strike.system.traits.value.includes('agile') && damageScale === 'Extreme') {
           warnings.push(
             {
               id: 'agile-strike-with-extreme-damage',
@@ -887,7 +887,7 @@ const judgeNpcStatisticsByGuidelines = (npc) => {
             },
           )
         }
-        if (action.item.isRanged && damageScale === 'Extreme') {
+        if (strike.isRanged && damageScale === 'Extreme') {
           // e.g. Jafaki, Grothlut, Kadamel, Siegebreaker
           warnings.push(
             {
