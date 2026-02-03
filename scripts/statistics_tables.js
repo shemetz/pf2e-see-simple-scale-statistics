@@ -13,10 +13,6 @@ export const TABLES = {
   SPELL_ATTACK: {},
 }
 
-self.PF2E_SEE_SIMPLE_SCALE_STATISTICS = {
-  TABLES,
-}
-
 export const initializeTables = () => {
 // copied from:
 // https://2e.aonprd.com/Rules.aspx?ID=995
