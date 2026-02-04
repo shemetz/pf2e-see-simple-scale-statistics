@@ -1,3 +1,8 @@
+## 1.7.0 - 2026-02-04
+- Improved various guideline warnings and their percentages, after running a script to get bulk judgements
+- Started to ignore Elite/Weak sheets 
+- Fixed check for agile-strike-with-extreme-damage 
+
 ## 1.6.0 - 2026-02-02
 - Added Starfinder 2e compatibility
 

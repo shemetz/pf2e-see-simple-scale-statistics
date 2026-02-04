@@ -14,7 +14,7 @@ or [directly copy the manifest link for the latest release](https://github.com/s
 
 ![](metadata/demo_2_v2.gif)
 
-## New Feature - Creature-building warnings!
+## Feature - Creature-building warnings
 
 ![](metadata/warnings_lesser_death.png)
 
@@ -23,6 +23,7 @@ your cursor.
 
 Warnings are based on the [Building Creatures guidelines](https://2e.aonprd.com/Rules.aspx?ID=2874), such as:
 
+- creature has a statistic that is significantly beyond Extreme or beyond Terrible, e.g. AC 50 at level 10
 - creature has no low primary statistics at all (ac, hp, saves, attacks, damages, spell dc -- all at Moderate scale or
   higher)
 - creature has four high (or extreme) defenses
@@ -38,6 +39,7 @@ All of these guidelines are being followed by the majority of official creatures
 
 Outliers that are commonly broken but I still chose to warn about:
 - low-level flying with ranged attack - 20% of the low-level flying creatures break it, but it's still helpful to see
+- creatures with the fey trait that don't have weakness to cold iron (25% of fey creatures break this)
 
 Some examples of problematic creatures that will trigger warnings: Lesser Death. Tzitzimitl, Floolf
 
@@ -48,17 +50,14 @@ client-side and global for all sheets).
 
 Each important statistic of the creature will be recolored to indicate where it lies on a simple scale!
 
-The module will not "notice" Elite/Weak, or any other effects - it will always color statistics based on their
-source/base value.
-
-## Use cases (for the GM)
+### Use cases (for the GM)
 
 - When a player uses Recall Knowledge and you want to tell them about well-known stats, or about whether a particular
   stat is high or low.
 - When you want to quickly grasp roughly how a creature is meant to be played (brute, sniper, etc), at a glance
 - When you're homebrewing or altering a creature - you want to avoid having too many extreme stats.
 
-## Supported stats
+### Supported stats
 
 All stats mentioned in [Building Creatures](https://2e.aonprd.com/Rules.aspx?ID=995) are supported.
 However, special features like Regeneration or Sneak Attack aren't taken into account.
@@ -73,13 +72,15 @@ However, special features like Regeneration or Sneak Attack aren't taken into ac
   into account)
 - Spellcasting (for each spellcasting ability): Attack bonus and DC
 
-## Colors
+The module will ignore Elite/Weak, disabling itself while those templates are active.
+
+### Colors
 
 ![](metadata/color_scale.png)
 
 Colors are cyan (Extreme), green (High), yellow (Moderate), orange (Low), and red (Terrible).
 
-## Borders
+### Borders
 
 ![](metadata/border_scale.png)
 
@@ -87,7 +88,7 @@ To improve accessibility for color-blind folks, there's also a setting to use bo
 
 Border scale is: solid (Extreme), dashed (High), dotted (Moderate), groove (Low), and inset (Terrible).
 
-## Where is the scale taken from?
+### Where is the scale taken from?
 
 [Building Creatures](https://2e.aonprd.com/Rules.aspx?ID=995), from the official Pathfinder 2e rules.
 
