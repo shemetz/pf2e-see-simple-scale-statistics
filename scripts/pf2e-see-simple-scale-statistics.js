@@ -264,7 +264,7 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
     }
     return
   }
-  if (npc.attributes.adjustment === "elite" || npc.attributes.adjustment === "weak") {
+  if (npc.attributes.adjustment === 'elite' || npc.attributes.adjustment === 'weak') {
     // won't touch Elite/Weak sheets, we don't know how to easily take this into account
     return
   }
@@ -369,7 +369,7 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
   }
 }
 
-const judgeNpcStatisticsByGuidelines = (npc) => {
+const judgeNpcStatisticsByGuidelines = (npc, template) => {
   if (
     npc.system.saves.fortitude.value === 0
     && npc.system.saves.reflex.value === 0
@@ -378,7 +378,12 @@ const judgeNpcStatisticsByGuidelines = (npc) => {
     // this actor has just been created, ignore it
     return []
   }
-  if (npc.attributes.adjustment === "elite" || npc.attributes.adjustment === "weak") {
+  const isSimpleSheet = template === 'systems/pf2e/templates/actors/npc/simple-sheet.hbs'
+    || template === 'systems/sf2e/templates/actors/npc/simple-sheet.hbs'
+  if (isSimpleSheet) {
+    return []
+  }
+  if (npc.attributes.adjustment === 'elite' || npc.attributes.adjustment === 'weak') {
     // won't touch Elite/Weak sheets, we don't know how to easily take this into account
     return []
   }
@@ -1067,7 +1072,7 @@ const addElementToNpcSheet = (sheet, html) => {
     markStatisticsInNpcSheet(sheet.object, html, sheet.template)
     // TODO refactor and streamline these a little, also increase performance
     if (isEnabled) {
-      const warnings = judgeNpcStatisticsByGuidelines(sheet.object)
+      const warnings = judgeNpcStatisticsByGuidelines(sheet.object, sheet.template)
       refreshWarningsElement(html, warnings)
     }
   })
@@ -1080,12 +1085,12 @@ const addWarningsToNpcSheet = (sheet, html) => {
 `
   html.find('DIV.pf2e-see-simple-scale-statistics-change-mode').before(newNode)
   if (isEnabled) {
-    const warnings = judgeNpcStatisticsByGuidelines(sheet.object)
+    const warnings = judgeNpcStatisticsByGuidelines(sheet.object, sheet.template)
     refreshWarningsElement(html, warnings)
   }
 
   html.find('A.pf2e-see-simple-scale-statistics-warnings-button').click(() => {
-    const warnings = judgeNpcStatisticsByGuidelines(sheet.object)
+    const warnings = judgeNpcStatisticsByGuidelines(sheet.object, sheet.template)
     refreshWarningsElement(html, warnings)
   })
 }
@@ -1202,7 +1207,7 @@ Hooks.once('init', () => {
     if (sheet.object.type !== 'npc') return
     addElementToNpcSheet(sheet, html)
     // todo cleanup code a bit, increase performance for frequent renders
-    const isEnabled = game.settings.get(MODULE_ID, 'toggle-on') && !(sheet.object.attributes.adjustment === "elite" || sheet.object.attributes.adjustment === "weak")
+    const isEnabled = game.settings.get(MODULE_ID, 'toggle-on') && !(sheet.object.attributes.adjustment === 'elite' || sheet.object.attributes.adjustment === 'weak')
     if (isEnabled) {
       markStatisticsInNpcSheet(sheet.object, html, sheet.template)
     } else {
