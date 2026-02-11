@@ -127,7 +127,7 @@ const getMainNpcStatisticsForSimpleSheetNpc = () => {
   return getMainNpcStatistics().filter(s => ['HP', 'Perception', 'Will'].includes(s.name))
 }
 
-const getSimpleScale = (baseValue, level, statisticType) => {
+const getSimpleScale = (baseValue, level, statisticType, verbose = null) => {
   if (level >= 25 || level <= -2) {
     // stats are off the charts.  we'll do the best we can by treating this as level 24 or level -1.
     // (this comes up with the Tarrasque, level 25 creature)
@@ -160,6 +160,10 @@ const getSimpleScale = (baseValue, level, statisticType) => {
       closestDiff = diff
     }
   }
+  if (verbose) {
+    verbose.diff = closestDiff
+    verbose.entries = scaleNumbers
+  }
   return closestKey
 }
 
@@ -177,7 +181,8 @@ const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) =
   const isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
   const useColors = game.settings.get(MODULE_ID, 'mark-with-colors')
   const useBorders = game.settings.get(MODULE_ID, 'mark-with-borders')
-  const scaleKeyWord = getSimpleScale(statisticValue, npc.level, statistic.type)
+  const scaleInfo = {}
+  const scaleKeyWord = getSimpleScale(statisticValue, npc.level, statistic.type, scaleInfo)
   const addOrRemoveClass = (isEnabled ? foundSelector.addClass : foundSelector.removeClass).bind(foundSelector)
   addOrRemoveClass('pf2e-ssss')
   if (useColors) {
@@ -185,6 +190,34 @@ const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) =
   }
   if (useBorders) {
     addOrRemoveClass(`${MODULE_ID}-${scaleKeyWord}-border-${statistic.styleOptionUsed}`)
+  }
+  if (isEnabled) {
+    let closestDelta = (scaleInfo.diff >= 0 ? "+" + scaleInfo.diff : scaleInfo.diff)
+    let tooltipText = `${statisticValue} is ${scaleKeyWord}${closestDelta}`
+    tooltipText += "<table>"
+    if (statistic.type == "strike_damage") {
+      tooltipText = "Average " + tooltipText
+      const ranges = TABLES.STRIKE_DAMAGE_RANGE[npc.level] ?? {}
+      for (const [key, value] of Object.entries(scaleInfo.entries)) {
+        tooltipText += (`<tr>`
+          + `<td align="right">${key}</td>`
+          + `<td>${value}</td>`
+          + `<td>${ranges[key] ?? "?"}</td>`
+        + `</tr>`)
+      }
+    } else {
+      for (const [key, value] of Object.entries(scaleInfo.entries)) {
+        tooltipText += (`<tr>`
+          + `<td align="right">${key}</td>`
+          + `<td>${value}</td>`
+        + `</tr>`)
+      }
+    }
+    tooltipText += `</table>`
+    const target = foundSelector[0]
+    setTimeout(() => {
+      target.dataset.tooltip = tooltipText
+    }, 100)
   }
 }
 

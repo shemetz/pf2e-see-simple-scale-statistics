@@ -9,6 +9,7 @@ export const TABLES = {
   RESISTANCES: {},
   STRIKE_ATTACK: {},
   STRIKE_DAMAGE: {},
+  STRIKE_DAMAGE_RANGE: {},
   SPELL_DC: {},
   SPELL_ATTACK: {},
 }
@@ -397,17 +398,29 @@ export const initializeTables = () => {
   for (let line of TABLE_STRIKE_DAMAGE_RAW.split('\n')) {
     if (!line) continue
     line = line.replaceAll('–', '-')
-    const [level, Extreme, High, Moderate, Low] = line.split('\t')
+    const pairs = line.split('\t')
       .map(s => {
         const split = s.split(' ')
-        if (split.length < 2) return parseInt(s)
-        else {
+        if (split.length < 2) {
+          return { range: s, avg: parseInt(s) }
+        } else {
           const numWithParens = split[1]
-          return parseInt(numWithParens.substring(1, numWithParens.length - 1))
+          return {
+            range: split[0],
+            avg: parseInt(numWithParens.substring(1, numWithParens.length - 1))
+          }
         }
       })
+    const [level, Extreme, High, Moderate, Low] = pairs.map(pair => pair.avg)
+    const ranges = pairs.map(pair => pair.range)
     const myDefinitionOfTerrible = Low - (Moderate - Low) - 1
     TABLES.STRIKE_DAMAGE[level] = { Extreme, High, Moderate, Low, Terrible: myDefinitionOfTerrible }
+    TABLES.STRIKE_DAMAGE_RANGE[level] = {
+      Extreme: ranges[1],
+      High: ranges[2],
+      Moderate: ranges[3],
+      Low: ranges[4]
+    }
   }
 
 // Table 2–11: Spell DC and Spell Attack Bonus
