@@ -1,3 +1,19 @@
+## 1.7.0 - 2026-02-04
+- Improved various guideline warnings and their percentages, after running a script to get bulk judgements
+- Started to ignore Elite/Weak sheets 
+- Fixed check for agile-strike-with-extreme-damage 
+
+## 1.6.0 - 2026-02-02
+- Added Starfinder 2e compatibility
+
+## 1.5.6 - 2025-08-22
+- Change accessible border styling to be more prominent (#23)
+
+## 1.5.5 - 2025-08-19
+- Fix borders not applying on primary statistics (#23)
+- Add CSS variables for colors (#23)
+- Change `treat-broad-iwr-as-more-important` default to true
+
 ## 1.5.4 - 2025-08-19
 - Fixed code typo in resistance warning check (fixes #21)
 
