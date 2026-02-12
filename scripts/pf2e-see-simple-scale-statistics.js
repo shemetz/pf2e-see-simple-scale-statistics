@@ -137,6 +137,7 @@ const getScaleNumbers = (statisticType, level) => {
   return {
     ac: TABLES.AC,
     hp: TABLES.HP,
+    hp_range: TABLES.HP_RANGE,
     weaknesses: TABLES.WEAKNESSES,
     resistances: TABLES.RESISTANCES,
     perception: TABLES.PERCEPTION,
@@ -147,6 +148,7 @@ const getScaleNumbers = (statisticType, level) => {
     spell_dc: TABLES.SPELL_DC,
     strike_attack: TABLES.STRIKE_ATTACK,
     strike_damage: TABLES.STRIKE_DAMAGE,
+    strike_damage_range: TABLES.STRIKE_DAMAGE_RANGE,
   }[statisticType][level]
 }
 
@@ -155,19 +157,23 @@ const getSimpleScale = (baseValue, level, statisticType, verbose = null) => {
   // using the relevant scale, picking the value that is closest to the base value
   let closestKey = null
   let closestDiff = null
+  let closestDelta = 0
   for (const [key, value] of Object.entries(scaleNumbers)) {
     if (value === null) continue
-    const diff = Math.abs(baseValue - value)
+    const delta = baseValue - value
+    const diff = Math.abs(delta)
     if (closestDiff === null || diff < closestDiff
       // tiebreaking towards middle - e.g. if +15 is High and +13 is Moderate, a +14 will count as Moderate
       || (diff === closestDiff && isCloserToMiddle(key, closestKey))) {
       closestKey = key
       closestDiff = diff
+      closestDelta = delta
     }
   }
   if (verbose) {
     verbose.diff = closestDiff
     verbose.entries = scaleNumbers
+    verbose.delta = closestDelta
   }
   return closestKey
 }
@@ -197,17 +203,26 @@ const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) =
     addOrRemoveClass(`${MODULE_ID}-${scaleKeyWord}-border-${statistic.styleOptionUsed}`)
   }
   if (isEnabled) {
-    let closestDelta = (scaleInfo.diff >= 0 ? "+" + scaleInfo.diff : scaleInfo.diff)
+    let closestDelta = (scaleInfo.delta >= 0 ? "+" + scaleInfo.delta : scaleInfo.delta)
     let tooltipText = `${statisticValue} is ${scaleKeyWord}${closestDelta}`
     tooltipText += "<table>"
     if (statistic.type == "strike_damage") {
-      tooltipText = "Average " + tooltipText
-      const ranges = TABLES.STRIKE_DAMAGE_RANGE[npc.level] ?? {}
+      tooltipText = "Average of " + tooltipText
+      const ranges = getScaleNumbers("strike_damage_range", npc.level)
       for (const [key, value] of Object.entries(scaleInfo.entries)) {
         tooltipText += (`<tr>`
           + `<td align="right">${key}</td>`
           + `<td>${value}</td>`
-          + `<td>${ranges[key] ?? "?"}</td>`
+          + `<td>${ranges[key] ?? ""}</td>`
+        + `</tr>`)
+      }
+    } else if (statistic.type == "hp") {
+      const ranges = getScaleNumbers("hp_range", npc.level)
+      for (const [key, value] of Object.entries(scaleInfo.entries)) {
+        tooltipText += (`<tr>`
+          + `<td align="right">${key}</td>`
+          + `<td>${value}</td>`
+          + `<td>${ranges[key] ?? ""}</td>`
         + `</tr>`)
       }
     } else {
