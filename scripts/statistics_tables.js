@@ -424,7 +424,7 @@ export const initializeTables = () => {
         }
       })
     const [level, Extreme, High, Moderate, Low] = pairs.map(pair => pair.avg)
-    const ranges = pairs.map(pair => pair.range)
+    const ranges = pairs.map(pair => `${pair.range} (${pair.avg})`)
     const myDefinitionOfTerrible = Low - (Moderate - Low) - 1
     TABLES.STRIKE_DAMAGE[level] = { Extreme, High, Moderate, Low, Terrible: myDefinitionOfTerrible }
     TABLES.STRIKE_DAMAGE_RANGE[level] = {

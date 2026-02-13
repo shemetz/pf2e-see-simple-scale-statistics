@@ -5,6 +5,8 @@ const MODULE_ID = 'pf2e-see-simple-scale-statistics'
 
 const { getProperty } = foundry.utils
 
+const localize = (keyStartingWithDot) => game.i18n.localize(`${MODULE_ID}${keyStartingWithDot}`)
+
 const isCloserToMiddle = (key1, key2) => {
   if (key1 === 'Moderate') return true
   if (key2 === 'Moderate') return false
@@ -15,111 +17,135 @@ const getMainNpcStatistics = () => {
   return [
     {
       name: 'AC',
+      translatedName: localize('.StatisticTooltip.StatisticType.ac'),
       id: 'ac',
       type: 'ac',
       property: '_source.system.attributes.ac.value',
       selector: 'input[data-property="system.attributes.ac.value"]',
       ittSelector: 'div[data-section="ac"]',
       styleOptionUsed: 'primary',
+      positiveHasPlus: false,
     },
     {
       name: 'HP',
+      translatedName: localize('.StatisticTooltip.StatisticType.hp'),
       id: 'hp',
       type: 'hp',
       property: '_source.system.attributes.hp.max',
       selector: 'input[data-property="system.attributes.hp.max"]',
       ittSelector: 'div[data-section="hp"]',
       styleOptionUsed: 'primary',
+      positiveHasPlus: false,
     },
     {
       name: 'Perception',
+      translatedName: localize('.StatisticTooltip.StatisticType.perception'),
       id: 'perception',
       type: 'perception',
       property: '_source.system.perception.mod',
       selector: 'input[data-property="system.perception.mod"]',
       ittSelector: 'a[data-slug="perception"]',
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     },
     {
       name: 'Fortitude',
+      translatedName: localize('.StatisticTooltip.StatisticType.fortitude'),
       id: 'fortitude',
       type: 'save',
       property: '_source.system.saves.fortitude.value',
       selector: 'input[data-property="system.saves.fortitude.value"]',
       ittSelector: 'a[data-save="fortitude"]',
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     },
     {
       name: 'Reflex',
+      translatedName: localize('.StatisticTooltip.StatisticType.reflex'),
       id: 'reflex',
       type: 'save',
       property: '_source.system.saves.reflex.value',
       selector: 'input[data-property="system.saves.reflex.value"]',
       ittSelector: 'a[data-save="reflex"]',
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     },
     {
       name: 'Will',
+      translatedName: localize('.StatisticTooltip.StatisticType.will'),
       id: 'will',
       type: 'save',
       property: '_source.system.saves.will.value',
       selector: 'input[data-property="system.saves.will.value"]',
       ittSelector: 'a[data-save="will"]',
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     },
     {
       name: 'Strength',
+      translatedName: localize('.StatisticTooltip.StatisticType.str'),
       id: 'str',
       type: 'ability',
       property: '_source.system.abilities.str.mod',
       selector: 'input[data-property="system.abilities.str.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     },
     {
       name: 'Dexterity',
+      translatedName: localize('.StatisticTooltip.StatisticType.dex'),
       id: 'dex',
       type: 'ability',
       property: '_source.system.abilities.dex.mod',
       selector: 'input[data-property="system.abilities.dex.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     },
     {
       name: 'Constitution',
+      translatedName: localize('.StatisticTooltip.StatisticType.con'),
       id: 'con',
       type: 'ability',
       property: '_source.system.abilities.con.mod',
       selector: 'input[data-property="system.abilities.con.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     },
     {
       name: 'Intelligence',
+      translatedName: localize('.StatisticTooltip.StatisticType.int'),
       id: 'int',
       type: 'ability',
       property: '_source.system.abilities.int.mod',
       selector: 'input[data-property="system.abilities.int.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     },
     {
       name: 'Wisdom',
+      translatedName: localize('.StatisticTooltip.StatisticType.wis'),
       id: 'wis',
       type: 'ability',
       property: '_source.system.abilities.wis.mod',
       selector: 'input[data-property="system.abilities.wis.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     },
     {
       name: 'Charisma',
+      translatedName: localize('.StatisticTooltip.StatisticType.cha'),
       id: 'cha',
       type: 'ability',
       property: '_source.system.abilities.cha.mod',
       selector: 'input[data-property="system.abilities.cha.mod"]',
       ittSelector: undefined,
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     },
   ]
 }
@@ -128,37 +154,39 @@ const getMainNpcStatisticsForSimpleSheetNpc = () => {
   return getMainNpcStatistics().filter(s => ['HP', 'Perception', 'Will'].includes(s.name))
 }
 
+const TABLE_OF_TYPE = {
+  ac: TABLES.AC,
+  hp: TABLES.HP,
+  hp_range: TABLES.HP_RANGE,
+  weaknesses: TABLES.WEAKNESSES,
+  resistances: TABLES.RESISTANCES,
+  perception: TABLES.PERCEPTION,
+  save: TABLES.SAVES,
+  ability: TABLES.ABILITY_MODIFIER,
+  skill: TABLES.SKILLS,
+  spell_attack: TABLES.SPELL_ATTACK,
+  spell_dc: TABLES.SPELL_DC,
+  strike_attack: TABLES.STRIKE_ATTACK,
+  strike_damage: TABLES.STRIKE_DAMAGE,
+  strike_damage_range: TABLES.STRIKE_DAMAGE_RANGE,
+}
+
 const getScaleNumbers = (statisticType, level) => {
   if (level >= 25 || level <= -2) {
     // stats are off the charts.  we'll do the best we can by treating this as level 24 or level -1.
     // (this comes up with the Tarrasque, level 25 creature)
     level = Math.max(-1, Math.min(24, level))
   }
-  return {
-    ac: TABLES.AC,
-    hp: TABLES.HP,
-    hp_range: TABLES.HP_RANGE,
-    weaknesses: TABLES.WEAKNESSES,
-    resistances: TABLES.RESISTANCES,
-    perception: TABLES.PERCEPTION,
-    save: TABLES.SAVES,
-    ability: TABLES.ABILITY_MODIFIER,
-    skill: TABLES.SKILLS,
-    spell_attack: TABLES.SPELL_ATTACK,
-    spell_dc: TABLES.SPELL_DC,
-    strike_attack: TABLES.STRIKE_ATTACK,
-    strike_damage: TABLES.STRIKE_DAMAGE,
-    strike_damage_range: TABLES.STRIKE_DAMAGE_RANGE,
-  }[statisticType][level]
+  return TABLE_OF_TYPE[statisticType][level]
 }
 
-const getSimpleScale = (baseValue, level, statisticType, verbose = null) => {
-  const scaleNumbers = getScaleNumbers(statisticType, level)
+const calcScale = (baseValue, level, statisticType) => {
+  const referenceValues = getScaleNumbers(statisticType, level)
   // using the relevant scale, picking the value that is closest to the base value
   let closestKey = null
   let closestDiff = null
   let closestDelta = 0
-  for (const [key, value] of Object.entries(scaleNumbers)) {
+  for (const [key, value] of Object.entries(referenceValues)) {
     if (value === null) continue
     const delta = baseValue - value
     const diff = Math.abs(delta)
@@ -170,13 +198,15 @@ const getSimpleScale = (baseValue, level, statisticType, verbose = null) => {
       closestDelta = delta
     }
   }
-  if (verbose) {
-    verbose.diff = closestDiff
-    verbose.entries = scaleNumbers
-    verbose.delta = closestDelta
+
+  return {
+    closestKey,
+    closestDelta,
+    referenceValue: referenceValues[closestKey],
   }
-  return closestKey
 }
+
+const getSimpleScale = (baseValue, level, statisticType) => calcScale(baseValue, level, statisticType).closestKey
 
 const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) => {
   if (typeof statisticValue !== 'number') {
@@ -192,51 +222,75 @@ const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) =
   const isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
   const useColors = game.settings.get(MODULE_ID, 'mark-with-colors')
   const useBorders = game.settings.get(MODULE_ID, 'mark-with-borders')
-  const scaleInfo = {}
-  const scaleKeyWord = getSimpleScale(statisticValue, npc.level, statistic.type, scaleInfo)
+  const npcLevel =
+    // if stats are off the charts, we'll do the best we can by treating this as level 24 or level -1.
+    // (this comes up with the Tarrasque, level 25 creature)
+    Math.max(-1, Math.min(24, npc.level))
+  const {
+    closestKey: scaleKeyword,
+    closestDelta,
+    referenceValue,
+  } = calcScale(statisticValue, npc.level, statistic.type)
   const addOrRemoveClass = (isEnabled ? foundSelector.addClass : foundSelector.removeClass).bind(foundSelector)
   addOrRemoveClass('pf2e-ssss')
   if (useColors) {
-    addOrRemoveClass(`${MODULE_ID}-${scaleKeyWord}-color-${statistic.styleOptionUsed}`)
+    addOrRemoveClass(`${MODULE_ID}-${scaleKeyword}-color-${statistic.styleOptionUsed}`)
   }
   if (useBorders) {
-    addOrRemoveClass(`${MODULE_ID}-${scaleKeyWord}-border-${statistic.styleOptionUsed}`)
+    addOrRemoveClass(`${MODULE_ID}-${scaleKeyword}-border-${statistic.styleOptionUsed}`)
   }
   if (isEnabled) {
-    let closestDelta = (scaleInfo.delta >= 0 ? "+" + scaleInfo.delta : scaleInfo.delta)
-    let tooltipText = `${statisticValue} is ${scaleKeyWord}${closestDelta}`
-    tooltipText += "<table>"
-    if (statistic.type == "strike_damage") {
-      tooltipText = "Average of " + tooltipText
-      const ranges = getScaleNumbers("strike_damage_range", npc.level)
-      for (const [key, value] of Object.entries(scaleInfo.entries)) {
-        tooltipText += (`<tr>`
-          + `<td align="right">${key}</td>`
-          + `<td>${value}</td>`
-          + `<td>${ranges[key] ?? ""}</td>`
-        + `</tr>`)
+    let table = TABLE_OF_TYPE[statistic.type]
+    if (statistic.type === 'strike_damage') {
+      table = TABLE_OF_TYPE['strike_damage_range']
+    } else if (statistic.type === 'hp') {
+      table = TABLE_OF_TYPE['hp_range']
+    }
+    let rows = [
+      [npcLevel - 1, table[npcLevel - 1]],
+      [npcLevel, table[npcLevel]],
+      [npcLevel + 1, table[npcLevel + 1]],
+    ].filter(r => r[1] !== undefined)
+    let tooltipText
+    if (closestDelta > 0)
+      tooltipText = localize('.StatisticTooltip.v_n_is_considered_sw_d_above_rv')
+    if (closestDelta < 0)
+      tooltipText = localize('.StatisticTooltip.v_n_is_considered_sw_d_below_rv')
+    if (closestDelta === 0)
+      tooltipText = localize('.StatisticTooltip.v_n_is_considered_exactly_sw')
+    tooltipText += '<table class="pf2e-see-simple-scale-statistics-tooltip-table">'
+    tooltipText += '<tr>'
+    tooltipText += `<th></th>`
+    const scaleKeywords = Object.keys(rows[0][1])
+    for (const key of scaleKeywords) {
+      const cellClassName = (key === scaleKeyword) ? ' highlighted' : ''
+      tooltipText += `<th class="${cellClassName}">${localize(`.ScaleWord.${key}`)}</th>`
+    }
+    tooltipText += '</tr>'
+    for (const [level, row] of rows) {
+      let rowClassName = level !== npcLevel ? ' different-level' : ''
+      tooltipText += `<tr class="${rowClassName}">`
+      const firstCellClassName = (level === npcLevel) ? ' highlighted' : ''
+      tooltipText += `<td class="${firstCellClassName}">${game.i18n.localize('PF2E.LevelLabel')} ${level}</td>`
+      for (const key of scaleKeywords) {
+        const cellClassName = (level === npcLevel && key === scaleKeyword) ? ' highlighted' : ''
+        tooltipText += `<td class="${cellClassName}">${row[key]}</td>`
       }
-    } else if (statistic.type == "hp") {
-      const ranges = getScaleNumbers("hp_range", npc.level)
-      for (const [key, value] of Object.entries(scaleInfo.entries)) {
-        tooltipText += (`<tr>`
-          + `<td align="right">${key}</td>`
-          + `<td>${value}</td>`
-          + `<td>${ranges[key] ?? ""}</td>`
-        + `</tr>`)
-      }
-    } else {
-      for (const [key, value] of Object.entries(scaleInfo.entries)) {
-        tooltipText += (`<tr>`
-          + `<td align="right">${key}</td>`
-          + `<td>${value}</td>`
-        + `</tr>`)
-      }
+      tooltipText += '</tr>'
     }
     tooltipText += `</table>`
+    tooltipText = tooltipText
+      .replace('{value}', statistic.positiveHasPlus ? `+${statisticValue}` : statisticValue)
+      .replace('{name}', statistic.translatedName)
+      .replace('{scaleWord}', localize(`.ScaleWord.${scaleKeyword}`))
+      .replace('{delta}', Math.abs(closestDelta))
+      .replace('{referenceValue}', referenceValue)
+
     const target = foundSelector[0]
+    // this workaround is a little hacky, but it works well enough
     setTimeout(() => {
-      target.dataset.tooltip = tooltipText
+      target.dataset.tooltipHtml = tooltipText
+      target.dataset.tooltipClass = 'pf2e-see-simple-scale-statistics-scale-tooltip'
     }, 100)
   }
 }
@@ -291,8 +345,8 @@ const calcAvgDamage = (damageObj) => {
  * these wide resistances and High for narrow resistances, for balance reasons.  However, GMs who use SSSS are probably trying to
  * either quickly see a creature's most important attributes at a glance, or to build a creature.  That makes it confusing
  * when seeing a number marked as Low even though having a wide resistance is actually a big power-up.
- * @param resistanceOrWeaknessData
- * @returns {number}
+ *
+ * TODO this is probably confusing with the tooltip now showing a doubled number!  find time to improve this if you can think of an easy refactor
  */
 const artificiallyInflateIfVeryCommonType = (resistanceOrWeaknessData) => {
   const typeName = resistanceOrWeaknessData.type
@@ -327,9 +381,11 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
     const longSlug = skillElem.dataset.statistic
     const statistic = {
       name: `Skill: ${longSlug}`,
+      translatedName: localize('.StatisticTooltip.StatisticType.skill'),
       type: 'skill',
       selector: `DIV.skills.section-container   DIV.list   DIV[data-statistic="${longSlug}"]   a`,
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     }
     // `base` will not be undefined for anything that is visibly there
     const skillValue = getSkillProperty(npc, longSlug)
@@ -339,10 +395,12 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
   // Weaknesses and Resistances
   html.find('li[data-weakness]').each((index, $el) => {
     const statistic = {
-      name: 'Weaknesses',
+      name: 'Weakness',
+      translatedName: localize('.StatisticTooltip.StatisticType.weakness'),
       type: 'weaknesses',
       selector: `li[data-weakness]:nth(${index})`,
       styleOptionUsed: 'primary',
+      positiveHasPlus: false,
     }
     const weaknessType = $el.dataset['weakness'] // e.g. "acid"
     // note that weaknesses are flipped - so that a high weakness is colored as "low" (because it's a negative).
@@ -353,10 +411,12 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
   })
   html.find('li[data-resistance]').each((index, $el) => {
     const statistic = {
-      name: 'Resistances',
+      name: 'Resistance',
+      translatedName: localize('.StatisticTooltip.StatisticType.resistance'),
       type: 'resistances',
       selector: `li[data-resistance]:nth(${index})`,
       styleOptionUsed: 'primary',
+      positiveHasPlus: false,
     }
     const resistanceType = $el.dataset['resistance'] // e.g. "acid"
     const resistanceData = getProperty(npc, `system.attributes.resistances`).find(w => w.type === resistanceType)
@@ -370,10 +430,12 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
     const attackBonus = npc.system.actions[actionIndex].item.system.bonus.value
     calculateAndMarkStatisticInHtml(html, npc, {
       name: 'Strike Attack Bonus',
+      translatedName: localize('.StatisticTooltip.StatisticType.strike_attack'),
       type: 'strike_attack',
       // selector for the first strike button (without the MAP strike buttons)
       selector: `OL.strikes-list   LI.item.action[data-action-index="${actionIndex}"]   BUTTON[data-action="strike-attack"][data-variant-index="0"]`,
       styleOptionUsed: 'secondary',
+      positiveHasPlus: true,
     }, attackBonus)
     const damageRolls = npc.system.actions[actionIndex].item.system.damageRolls
     const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData), 0)
@@ -388,10 +450,12 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
     }
     calculateAndMarkStatisticInHtml(html, npc, {
       name: 'Strike Damage',
+      translatedName: localize('.StatisticTooltip.StatisticType.strike_damage'),
       type: 'strike_damage',
       // selector for the first strike button (without the MAP strike buttons)
       selector: `OL.strikes-list   LI.item.action[data-action-index="${actionIndex}"]   BUTTON[data-action="strike-damage"]`,
       styleOptionUsed: 'secondary',
+      positiveHasPlus: false,
     }, avgTotalDamage)
   }
 
@@ -404,15 +468,19 @@ const markStatisticsInNpcSheet = (npc, html, template) => {
     const spellDc = spellcasting.system.spelldc.dc
     calculateAndMarkStatisticInHtml(html, npc, {
       name: 'Spell Attack Bonus',
+      translatedName: localize('.StatisticTooltip.StatisticType.spell_attack'),
       type: 'spell_attack',
       selector: `DIV.tab.spells   LI.spellcasting-entry[data-item-id="${spellcastingItemId}"]   DIV.spellAttack   label`,
       styleOptionUsed: 'secondary',
+      positiveHasPlus: true,
     }, spellAttack)
     calculateAndMarkStatisticInHtml(html, npc, {
       name: 'Spell DC',
+      translatedName: localize('.StatisticTooltip.StatisticType.spell_dc'),
       type: 'spell_dc',
       selector: `DIV.tab.spells   LI.spellcasting-entry[data-item-id="${spellcastingItemId}"]   DIV.spellDC   label`,
       styleOptionUsed: 'secondary',
+      positiveHasPlus: false,
     }, spellDc)
   }
 }
@@ -984,9 +1052,11 @@ const markStatisticsInNpcInteractiveTokenTooltip = (npc, html) => {
     if (game.settings.get('pf2e-token-hud', 'others') === 'none') continue
     const statistic = {
       name: 'Skill',
+      translatedName: localize('.StatisticTooltip.StatisticType.skill'),
       type: 'skill',
       ittSelector: `A[data-slug="${frontSkillName}"]`,
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     }
     statistic.selector = statistic.ittSelector
     calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getSkillProperty(npc, frontSkillName))
@@ -1003,9 +1073,11 @@ const markStatisticsInNpcInteractiveTokenTooltipSkillsSidebar = (npc, html) => {
     const longSlug = skillElem.dataset.slug
     const statistic = {
       name: 'Skill',
+      translatedName: localize('.StatisticTooltip.StatisticType.skill'),
       type: 'skill',
       ittSelector: `DIV.skill    A[data-action="roll-skill"][data-slug="${longSlug}"]`,
       styleOptionUsed: 'primary',
+      positiveHasPlus: true,
     }
     statistic.selector = statistic.ittSelector
     calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getSkillProperty(npc, longSlug))
@@ -1017,10 +1089,12 @@ const markStatisticsInNpcInteractiveTokenTooltipActionsSidebar = (npc, html) => 
     const attackBonus = npc.system.actions[actionIndex].item.system.bonus.value
     calculateAndMarkStatisticInHtmlInItt(html, npc, {
       name: 'Strike Attack Bonus',
+      translatedName: localize('.StatisticTooltip.StatisticType.strike_attack'),
       type: 'strike_attack',
       // selector for the first strike button (without the MAP strike buttons)
       selector: `DIV.strike.details[data-index="${actionIndex}"]   DIV.variants    DIV[data-action="strike-attack"][data-index="0"]`,
       styleOptionUsed: 'secondary',
+      positiveHasPlus: true,
     }, attackBonus)
     const damageRolls = npc.system.actions[actionIndex].item.system.damageRolls
     const avgTotalDamage = Object.values(damageRolls).reduce((acc, rollData) => acc + calcAvgDamage(rollData), 0)
@@ -1035,10 +1109,12 @@ const markStatisticsInNpcInteractiveTokenTooltipActionsSidebar = (npc, html) => 
     }
     calculateAndMarkStatisticInHtmlInItt(html, npc, {
       name: 'Strike Damage',
+      translatedName: localize('.StatisticTooltip.StatisticType.strike_damage'),
       type: 'strike_damage',
       // selector for the first strike button (without the MAP strike buttons)
       selector: `DIV.strike.details[data-index="${actionIndex}"]   DIV.variants    DIV[data-action="strike-damage"]`,
       styleOptionUsed: 'secondary',
+      positiveHasPlus: false,
     }, avgTotalDamage)
   }
 }
@@ -1093,7 +1169,7 @@ const colorLegend = () => {
 const addElementToNpcSheet = (sheet, html) => {
   let isEnabled = game.settings.get(MODULE_ID, 'toggle-on')
   const maybeActive = isEnabled ? 'active' : ''
-  const text = game.i18n.localize(`${MODULE_ID}.ToggleButton`)
+  const text = localize(`.ToggleButton`)
   const newNode = `
 <div class="pf2e-see-simple-scale-statistics-container">
   <div class="pf2e-see-simple-scale-statistics-change-mode ${maybeActive}">
@@ -1158,7 +1234,8 @@ const refreshWarningsElement = (html, warnings) => {
   if (warnings.length === 0) {
     warningsButton.removeClass('active')
     warningsButton.html(`<i class="fa fa-solid fa-list-check fa-xl"/>`)
-    warningsButton.attr('data-tooltip', `<p>No guideline-breaking statistics found!  Click to re-check.</p>`)
+    warningsButton.attr('data-tooltip-html', `<p>No guideline-breaking statistics found!  Click to re-check.</p>`)
+    warningsButton.attr('data-tooltip-class', 'pf2e-see-simple-scale-statistics-warnings-tooltip')
     return
   }
   warningsButton.addClass('active')
@@ -1181,7 +1258,8 @@ const refreshWarningsElement = (html, warnings) => {
 </p>`,
   ).join('')
   //+ `<p><br/><br/><i>Click to re-check.</i></p>`
-  warningsButton.attr('data-tooltip', warningsHtml)
+  warningsButton.attr('data-tooltip-html', warningsHtml)
+  warningsButton.attr('data-tooltip-class', 'pf2e-see-simple-scale-statistics-warnings-tooltip')
 }
 
 const registerSettings = () => {
@@ -1296,6 +1374,7 @@ Hooks.once('init', () => {
 
 self.PF2E_SEE_SIMPLE_SCALE_STATISTICS = {
   TABLES,
+  TABLE_OF_TYPE,
   getScaleNumbers,
   getSimpleScale,
   shemetzConsoleCode,

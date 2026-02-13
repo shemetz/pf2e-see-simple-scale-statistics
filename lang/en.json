@@ -1,5 +1,38 @@
 {
   "pf2e-see-simple-scale-statistics": {
-    "ToggleButton": "Mark stats"
+    "ToggleButton": "Mark stats",
+    "ScaleWord": {
+      "Terrible": "Terrible",
+      "Low": "Low",
+      "Moderate": "Moderate",
+      "High": "High",
+      "Extreme": "Extreme"
+    },
+    "StatisticTooltip": {
+      "StatisticType": {
+        "ac": "AC",
+        "hp": "HP",
+        "perception": "Perception",
+        "fortitude": "Fortitude",
+        "reflex": "Reflex",
+        "will": "Will",
+        "str": "Strength",
+        "dex": "Dexterity",
+        "con": "Constitution",
+        "int": "Intelligence",
+        "wis": "Wisdom",
+        "cha": "Charisma",
+        "skill": "Skill",
+        "weakness": "Weakness",
+        "resistance": "Resistance",
+        "strike_attack": "Strike Attack Bonus",
+        "strike_damage": "Strike Damage",
+        "spell_attack": "Spell Attack Bonus",
+        "spell_dc": "Spell DC"
+      },
+      "v_n_is_considered_sw_d_above_rv": "{value} {name} is considered {scaleWord} ({delta} above {referenceValue})",
+      "v_n_is_considered_exactly_sw": "{value} {name} is considered exactly {scaleWord}",
+      "v_n_is_considered_sw_d_below_rv": "{value} {name} is considered {scaleWord} ({delta} below {referenceValue})"
+    }
   }
 }
