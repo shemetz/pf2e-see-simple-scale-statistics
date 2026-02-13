@@ -5,10 +5,12 @@ export const TABLES = {
   AC: {},
   SAVES: {},
   HP: {},
+  HP_RANGE: {},
   WEAKNESSES: {},
   RESISTANCES: {},
   STRIKE_ATTACK: {},
   STRIKE_DAMAGE: {},
+  STRIKE_DAMAGE_RANGE: {},
   SPELL_DC: {},
   SPELL_ATTACK: {},
 }
@@ -246,6 +248,21 @@ export const initializeTables = () => {
 // TODO - hp might need to take weaknesses/resistances into account
   for (let line of TABLE_HP_RAW.split('\n')) {
     if (!line) continue
+    //
+    let ranges = line.split("\t")
+    const levelStr = ranges.shift()
+    ranges = ranges.map((range) => {
+      let parts = range.split("–")
+      if (parts.length == 2) {
+        return parts[1] + "–" + parts[0]
+      } else return range;
+    })
+    TABLES.HP_RANGE[parseInt(levelStr)] = {
+      High: ranges[0],
+      Moderate: ranges[1],
+      Low: ranges[2],
+    }
+    //
     line = line.replaceAll('–', '-')
     line = line.replaceAll('-', '\t')
     if (line.startsWith('\t')) line = '-' + line.substring(1)  // workaround for level -1
@@ -393,17 +410,29 @@ export const initializeTables = () => {
   for (let line of TABLE_STRIKE_DAMAGE_RAW.split('\n')) {
     if (!line) continue
     line = line.replaceAll('–', '-')
-    const [level, Extreme, High, Moderate, Low] = line.split('\t')
+    const pairs = line.split('\t')
       .map(s => {
         const split = s.split(' ')
-        if (split.length < 2) return parseInt(s)
-        else {
+        if (split.length < 2) {
+          return { range: s, avg: parseInt(s) }
+        } else {
           const numWithParens = split[1]
-          return parseInt(numWithParens.substring(1, numWithParens.length - 1))
+          return {
+            range: split[0],
+            avg: parseInt(numWithParens.substring(1, numWithParens.length - 1))
+          }
         }
       })
+    const [level, Extreme, High, Moderate, Low] = pairs.map(pair => pair.avg)
+    const ranges = pairs.map(pair => pair.range)
     const myDefinitionOfTerrible = Low - (Moderate - Low) - 1
     TABLES.STRIKE_DAMAGE[level] = { Extreme, High, Moderate, Low, Terrible: myDefinitionOfTerrible }
+    TABLES.STRIKE_DAMAGE_RANGE[level] = {
+      Extreme: ranges[1],
+      High: ranges[2],
+      Moderate: ranges[3],
+      Low: ranges[4]
+    }
   }
 
 // Table 2–11: Spell DC and Spell Attack Bonus
