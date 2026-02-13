@@ -1,3 +1,6 @@
+## 1.8.0 - 2026-02-13
+- Added tooltips that show expected ranges on hover (#26)
+
 ## 1.7.0 - 2026-02-04
 - Improved various guideline warnings and their percentages, after running a script to get bulk judgements
 - Started to ignore Elite/Weak sheets 

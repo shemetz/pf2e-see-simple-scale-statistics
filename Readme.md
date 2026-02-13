@@ -50,6 +50,11 @@ client-side and global for all sheets).
 
 Each important statistic of the creature will be recolored to indicate where it lies on a simple scale!
 
+You can hover over these statistics to see additional context, the rows from the [guidelines](https://2e.aonprd.com/Rules.aspx?ID=2874)
+that match the creature's level, showing why this number was colored the way it was.
+
+![](metadata/scale_tooltip.png)
+
 ### Use cases (for the GM)
 
 - When a player uses Recall Knowledge and you want to tell them about well-known stats, or about whether a particular
