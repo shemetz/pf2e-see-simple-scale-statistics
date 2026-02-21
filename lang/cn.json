@@ -1,5 +1,38 @@
 {
   "pf2e-see-simple-scale-statistics": {
-    "ToggleButton": "标记数据"
+    "ToggleButton": "数据着色",
+    "ScaleWord": {
+      "Terrible": "糟糕",
+      "Low": "弱",
+      "Moderate": "适中",
+      "High": "强",
+      "Extreme": "极端"
+    },
+    "StatisticTooltip": {
+      "StatisticType": {
+        "ac": "AC",
+        "hp": "HP",
+        "perception": "察觉",
+        "fortitude": "强韧",
+        "reflex": "反射",
+        "will": "意志",
+        "str": "力量",
+        "dex": "敏捷",
+        "con": "体质",
+        "int": "智力",
+        "wis": "感知",
+        "cha": "魅力",
+        "skill": "技能",
+        "weakness": "弱点",
+        "resistance": "抗性",
+        "strike_attack": "打击攻击加值",
+        "strike_damage": "打击伤害",
+        "spell_attack": "法术攻击加值",
+        "spell_dc": "法术DC"
+      },
+      "v_n_is_considered_sw_d_above_rv": "{value} {name}评价为{scaleWord} (比{referenceValue}高{delta})",
+      "v_n_is_considered_exactly_sw": "{value} {name}评价为{scaleWord}",
+      "v_n_is_considered_sw_d_below_rv": "{value} {name}评价为{scaleWord} (比{referenceValue}低{delta})"
+    }
   }
 }
