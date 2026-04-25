@@ -239,7 +239,7 @@ const calculateAndMarkStatisticInHtml = (html, npc, statistic, statisticValue) =
   if (useBorders) {
     addOrRemoveClass(`${MODULE_ID}-${scaleKeyword}-border-${statistic.styleOptionUsed}`)
   }
-  if (isEnabled) {
+  if (isEnabled && game.settings.get(MODULE_ID, 'enable-detailed-statistic-tooltips')) {
     let table = TABLE_OF_TYPE[statistic.type]
     if (statistic.type === 'strike_damage') {
       table = TABLE_OF_TYPE['strike_damage_range']
@@ -1306,6 +1306,14 @@ const registerSettings = () => {
     (often High/Extreme instead of Low/Terrible).  This is an odd exception to include, but it helps identify
      when a creature is unusually resistant/weak, since these "broad" IWR are much more impactful and are always
       expected to have a low/terrible statistic.  Applies only to "physical" and "all".`,
+    scope: 'client',
+    config: true,
+    type: Boolean,
+    default: true,
+  })
+  game.settings.register(MODULE_ID, 'enable-detailed-statistic-tooltips', {
+    name: `Enabled detailed statistic tooltips`,
+    hint: `Hovering over colored statistics will show you a tooltip that includes context for why this scale value was assigned.`,
     scope: 'client',
     config: true,
     type: Boolean,
