@@ -248,6 +248,7 @@ export const initializeTables = () => {
 // TODO - hp might need to take weaknesses/resistances into account
   for (let line of TABLE_HP_RAW.split('\n')) {
     if (!line) continue
+    line = line.replaceAll('–', '-')
     //
     let ranges = line.split("\t")
     const levelStr = ranges.shift()
