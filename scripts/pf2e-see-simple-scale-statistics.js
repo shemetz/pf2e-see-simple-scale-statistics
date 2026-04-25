@@ -22,7 +22,7 @@ const getMainNpcStatistics = () => {
       type: 'ac',
       property: '_source.system.attributes.ac.value',
       selector: 'input[data-property="system.attributes.ac.value"]',
-      ittSelector: 'div[data-section="ac"]',
+      pf2eHudSelector: 'div[data-section="ac"]',
       styleOptionUsed: 'primary',
       positiveHasPlus: false,
     },
@@ -33,7 +33,7 @@ const getMainNpcStatistics = () => {
       type: 'hp',
       property: '_source.system.attributes.hp.max',
       selector: 'input[data-property="system.attributes.hp.max"]',
-      ittSelector: 'div[data-section="hp"]',
+      pf2eHudSelector: 'div[data-section="hp"]',
       styleOptionUsed: 'primary',
       positiveHasPlus: false,
     },
@@ -44,7 +44,7 @@ const getMainNpcStatistics = () => {
       type: 'perception',
       property: '_source.system.perception.mod',
       selector: 'input[data-property="system.perception.mod"]',
-      ittSelector: 'a[data-slug="perception"]',
+      pf2eHudSelector: 'a[data-statistic="perception"]',
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     },
@@ -55,7 +55,7 @@ const getMainNpcStatistics = () => {
       type: 'save',
       property: '_source.system.saves.fortitude.value',
       selector: 'input[data-property="system.saves.fortitude.value"]',
-      ittSelector: 'a[data-save="fortitude"]',
+      pf2eHudSelector: 'a[data-statistic="fortitude"]',
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     },
@@ -66,7 +66,7 @@ const getMainNpcStatistics = () => {
       type: 'save',
       property: '_source.system.saves.reflex.value',
       selector: 'input[data-property="system.saves.reflex.value"]',
-      ittSelector: 'a[data-save="reflex"]',
+      pf2eHudSelector: 'a[data-statistic="reflex"]',
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     },
@@ -77,7 +77,7 @@ const getMainNpcStatistics = () => {
       type: 'save',
       property: '_source.system.saves.will.value',
       selector: 'input[data-property="system.saves.will.value"]',
-      ittSelector: 'a[data-save="will"]',
+      pf2eHudSelector: 'a[data-statistic="will"]',
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     },
@@ -88,7 +88,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.str.mod',
       selector: 'input[data-property="system.abilities.str.mod"]',
-      ittSelector: undefined,
+      pf2eHudSelector: undefined,
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     },
@@ -99,7 +99,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.dex.mod',
       selector: 'input[data-property="system.abilities.dex.mod"]',
-      ittSelector: undefined,
+      pf2eHudSelector: undefined,
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     },
@@ -110,7 +110,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.con.mod',
       selector: 'input[data-property="system.abilities.con.mod"]',
-      ittSelector: undefined,
+      pf2eHudSelector: undefined,
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     },
@@ -121,7 +121,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.int.mod',
       selector: 'input[data-property="system.abilities.int.mod"]',
-      ittSelector: undefined,
+      pf2eHudSelector: undefined,
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     },
@@ -132,7 +132,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.wis.mod',
       selector: 'input[data-property="system.abilities.wis.mod"]',
-      ittSelector: undefined,
+      pf2eHudSelector: undefined,
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     },
@@ -143,7 +143,7 @@ const getMainNpcStatistics = () => {
       type: 'ability',
       property: '_source.system.abilities.cha.mod',
       selector: 'input[data-property="system.abilities.cha.mod"]',
-      ittSelector: undefined,
+      pf2eHudSelector: undefined,
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     },
@@ -1035,31 +1035,24 @@ const judgeNpcStatisticsByGuidelines = (npc, template) => {
   return Array.from(uniqueWarnings.values())
 }
 
-const markStatisticsInNpcInteractiveTokenTooltip = (npc, html) => {
+const markStatisticsInNpcTokenHUD = (npc, $html) => {
   // HP, AC, Perception, Saves
-  for (const statistic of getMainNpcStatistics().filter(s => s.ittSelector !== undefined)) {
-    if (game.settings.get('pf2e-token-hud', 'saves') === 'none')
-      if (['Fortitude', 'Reflex', 'Will'].includes(statistic.name))
-        continue
-    if (game.settings.get('pf2e-token-hud', 'others') === 'none')
-      if (['Perception'].includes(statistic.name))
-        continue
-    statistic.selector = statistic.ittSelector
-    calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getProperty(npc, statistic.property))
+  for (const statistic of getMainNpcStatistics().filter(s => s.pf2eHudSelector !== undefined)) {
+    statistic.selector = statistic.pf2eHudSelector
+    calculateAndMarkStatisticInHtmlInTokenHUD($html, npc, statistic, getProperty(npc, statistic.property))
   }
   // Passive stealth and passive athletics
   for (const frontSkillName of ['stealth', 'athletics']) {
-    if (game.settings.get('pf2e-token-hud', 'others') === 'none') continue
     const statistic = {
       name: 'Skill',
       translatedName: localize('.StatisticTooltip.StatisticType.skill'),
       type: 'skill',
-      ittSelector: `A[data-slug="${frontSkillName}"]`,
+      pf2eHudSelector: `A[data-statistic="${frontSkillName}"]`,
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     }
-    statistic.selector = statistic.ittSelector
-    calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getSkillProperty(npc, frontSkillName))
+    statistic.selector = statistic.pf2eHudSelector
+    calculateAndMarkStatisticInHtmlInTokenHUD($html, npc, statistic, getSkillProperty(npc, frontSkillName))
   }
 
   // Skills - in another sidebar
@@ -1069,25 +1062,25 @@ const markStatisticsInNpcInteractiveTokenTooltip = (npc, html) => {
 }
 
 const markStatisticsInNpcInteractiveTokenTooltipSkillsSidebar = (npc, html) => {
-  for (const skillElem of html.find('DIV.skill    A[data-action="roll-skill"]')) {
+  for (const skillElem of html.find('DIV[data-sidebar="skills"]    A[data-action="roll-skill"]')) {
     const longSlug = skillElem.dataset.slug
     const statistic = {
       name: 'Skill',
       translatedName: localize('.StatisticTooltip.StatisticType.skill'),
       type: 'skill',
-      ittSelector: `DIV.skill    A[data-action="roll-skill"][data-slug="${longSlug}"]`,
+      pf2eHudSelector: `DIV[data-sidebar="skills"]    A[data-action="roll-skill"][data-slug="${longSlug}"]`,
       styleOptionUsed: 'primary',
       positiveHasPlus: true,
     }
-    statistic.selector = statistic.ittSelector
-    calculateAndMarkStatisticInHtmlInItt(html, npc, statistic, getSkillProperty(npc, longSlug))
+    statistic.selector = statistic.pf2eHudSelector
+    calculateAndMarkStatisticInHtmlInTokenHUD(html, npc, statistic, getSkillProperty(npc, longSlug))
   }
 }
 const markStatisticsInNpcInteractiveTokenTooltipActionsSidebar = (npc, html) => {
   for (const strikeElem of html.find('DIV.strike.details')) {
     const actionIndex = parseInt(strikeElem.dataset.index)
     const attackBonus = npc.system.actions[actionIndex].item.system.bonus.value
-    calculateAndMarkStatisticInHtmlInItt(html, npc, {
+    calculateAndMarkStatisticInHtmlInTokenHUD(html, npc, {
       name: 'Strike Attack Bonus',
       translatedName: localize('.StatisticTooltip.StatisticType.strike_attack'),
       type: 'strike_attack',
@@ -1107,7 +1100,7 @@ const markStatisticsInNpcInteractiveTokenTooltipActionsSidebar = (npc, html) => 
       console.error(`failed parsing math expression for strike damage: actor ${npc.name}, attack ${actionName}`)
       continue
     }
-    calculateAndMarkStatisticInHtmlInItt(html, npc, {
+    calculateAndMarkStatisticInHtmlInTokenHUD(html, npc, {
       name: 'Strike Damage',
       translatedName: localize('.StatisticTooltip.StatisticType.strike_damage'),
       type: 'strike_damage',
@@ -1127,10 +1120,10 @@ const getSkillProperty = (npc, skillName) => {
     || getProperty(npc, `skills.${skillName}.modifiers.0.modifier`)
 }
 
-const calculateAndMarkStatisticInHtmlInItt = (html, npc, statistic, statisticValue) => {
-  const ittIntegration = game.settings.get(MODULE_ID, 'pf2e-itt-integration')
-  if (ittIntegration === 'disabled') return
-  if (ittIntegration === 'color') statistic.styleOptionUsed = 'secondary'
+const calculateAndMarkStatisticInHtmlInTokenHUD = (html, npc, statistic, statisticValue) => {
+  const settingValue = game.settings.get(MODULE_ID, 'pf2e-hud-integration')
+  if (settingValue === 'disabled') return
+  if (settingValue === 'color') statistic.styleOptionUsed = 'secondary'
   return calculateAndMarkStatisticInHtml(html, npc, statistic, statisticValue)
 }
 
@@ -1300,6 +1293,19 @@ const registerSettings = () => {
     },
     default: 'shadows',
   })
+  game.settings.register(MODULE_ID, 'pf2e-hud-integration', {
+    name: `PF2e HUD integration`,
+    hint: `Integration with the PF2e HUD module.`,
+    scope: 'client',
+    config: true,
+    type: String,
+    choices: {
+      'disabled': 'Disabled',
+      'shadows': 'Colorize shadows around icons and text (if "Mark with colors" is enabled)',
+      'color': `Colorize text, and possibly icons, and possibly borders`,
+    },
+    default: 'shadows',
+  })
   game.settings.register(MODULE_ID, 'treat-broad-iwr-as-more-important', {
     name: `Treat broad weaknesses/resistances as higher`,
     hint: `E.g. will mark "resistance 5 to physical" as if it was "resistance 10 to bludgeoning" 
@@ -1339,7 +1345,7 @@ Hooks.once('init', () => {
   registerSettings()
   Hooks.on('renderActorSheetPF2e', (sheet, html, _) => {
     if (sheet.object.type !== 'npc') return
-    if (sheet.options.classes.includes("simple")) return // skip Simple NPC Sheets, they imply the NPC is not built normally
+    if (sheet.options.classes.includes('simple')) return // skip Simple NPC Sheets, they imply the NPC is not built normally
     addElementToNpcSheet(sheet, html)
     // todo cleanup code a bit, increase performance for frequent renders
     const isEnabled = game.settings.get(MODULE_ID, 'toggle-on') && !(sheet.object.attributes.adjustment === 'elite' || sheet.object.attributes.adjustment === 'weak')
@@ -1357,26 +1363,41 @@ Hooks.once('init', () => {
   })
   // integration - PF2E interactive token tooltip
   // TODO - integrate with pf2e-hud instead
-  Hooks.on('renderHUD', (application, pf2eTokenHudHtml, _someActorData) => {
+  Hooks.on('renderBasePF2eHUD', (application, pf2eHudHtml, partialData) => {
     if (!game.settings.get(MODULE_ID, 'toggle-on')
-      || game.settings.get(MODULE_ID, 'pf2e-itt-integration') === 'disabled')
+      || game.settings.get(MODULE_ID, 'pf2e-hud-integration') === 'disabled')
       return
-    if (application.actor?.type !== 'npc')
-      return
-    if (application.actor.permission < CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER)
-      return
-    markStatisticsInNpcInteractiveTokenTooltip(application.actor, pf2eTokenHudHtml)
-  })
-  Hooks.on('renderHUDSidebar', (sidebarType, pf2eTokenHudHtml, application) => {
-    if (!game.settings.get(MODULE_ID, 'toggle-on')
-      || game.settings.get(MODULE_ID, 'pf2e-itt-integration') === 'disabled')
+    if (!application.actor)
       return
     if (application.actor.type !== 'npc')
       return
-    if (sidebarType === 'skills')
-      markStatisticsInNpcInteractiveTokenTooltipSkillsSidebar(application.actor, pf2eTokenHudHtml)
-    if (sidebarType === 'actions')
-      markStatisticsInNpcInteractiveTokenTooltipActionsSidebar(application.actor, pf2eTokenHudHtml)
+    if (application.actor.attributes.adjustment === "elite" || application.actor.attributes.adjustment === "weak")
+      return
+    if (partialData.status && !partialData.ac) // e.g. if this is just a render of a health tooltip, not the whole exploded token tooltip
+      return
+    if (application.actor.permission < CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER)
+      return
+    markStatisticsInNpcTokenHUD(application.actor, $(pf2eHudHtml))
+  })
+  Hooks.on('renderActionsSidebarPF2eHUD', (application, pf2eHudHtml, _partialData) => {
+    if (!game.settings.get(MODULE_ID, 'toggle-on')
+      || game.settings.get(MODULE_ID, 'pf2e-hud-integration') === 'disabled')
+      return
+    if (application.actor.type !== 'npc')
+      return
+    if (application.actor.attributes.adjustment === "elite" || application.actor.attributes.adjustment === "weak")
+      return
+    markStatisticsInNpcInteractiveTokenTooltipActionsSidebar(application.actor, $(pf2eHudHtml))
+  })
+  Hooks.on('renderSkillsSidebarPF2eHUD', (application, pf2eHudHtml, _partialData) => {
+    if (!game.settings.get(MODULE_ID, 'toggle-on')
+      || game.settings.get(MODULE_ID, 'pf2e-hud-integration') === 'disabled')
+      return
+    if (application.actor.type !== 'npc')
+      return
+    if (application.actor.attributes.adjustment === "elite" || application.actor.attributes.adjustment === "weak")
+      return
+    markStatisticsInNpcInteractiveTokenTooltipSkillsSidebar(application.actor, $(pf2eHudHtml))
   })
   console.log(`${MODULE_ID}: Initialized`)
 })
