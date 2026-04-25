@@ -1,3 +1,9 @@
+## 1.8.1 - 2026-04-25
+- Replaced Pf2eITT integration with PF2e HUD integration (closes #18)
+- Added skip for NPC sheets (closes #25)
+- Added a setting to disable the tooltip (closes #28)
+- Fixed level -1's HP being unavailable due to parsing typo (closes #30)
+
 ## 1.8.0 - 2026-02-13
 - Added tooltips that show expected ranges on hover (#26)
 
