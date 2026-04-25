@@ -1339,6 +1339,7 @@ Hooks.once('init', () => {
   registerSettings()
   Hooks.on('renderActorSheetPF2e', (sheet, html, _) => {
     if (sheet.object.type !== 'npc') return
+    if (sheet.options.classes.includes("simple")) return // skip Simple NPC Sheets, they imply the NPC is not built normally
     addElementToNpcSheet(sheet, html)
     // todo cleanup code a bit, increase performance for frequent renders
     const isEnabled = game.settings.get(MODULE_ID, 'toggle-on') && !(sheet.object.attributes.adjustment === 'elite' || sheet.object.attributes.adjustment === 'weak')
