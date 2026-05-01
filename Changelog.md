@@ -1,3 +1,7 @@
+## 1.8.2 - 2026-05-01
+- Fixed #24 -- warnings displayed despite being disabled in settings
+- Replaced "fear" with "fear-effects", the system changed how it is stored
+
 ## 1.8.1 - 2026-04-25
 - Replaced Pf2eITT integration with PF2e HUD integration (closes #18)
 - Added skip for NPC sheets (closes #25)
