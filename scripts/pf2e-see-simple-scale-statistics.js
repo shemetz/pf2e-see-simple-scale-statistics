@@ -723,7 +723,7 @@ const judgeNpcStatisticsByGuidelines = (npc, template) => {
   warnIfMissingTrait('angel', 'holy', '14%')
   warnIfMissingTrait('archon', 'celestial', '0%')
   warnIfMissingTrait('archon', 'holy', '0%')
-  warnIfMissingImmunityOrResistance('archon', 'fear', '33%') // e.g. Lantern Archon.  but Monster Core 2 or 3 will probably fix them
+  warnIfMissingImmunityOrResistance('archon', 'fear-effects', '9%')  // e.g. Wheel Archon
   warnIfMissingTrait('azata', 'celestial', '0%')
   warnIfMissingTrait('azata', 'holy', '0%')
   warnIfMissingWeakness('azata', 'cold-iron', '0%')

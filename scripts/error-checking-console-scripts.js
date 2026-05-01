@@ -119,7 +119,7 @@ const _latestStats = {
   'lower-than-terrible-reflex': 8,
   'lower-than-terrible-will': 18,
   'missing-imm-or-res-cold': 2,
-  'missing-imm-or-res-fear': 11,
+  'missing-imm-or-res-fear-effects': 1,
   'missing-imm-or-res-fire': 2,
   'missing-immunity-death-effects': 1,
   'missing-immunity-fire': 1,
