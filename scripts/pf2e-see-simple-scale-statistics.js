@@ -1197,14 +1197,13 @@ const addElementToNpcSheet = (sheet, html) => {
 
 const addWarningsToNpcSheet = (sheet, html) => {
   const isEnabled = game.settings.get(MODULE_ID, 'warnings-mode') !== 'disabled'
+  if (!isEnabled) return
   const newNode = `
 <a class="pf2e-see-simple-scale-statistics-warnings-button"></a>
 `
   html.find('DIV.pf2e-see-simple-scale-statistics-change-mode').before(newNode)
-  if (isEnabled) {
-    const warnings = judgeNpcStatisticsByGuidelines(sheet.object, sheet.template)
-    refreshWarningsElement(html, warnings)
-  }
+  const warnings = judgeNpcStatisticsByGuidelines(sheet.object, sheet.template)
+  refreshWarningsElement(html, warnings)
 
   html.find('A.pf2e-see-simple-scale-statistics-warnings-button').click(() => {
     const warnings = judgeNpcStatisticsByGuidelines(sheet.object, sheet.template)
