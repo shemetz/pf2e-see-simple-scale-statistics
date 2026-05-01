@@ -1371,7 +1371,7 @@ Hooks.once('init', () => {
       return
     if (application.actor.type !== 'npc')
       return
-    if (application.actor.attributes.adjustment === "elite" || application.actor.attributes.adjustment === "weak")
+    if (application.actor.attributes.adjustment === 'elite' || application.actor.attributes.adjustment === 'weak')
       return
     if (partialData.status && !partialData.ac) // e.g. if this is just a render of a health tooltip, not the whole exploded token tooltip
       return
@@ -1385,7 +1385,7 @@ Hooks.once('init', () => {
       return
     if (application.actor.type !== 'npc')
       return
-    if (application.actor.attributes.adjustment === "elite" || application.actor.attributes.adjustment === "weak")
+    if (application.actor.attributes.adjustment === 'elite' || application.actor.attributes.adjustment === 'weak')
       return
     markStatisticsInNpcInteractiveTokenTooltipActionsSidebar(application.actor, $(pf2eHudHtml))
   })
@@ -1395,7 +1395,7 @@ Hooks.once('init', () => {
       return
     if (application.actor.type !== 'npc')
       return
-    if (application.actor.attributes.adjustment === "elite" || application.actor.attributes.adjustment === "weak")
+    if (application.actor.attributes.adjustment === 'elite' || application.actor.attributes.adjustment === 'weak')
       return
     markStatisticsInNpcInteractiveTokenTooltipSkillsSidebar(application.actor, $(pf2eHudHtml))
   })
