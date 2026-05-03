@@ -1279,19 +1279,6 @@ const registerSettings = () => {
     type: Boolean,
     default: false,
   })
-  game.settings.register(MODULE_ID, 'pf2e-itt-integration', {
-    name: `PF2e Interactive Token Tooltip integration`,
-    hint: `Integration with the PF2eITT module.`,
-    scope: 'client',
-    config: true,
-    type: String,
-    choices: {
-      'disabled': 'Disabled',
-      'shadows': 'Colorize shadows around icons and text (if "Mark with colors" is enabled)',
-      'color': `Colorize text, and possibly icons, and possibly borders`,
-    },
-    default: 'shadows',
-  })
   game.settings.register(MODULE_ID, 'pf2e-hud-integration', {
     name: `PF2e HUD integration`,
     hint: `Integration with the PF2e HUD module.`,
